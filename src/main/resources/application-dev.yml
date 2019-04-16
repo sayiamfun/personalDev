@@ -1,0 +1,73 @@
+server:
+  port: 80
+spring:
+  application:
+    name: personal
+  aop:
+    proxy-target-class: true
+    auto: true
+  datasource:
+    druid:
+      # 数据库 1
+      db1:
+        url: jdbc:mysql://localhost:3306/personal_zc_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+      # 数据库 2
+      db2:
+        url: jdbc:mysql://localhost:3306/oa?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+      # 数据库 3
+      db3:
+        url: jdbc:mysql://localhost:3306/personal_zc_wx_group?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+      # 数据库 4
+      db4:
+        url: jdbc:mysql://localhost:3306/qunliebian_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+#返回json的全局时间格式
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+#全局日志级别
+logging:
+  level:
+    root: info
+
+mybatis-plus:
+  #mybatis日志打印
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #全局设置主键生成策略
+  global-config:
+    db-config:
+      id-type: id_worker_str
+#文件上传线下
+fileServer:
+  #文件上传服务器地址
+  url: http://47.112.102.117:8080
+  #线下
+  confUrl: F:/myproject/dea/gerenhao/PersonalZC/src/main/resources/tracker.conf
+  ms_SERVER_ROOT_URL: http://www.jiazhang111.xyz
+  qrurl: http://www.jiazhang111.xyz:9091
+

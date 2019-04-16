@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoSuperuesrMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoSuperuesr">
+        <id column="id" property="id" />
+        <result column="super_name" property="superName" />
+        <result column="password" property="password" />
+        <result column="head_portrait" property="headPortrait" />
+        <result column="code" property="code" />
+        <result column="deleted" property="deleted" />
+        <result column="wx_id" property="wxId" />
+        <result column="openid" property="openid" />
+    </resultMap>
+
+</mapper>

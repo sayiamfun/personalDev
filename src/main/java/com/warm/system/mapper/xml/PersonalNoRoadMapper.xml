@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoRoadMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoRoad">
+        <id column="id" property="id" />
+        <result column="road_name" property="roadName" />
+        <result column="road_background" property="roadBackground" />
+        <result column="road_num" property="roadNum" />
+        <result column="road_create_time" property="roadCreateTime" />
+        <result column="click_road_num" property="clickRoadNum" />
+        <result column="less_click_road_num" property="lessClickRoadNum" />
+        <result column="deleted" property="deleted" />
+        <result column="road_url" property="roadUrl" />
+    </resultMap>
+
+</mapper>

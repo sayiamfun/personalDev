@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNo">
+        <id column="id" property="id" />
+        <result column="wx_id" property="wxId" />
+        <result column="wx_name" property="wxName" />
+        <result column="qr_code" property="qrCode" />
+        <result column="nickname" property="nickname" />
+        <result column="equipment_id" property="equipmentId" />
+        <result column="waiting_pass_num" property="waitingPassNum" />
+        <result column="friends_num" property="friendsNum" />
+        <result column="equipment_status" property="equipmentStatus" />
+        <result column="sales_group" property="salesGroup" />
+        <result column="personal_no_category" property="personalNoCategory" />
+        <result column="head_portrait_url" property="headPortraitUrl" />
+        <result column="create_time" property="createTime" />
+        <result column="super_id" property="superId" />
+        <result column="remarks" property="remarks" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+
+</mapper>

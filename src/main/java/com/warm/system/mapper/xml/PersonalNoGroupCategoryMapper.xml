@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoGroupCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoGroupCategory">
+        <id column="id" property="id" />
+        <result column="group_category_set_id" property="groupCategorySetId" />
+        <result column="cname" property="cname" />
+        <result column="up_limit" property="upLimit" />
+        <result column="prefix" property="prefix" />
+        <result column="postfix" property="postfix" />
+        <result column="begin_index" property="beginIndex" />
+        <result column="current_index" property="currentIndex" />
+        <result column="assistant_ids" property="assistantIds" />
+        <result column="full_verify" property="fullVerify" />
+        <result column="cdescription" property="cdescription" />
+        <result column="create_time" property="createTime" />
+    </resultMap>
+
+</mapper>

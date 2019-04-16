@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoWxGroupMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoWxGroup">
+        <id column="id" property="id" />
+        <result column="group_category_id" property="groupCategoryId" />
+        <result column="wx_group_office_id" property="wxGroupOfficeId" />
+        <result column="gname" property="gname" />
+        <result column="notice" property="notice" />
+        <result column="notice_publish_time" property="noticePublishTime" />
+        <result column="group_owner" property="groupOwner" />
+        <result column="robot_a1" property="robotA1" />
+        <result column="robot_a2" property="robotA2" />
+        <result column="group_holder_c1" property="groupHolderC1" />
+        <result column="group_manage_c2" property="groupManageC2" />
+        <result column="group_holder_b1" property="groupHolderB1" />
+        <result column="group_manage_b2" property="groupManageB2" />
+        <result column="group_member_last_update_time" property="groupMemberLastUpdateTime" />
+        <result column="tag" property="tag" />
+        <result column="qrcode_url" property="qrcodeUrl" />
+        <result column="qrcode_create_time" property="qrcodeCreateTime" />
+        <result column="qrcode_uploder_wxid" property="qrcodeUploderWxid" />
+        <result column="create_time" property="createTime" />
+        <result column="last_active_time" property="lastActiveTime" />
+    </resultMap>
+
+</mapper>

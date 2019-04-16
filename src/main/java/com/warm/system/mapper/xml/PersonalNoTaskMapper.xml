@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoTaskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoTask">
+        <id column="id" property="id" />
+        <result column="task_name" property="taskName" />
+        <result column="task_theme" property="taskTheme" />
+        <result column="popularize_category" property="popularizeCategory" />
+        <result column="subject_name" property="subjectName" />
+        <result column="recommended_reasons" property="recommendedReasons" />
+        <result column="fast_group" property="fastGroup" />
+        <result column="sales_group_separate_flag" property="salesGroupSeparateFlag" />
+        <result column="create_sales_task" property="createSalesTask" />
+        <result column="task_url" property="taskUrl" />
+        <result column="task_end_time" property="taskEndTime" />
+        <result column="group_auto_close" property="groupAutoClose" />
+        <result column="pull_people_user_id" property="pullPeopleUserId" />
+        <result column="auto_remind" property="autoRemind" />
+        <result column="activity_type" property="activityType" />
+        <result column="task_end_url" property="taskEndUrl" />
+        <result column="super_id" property="superId" />
+        <result column="remarks" property="remarks" />
+        <result column="create_time" property="createTime" />
+        <result column="deleted" property="deleted" />
+        <result column="task_start_time" property="taskStartTime" />
+        <result column="add_friend_index" property="addFriendIndex" />
+        <result column="road_id" property="roadId" />
+        <result column="message" property="message" />
+    </resultMap>
+
+</mapper>
