@@ -85,6 +85,12 @@ public class PersonalNoLableMessageSend extends Model<PersonalNoLableMessageSend
     @TableField(exist = false)
     private Date endTime;
 
+    @TableField(exist = false)
+    private String groupName;
+
+    @TableField(exist = false)
+    private String db;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

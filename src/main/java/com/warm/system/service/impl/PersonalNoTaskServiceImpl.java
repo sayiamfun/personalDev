@@ -2,12 +2,15 @@ package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.query.QueryPersonalTask;
 import com.warm.entity.requre.RecommendedReasons;
 import com.warm.system.entity.*;
 import com.warm.system.mapper.PersonalNoTaskMapper;
 import com.warm.system.service.db1.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.system.service.db3.PersonalNoGroupCategoryService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,6 +51,11 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
     private PersonalNoTaskDataService taskDataService;
     @Autowired
     private PersonalNoPeopleService peopleService;
+    @Autowired
+    private PersonalNoGroupCategoryService groupCategoryService;
+
+    private String ZCDBPersonalNo = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no);
+    private String ZCDBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
     /*
      *  添加任务到数据库
      */
@@ -146,6 +154,24 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
             }
             log.info("查询完成，返回数据");
             List<PersonalNoTask> personalNoTasks = baseMapper.selectPage(page, entityWrapper);
+            for (PersonalNoTask personalNoTask : personalNoTasks) {
+                List<PersonalNoTaskReplyContent> listByTaskId = noTaskReplyContentService.getListByTaskId(personalNoTask.getId());
+                for (PersonalNoTaskReplyContent personalNoTaskReplyContent : listByTaskId) {
+                    if("邀请入群".equals(personalNoTaskReplyContent.getContentType())){
+                        String[] split = personalNoTaskReplyContent.getContent().split("/");
+                        PersonalNoGroupCategory personalNoGroupCategory = groupCategoryService.getPersonalNoGroupCategory(split);
+                        personalNoTask.setCategoryName1(personalNoGroupCategory==null?"":personalNoGroupCategory.getCname());
+                    }
+                }
+                List<PersonalNoTaskBeginRemind> listByTaskId1 = noTaskBeginRemindService.getListByTaskId(personalNoTask.getId());
+                for (PersonalNoTaskBeginRemind personalNoTaskBeginRemind : listByTaskId1) {
+                    if("邀请入群".equals(personalNoTaskBeginRemind.getContentType())){
+                        String[] split = personalNoTaskBeginRemind.getContent().split("/");
+                        PersonalNoGroupCategory personalNoGroupCategory = groupCategoryService.getPersonalNoGroupCategory(split);
+                        personalNoTask.setCategoryName2(personalNoGroupCategory==null?"":personalNoGroupCategory.getCname());
+                    }
+                }
+            }
             page.setRecords(personalNoTasks);
         }
         return page;
@@ -170,8 +196,10 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
                 flag = true;
             }else {
                 log.info("判断当前个人号是否正常使用");
+                String sql = null;
                 for (PersonalNoTaskPersonal personalNoTaskPersonal : listByTaskId) {
-                    PersonalNo byId = noService.getByWxId(personalNoTaskPersonal.getPersonalNoWxId());
+                    sql = DaoGetSql.getSql("select * from "+ZCDBPersonalNo+" where wx_id = ? limit 0,1",personalNoTaskPersonal.getPersonalNoWxId());
+                    PersonalNo byId = noService.getOne(sql);
                     if(!VerifyUtils.isEmpty(byId)) {
                         if (!"封禁".equals(byId.getEquipmentStatus()) && !"暂停服务".equals(byId.getEquipmentStatus()) && !"断开".equals(byId.getEquipmentStatus())) {
                             flag = false;
@@ -196,7 +224,8 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
     @Override
     public PersonalNoTask getTaskById(Integer taskId) {
         log.info("数据库ID查询任务");
-        PersonalNoTask noTaskById = getTaskInfoById(taskId);
+        PersonalNoTask personalNoTask = baseMapper.selectById(taskId);
+        PersonalNoTask noTaskById = getTaskInfoById(personalNoTask);
         if(!VerifyUtils.isEmpty(noTaskById)){
             log.info("根据推荐理由转为推荐理由列表");
             String recommendedReason = noTaskById.getRecommendedReasons();
@@ -224,8 +253,9 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
             //将任务渠道列表转换为渠道名称列表
             noTaskById.setChannelNameList(getChannelNameList(noTaskById.getPersonalnoChannelList()));
             //将渠道信息列表转换为渠道名称列表
-            List<PersonalNoChannel> list = noChannelService.selectList(null);
-            noTaskById.setAllChannelNameList(getNameList(list));
+            String sql = DaoGetSql.getSql("select channel_name from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_channel));
+            List<String> list = noChannelService.listString(sql);
+            noTaskById.setAllChannelNameList(list);
             log.info("数据库ID查询任务结束");
         }
         return noTaskById;
@@ -233,13 +263,12 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
     /**
      * 根据任务查询任务显示界面的任务信息
      * 标签类别，个人号数量，渠道数量
-     * @param id
+     * @param byId
      * @return
      */
     @Override
-    public PersonalNoTask getTaskInfoById(Integer id) {
+    public PersonalNoTask getTaskInfoById(PersonalNoTask byId) {
         log.info("数据库根据id查询任务标签，个人号，渠道");
-        PersonalNoTask byId = baseMapper.selectById(id);
         if(!VerifyUtils.isEmpty(byId)) {
             log.info("根据任务id查询所有的标签列表");
             List<PersonalNoTaskLable> lableList = personalNoTaskLableService.listByTaskId(byId.getId());
@@ -300,8 +329,10 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
             List<PersonalNoTaskPersonal> personalNoTaskPersonals = personalNoTaskPersonalService.listByTaskId(taskId);
             log.info("根据个人号和任务id查询好友人数");
             Integer num = 0;
+            String sql = "";
             for (PersonalNoTaskPersonal personalNoTaskPersonal : personalNoTaskPersonals) {
-                List<PersonalNoPeople> peopleList = peopleService.ListByTaskIdAndPersonalWxId(taskId, personalNoTaskPersonal.getPersonalNoWxId());
+                sql = DaoGetSql.getSql("SELECT id,personal_friend_wx_id,personal_task_id,personal_no_wx_id,channel_id,flag,be_friend_time,remarks,personal_friend_nick_name,deleted FROM "+ZCDBNoPeople+" WHERE personal_task_id = ? and personal_no_wx_id = ? and deleted = 0",taskId, personalNoTaskPersonal.getPersonalNoWxId());
+                List<PersonalNoPeople> peopleList = peopleService.list(sql);
                 personalNoTaskPersonal.setPeopleNum(peopleList == null ? 0 : peopleList.size());
                 num += (peopleList == null ? 0 : peopleList.size());
             }
@@ -414,18 +445,6 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
     }
 
 
-    //将渠道信息列表转换为渠道名称列表      返回数据使用
-    private List<String> getNameList(List<PersonalNoChannel> noChannelList){
-        log.info("将渠道信息列表转换为渠道名称列表");
-        //查询所有的渠道并转成渠道名称列表
-        List<String> channelNameList = new ArrayList<>();
-        if(!VerifyUtils.collectionIsEmpty(noChannelList)){
-            for (PersonalNoChannel personalnoChannel : noChannelList) {
-                channelNameList.add(personalnoChannel.getChannelName());
-            }
-        }
-        return channelNameList;
-    }
     //将任务渠道列表转换为渠道名称列表      返回数据使用
     private List<String > getChannelNameList(List<PersonalNoTaskChannel> noTaskChannelList){
         log.info("将任务渠道列表转换为渠道名称列表");

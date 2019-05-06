@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoFriendsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoFriends">
+        <id column="id" property="id" />
+        <result column="personal_no_id" property="personalNoId" />
+        <result column="personal_no_wx_id" property="personalNoWxId" />
+        <result column="user_id" property="userId" />
+        <result column="user_wx_id" property="userWxId" />
+        <result column="be_friend_time" property="beFriendTime" />
+        <result column="remarks" property="remarks" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoFriends" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,personal_no_id,personal_no_wx_id,user_id,user_wx_id,be_friend_time,remarks)
+        values
+          (#{entity.id},#{entity.personalNoId},#{entity.personal_no_wx_id},#{entity.userId},#{entity.userWxId},#{entity.beFriendTime},#{entity.remarks})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoFriends" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personalNoId!=null">
+                personal_no_id = #{entity.personalNoId},
+            </if>
+            <if test="entity.personal_no_wx_id!=null">
+                personal_no_wx_id = #{entity.personal_no_wx_id},
+            </if>
+            <if test="entity.userId!=null">
+                user_id = #{entity.userId},
+            </if>
+            <if test="entity.userWxId!=null">
+                user_wx_id = #{entity.userWxId},
+            </if>
+            <if test="entity.beFriendTime!=null">
+                be_friend_time = #{entity.beFriendTime},
+            </if>
+            <if test="entity.remarks!=null">
+                remarks = #{entity.remarks},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

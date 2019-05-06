@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_lable_message_send_content")
 public class PersonalNoLableMessageSendContent extends Model<PersonalNoLableMessageSendContent> {
 
@@ -43,46 +46,8 @@ public class PersonalNoLableMessageSendContent extends Model<PersonalNoLableMess
      */
     private Integer deleted;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPersonalNoLableMessageSendId() {
-        return personalNoLableMessageSendId;
-    }
-
-    public void setPersonalNoLableMessageSendId(Integer personalNoLableMessageSendId) {
-        this.personalNoLableMessageSendId = personalNoLableMessageSendId;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

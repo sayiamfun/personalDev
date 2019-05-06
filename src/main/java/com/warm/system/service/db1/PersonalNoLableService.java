@@ -20,17 +20,23 @@ import java.util.Set;
  */
 public interface PersonalNoLableService extends IService<PersonalNoLable> {
 
-    List<PersonalNoLable> listByCategory(String categoryName);
-
     Page<PersonalNoLable> pageQuery(Page<PersonalNoLable> page, String lableName);
 
     List<LableManager> getNumData(List<PersonalNoLable> rows);
 
     boolean batchUpdateCategory(BatchUpdateObject batchUpdateObject);
+    //*******************************************************
+    Integer add(PersonalNoLable entity);
 
-    List<PersonalNoLable> listByLableName(String lableName);
+    Integer delete(String sql);
+
+    List<PersonalNoLable> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoLable getOne(String sql);
+
+    Long getCount(String sql);
 
     Set<String> listByPersonal(List<PersonalNo> list);
-
-    PersonalNoLable getByName(String s);
 }

@@ -21,4 +21,6 @@ public interface PersonalNoTaskChannelService extends IService<PersonalNoTaskCha
     List<PersonalNoTaskChannel> getListByTaskId(Integer id);
 
     boolean deleteByTaskId(Integer taskId);
+
+    PersonalNoTaskChannel selectByTaskIdAndChannelId(String roadId, Integer channelId, Integer roadOrTask);
 }

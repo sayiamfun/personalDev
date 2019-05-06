@@ -4,6 +4,7 @@ package com.warm.system.controller;
 import com.warm.entity.R;
 import com.warm.system.entity.PersonalNoSmallFace;
 import com.warm.system.service.db1.PersonalNoSmallFaceService;
+import com.warm.utils.SessionUtil;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public class PersonalNoSmallFaceController {
     private PersonalNoSmallFaceService smallFaceService;
     @ApiOperation("表情列表")
     @GetMapping("listAll")
-    public R listAll(){
+    public R listAll(HttpServletRequest request){
         try {
             List<PersonalNoSmallFace> personalNoSmallFaces = smallFaceService.selectList(null);
             return R.ok().data(personalNoSmallFaces);

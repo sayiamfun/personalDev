@@ -15,11 +15,17 @@ import java.util.List;
  */
 public interface PersonalNoGroupCategoryService extends IService<PersonalNoGroupCategory> {
 
-    List<PersonalNoGroupCategory> listBySetId(Integer setId);
+    List<PersonalNoGroupCategory> list(String sql);
 
-    List<PersonalNoGroupCategory> listBySetIdFromQunLie01(Integer setId);
+    List<String> listString(String sql);
 
-    PersonalNoGroupCategory getById(int parseInt);
+    PersonalNoGroupCategory getOne(String sql);
 
-    PersonalNoGroupCategory getByIdFromQunLie01(int parseInt);
+    Long getCount(String sql);
+
+    //获取群类别信息
+    PersonalNoGroupCategory getPersonalNoGroupCategory(String[] split);
+
+    Integer add(PersonalNoGroupCategory entity);
+
 }

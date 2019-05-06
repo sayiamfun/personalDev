@@ -4,6 +4,7 @@ package com.warm.system.controller;
 import com.warm.entity.R;
 import com.warm.system.entity.PersonalNo;
 import com.warm.system.service.db1.PersonalNoFriendsService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,8 +48,14 @@ public class PersonalNoUserController {
                 log.info("个人号列表为空");
                 return R.error().message("个人号列表为空");
             }
-            Set<Integer> friendsIdSet = noFriendsService.listByPersonalList(list);
-            return R.ok().data(friendsIdSet.size());
+            String ids = "(";
+            for (PersonalNo personalNo : list) {
+                ids+=personalNo.getId()+",";
+            }
+            ids+="0)";
+            String sql = DaoGetSql.getSql("SELECT COUNT(*) FROM personal_no_friends WHERE `personal_no_id` IN ?", ids);
+            Long count = noFriendsService.getCount(sql);
+            return R.ok().data(count);
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新后重试。。。");

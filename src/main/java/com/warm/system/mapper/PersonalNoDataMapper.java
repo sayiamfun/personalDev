@@ -2,6 +2,7 @@ package com.warm.system.mapper;
 
 import com.warm.system.entity.PersonalNoData;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -16,10 +17,17 @@ import java.util.List;
  */
 public interface PersonalNoDataMapper extends BaseMapper<PersonalNoData> {
 
-    //根据时间查询数据
-    @Select("SELECT id,date,to_people_num,add_friends_num,join_group_num,today_keep,the_rate_of_add_friends,the_rate_of_join_group,global_conversion_rate,the_rate_of_today_keep,task_name,deleted FROM personal_no_data WHERE date = #{tostring} and deleted = 0")
-    List<PersonalNoData> listByDate(String toString);
-    //根据时间和任务查找对应的数据
-    @Select("SELECT id,date,to_people_num,add_friends_num,join_group_num,today_keep,the_rate_of_add_friends,the_rate_of_join_group,global_conversion_rate,the_rate_of_today_keep,task_name,deleted FROM personal_no_data WHERE date = #{param1} and task_name = #{param2} and deleted = 0 LIMIT 0,1")
-    PersonalNoData getByTaskNameAndTime(String date, String taskName);
+    List<PersonalNoData> list(@Param("sql") String sql);
+
+    List<String> listString(@Param("sql") String sql);
+
+    Integer add(@Param("entity") PersonalNoData entity);
+
+    PersonalNoData getOne(@Param("sql") String sql);
+
+    Integer updateOne(@Param("entity")PersonalNoData entity);
+
+    Integer delete(@Param("sql") String sql);
+
+    Long getCount(@Param("sql") String sql);
 }

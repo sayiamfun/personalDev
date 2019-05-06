@@ -3,6 +3,8 @@ package com.warm.system.service.db3;
 import com.warm.system.entity.PersonalNoWxGroup;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface PersonalNoWxGroupService extends IService<PersonalNoWxGroup> {
 
+    List<PersonalNoWxGroup> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoWxGroup getOne(String sql);
+
+    Long getCount(String sql);
 }

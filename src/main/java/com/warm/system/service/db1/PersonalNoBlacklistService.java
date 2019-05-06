@@ -3,6 +3,8 @@ package com.warm.system.service.db1;
 import com.warm.system.entity.PersonalNoBlacklist;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,5 +15,15 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface PersonalNoBlacklistService extends IService<PersonalNoBlacklist> {
 
-    PersonalNoBlacklist getByWxId(String wxId);
+    Integer add(PersonalNoBlacklist entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoBlacklist> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoBlacklist getOne(String sql);
+
+    Long getCount(String sql);
 }

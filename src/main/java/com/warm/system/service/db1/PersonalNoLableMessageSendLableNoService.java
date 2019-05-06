@@ -18,7 +18,15 @@ public interface PersonalNoLableMessageSendLableNoService extends IService<Perso
 
     boolean batchSave(PersonalNoLableMessageSend personalNoLableMessageSend);
 
-    List<PersonalNoLableMessageSendLableNo> listByMessageSendId(Integer id);
+    Integer add(PersonalNoLableMessageSendLableNo entity);
 
-    List<PersonalNoLableMessageSendLableNo> listByPersonalWxId(String username);
+    Integer delete(String sql);
+
+    List<PersonalNoLableMessageSendLableNo> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoLableMessageSendLableNo getOne(String sql);
+
+    Long getCount(String sql);
 }

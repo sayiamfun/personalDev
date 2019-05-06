@@ -1,18 +1,15 @@
 package com.warm.system.controller;
 
 
-import com.baomidou.mybatisplus.plugins.Page;
 
 import com.warm.entity.R;
 import com.warm.entity.query.QueryPersonalData;
 import com.warm.entity.result.ResultPersonalData;
 import com.warm.system.entity.PersonalNoData;
 import com.warm.system.service.db1.PersonalNoDataService;
-import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.models.auth.In;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;

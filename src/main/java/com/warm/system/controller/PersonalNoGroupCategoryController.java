@@ -1,9 +1,17 @@
 package com.warm.system.controller;
 
 
+import com.warm.entity.DB;
 import com.warm.entity.R;
+import com.warm.entity.robot.CreateGroupCategoryEntity;
+import com.warm.entity.robot.GroupCategory;
+import com.warm.entity.robot.ResponseInfo;
 import com.warm.system.entity.PersonalNoGroupCategory;
+import com.warm.system.service.db1.PersonalNoWxUserService;
 import com.warm.system.service.db3.PersonalNoGroupCategoryService;
+import com.warm.utils.DaoGetSql;
+import com.warm.utils.HttpClientUtil;
+import com.warm.utils.JsonObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -12,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,9 +37,15 @@ import java.util.List;
 @RequestMapping("/groupCategory")
 public class PersonalNoGroupCategoryController {
 
+    @Autowired
+    private PersonalNoWxUserService wxUserService;
+
     private static Log log = LogFactory.getLog(PersonalNoGroupCategoryController.class);
+    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP,DB.group_category);
+    private String QUNLIEBIAN = DB.DBAndTable(DB.QUNLIEBINA_01,DB.group_category);
     @Autowired
     private PersonalNoGroupCategoryService groupCategoryService;
+
     @ApiOperation(value = "根据类别集合id查询所有的群类别")
     @GetMapping("/{setId}/{flag}/")
     public R listBySetId(
@@ -42,18 +57,61 @@ public class PersonalNoGroupCategoryController {
     ){
         try {
             log.info("根据群类别集合id查询所有的群类别");
-            List<PersonalNoGroupCategory> groupCategoryList = null;
+            String database = ZCDB;
             switch (flag){
                 case 0:
-                    groupCategoryList = groupCategoryService.listBySetId(setId);
                     break;
                 case 1:
-                    groupCategoryList = groupCategoryService.listBySetIdFromQunLie01(setId);
+                    database = QUNLIEBIAN;
                     break;
             }
-
+            String sql = DaoGetSql.getSql("select * from " + database + " where `group_category_set_id` = ?", setId);
+            List<PersonalNoGroupCategory> list = groupCategoryService.list(sql);
             log.info("根据群类别集合id查询所有的群类别结束");
-            return R.ok().data(groupCategoryList);
+            return R.ok().data(list);
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error().message("网页走丢了，请刷新。。。");
+        }
+    }
+
+    @ApiOperation(value = "添加群类别")
+    @PostMapping("addGroupCategory")
+    public R listBySetId(
+            @RequestBody PersonalNoGroupCategory personalNoGroupCategory
+    ){
+        try {
+            log.info("判断添加的库");
+            System.err.println(personalNoGroupCategory);
+            List<String> personalWxidList = personalNoGroupCategory.getPersonalWxidList();
+            String temp = "";
+            for (String s : personalWxidList) {
+                temp+=s+"||";
+            }
+            GroupCategory groupCategory = new GroupCategory(null,personalNoGroupCategory.getGroupCategorySetId(),personalNoGroupCategory.getCname(),personalNoGroupCategory.getUpLimit(),personalNoGroupCategory.getPrefix(),personalNoGroupCategory.getPostfix(),personalNoGroupCategory.getBeginIndex(),personalNoGroupCategory.getCurrentIndex(),personalNoGroupCategory.getAssistantIds(),personalNoGroupCategory.getFullVerify(),personalNoGroupCategory.getCdescription(),new Date(),temp,null);
+            CreateGroupCategoryEntity createGroupCategoryEntity = new CreateGroupCategoryEntity();
+            createGroupCategoryEntity.group_category_set_id=personalNoGroupCategory.getGroupCategorySetId();
+            createGroupCategoryEntity.group_category = groupCategory;
+            createGroupCategoryEntity.assistantList = personalNoGroupCategory.getAssistantList();
+            String s = HttpClientUtil.sendPost("http://www.youyoudk.cn/SpringBootService/createGroupCategory", JsonObjectUtils.objectToJson(createGroupCategoryEntity));
+            ResponseInfo responseInfo = JsonObjectUtils.jsonToPojo(s, ResponseInfo.class);
+            if(responseInfo.code!=0){
+                return R.error().message("创建失败");
+            }
+            log.info("添加结束");
+            return R.ok().data("");
+        }catch (Exception e){
+            e.printStackTrace();
+            return R.error().message("网页走丢了，请刷新。。。");
+        }
+    }
+
+    @ApiOperation(value = "U助手集合")
+    @PostMapping("listU")
+    public R listU(){
+        try {
+            List<String> list = wxUserService.listByASS(1);
+            return R.ok().data(list);
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新。。。");

@@ -1,13 +1,13 @@
 package com.warm.system.controller;
 
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
-import com.warm.entity.query.QueryPersonal;
 import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoAutoReplayNo;
 import com.warm.system.service.db1.PersonalNoAutoReplayNoService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,9 +15,6 @@ import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -50,7 +47,11 @@ public class PersonalNoAutoReplayNoController {
     ){
         try {
             Page<PersonalNoAutoReplayNo> page = new Page<>(VerifyUtils.setPageNum(pageNum), VerifyUtils.setSize(size));
-            page = autoReplayNoService.pageQuery(page, nickName);
+            String sql = DaoGetSql.getSql("select * from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_auto_replay_no) + " order by id desc limit ?,?", page.getOffset(), page.getLimit());
+            List<PersonalNoAutoReplayNo> list = autoReplayNoService.list(sql);
+            Long count = autoReplayNoService.getCount("select count(*) from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_auto_replay_no));
+            page.setRecords(list);
+            page.setTotal(count.intValue());
             return R.ok().data(page);
         }catch (Exception e){
             e.printStackTrace();
@@ -62,7 +63,11 @@ public class PersonalNoAutoReplayNoController {
     @PostMapping("add")
     public R add(@RequestBody PersonalNo no){
         try {
-            boolean b = autoReplayNoService.insertInfo(no);
+            PersonalNoAutoReplayNo autoReplayNo = new PersonalNoAutoReplayNo();
+            autoReplayNo.setWxId(no.getWxId());
+            autoReplayNo.setNickName(no.getNickname());
+            autoReplayNo.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_auto_replay_no));
+            Integer add = autoReplayNoService.add(autoReplayNo);
             return R.ok().data("");
         }catch (Exception e){
             e.printStackTrace();
@@ -74,7 +79,8 @@ public class PersonalNoAutoReplayNoController {
     @DeleteMapping("delete/{id}/")
     public R deleteById(@PathVariable("id") Integer id){
         try {
-            autoReplayNoService.deleteById(id);
+            String sql = DaoGetSql.getSql("delete from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_auto_replay_no) + " where id = ?", id);
+            autoReplayNoService.delete(sql);
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();

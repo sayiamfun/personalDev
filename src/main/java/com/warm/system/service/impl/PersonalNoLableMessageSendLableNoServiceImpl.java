@@ -1,6 +1,6 @@
 package com.warm.system.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.warm.entity.DB;
 import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoLable;
 import com.warm.system.entity.PersonalNoLableMessageSend;
@@ -31,7 +31,10 @@ public class PersonalNoLableMessageSendLableNoServiceImpl extends ServiceImpl<Pe
     private static Log log = LogFactory.getLog(PersonalNoLableMessageSendLableNoServiceImpl.class);
     @Autowired
     private PersonalNoLableService noLableService;
-    @Autowired PersonalNoLableMessageSendLableNoMapper lableMessageSendLableNoMapper;
+    @Autowired
+    private PersonalNoLableMessageSendLableNoMapper lableMessageSendLableNoMapper;
+
+    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
     /**
      * 批量添加标签消息发送的个人号和标签信息
      * @param personalNoLableMessageSend
@@ -44,6 +47,7 @@ public class PersonalNoLableMessageSendLableNoServiceImpl extends ServiceImpl<Pe
         List<String> lableList = personalNoLableMessageSend.getLableList();
         List<PersonalNo> noList = personalNoLableMessageSend.getNoList();
         if(!VerifyUtils.collectionIsEmpty(noList)){
+            String sql = null;
             for (PersonalNo no : noList) {
                 PersonalNoLableMessageSendLableNo messageSendLableNo = new PersonalNoLableMessageSendLableNo();
                 messageSendLableNo.setPersonalNoLableMessageSendId(personalNoLableMessageSend.getId());
@@ -51,7 +55,8 @@ public class PersonalNoLableMessageSendLableNoServiceImpl extends ServiceImpl<Pe
                 messageSendLableNo.setWxId(no.getWxId());
                 if(!VerifyUtils.collectionIsEmpty(lableList)){
                     for (String s : lableList) {
-                        PersonalNoLable noLable = noLableService.getByName(s);
+                        sql = " select * from "+ZCDB+" where lable_name = '"+s+"' limit 0,1";
+                        PersonalNoLable noLable = noLableService.getOne(sql);
                         if(!VerifyUtils.isEmpty(noLable)) {
                             messageSendLableNo.setLableId(noLable.getId());
                             messageSendLableNo.setLableName(noLable.getLableName());
@@ -70,27 +75,35 @@ public class PersonalNoLableMessageSendLableNoServiceImpl extends ServiceImpl<Pe
         return true;
     }
 
-    /**
-     * 根据标签消息id查找所有消息标签个人号列表
-     * @param id
-     * @return
-     */
     @Override
-    public List<PersonalNoLableMessageSendLableNo> listByMessageSendId(Integer id) {
-        log.info("数据库根据标签消息id查找标签消息标签和个人号");
-        EntityWrapper<PersonalNoLableMessageSendLableNo> entityWrapper = new EntityWrapper<>();
-        entityWrapper.eq("personal_no_lable_message_send_id", id);
-        List<PersonalNoLableMessageSendLableNo> messageSendLableNoList = baseMapper.selectList(entityWrapper);
-        log.info("数据库根据标签消息id查找标签消息标签和个人号结束");
-        return messageSendLableNoList;
+    public Integer add(PersonalNoLableMessageSendLableNo entity) {
+        if(VerifyUtils.isEmpty(entity.getId()))
+            return lableMessageSendLableNoMapper.add(entity);
+        return lableMessageSendLableNoMapper.updateOne(entity);
     }
-    /**
-     * 根据个人号id查询列表
-     * @param username
-     * @return
-     */
+
     @Override
-    public List<PersonalNoLableMessageSendLableNo> listByPersonalWxId(String username) {
-        return lableMessageSendLableNoMapper.listLableMessageIdByPersonalWxId(username);
+    public Integer delete(String sql) {
+        return lableMessageSendLableNoMapper.delete(sql);
+    }
+
+    @Override
+    public List<PersonalNoLableMessageSendLableNo> list(String sql) {
+        return lableMessageSendLableNoMapper.list(sql);
+    }
+
+    @Override
+    public List<String> listString(String sql) {
+        return lableMessageSendLableNoMapper.listString(sql);
+    }
+
+    @Override
+    public PersonalNoLableMessageSendLableNo getOne(String sql) {
+        return lableMessageSendLableNoMapper.getOne(sql);
+    }
+
+    @Override
+    public Long getCount(String sql) {
+        return lableMessageSendLableNoMapper.getCount(sql);
     }
 }

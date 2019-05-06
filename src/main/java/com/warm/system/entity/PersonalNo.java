@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no")
 public class PersonalNo extends Model<PersonalNo> {
 
@@ -98,134 +101,10 @@ public class PersonalNo extends Model<PersonalNo> {
      */
     private Integer deleted;
 
+    @TableField(exist = false)
+    private String db;
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getWxId() {
-        return wxId;
-    }
-
-    public void setWxId(String wxId) {
-        this.wxId = wxId;
-    }
-
-    public String getWxName() {
-        return wxName;
-    }
-
-    public void setWxName(String wxName) {
-        this.wxName = wxName;
-    }
-
-    public String getQrCode() {
-        return qrCode;
-    }
-
-    public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
-    }
-
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public String getEquipmentId() {
-        return equipmentId;
-    }
-
-    public void setEquipmentId(String equipmentId) {
-        this.equipmentId = equipmentId;
-    }
-
-    public Integer getWaitingPassNum() {
-        return waitingPassNum;
-    }
-
-    public void setWaitingPassNum(Integer waitingPassNum) {
-        this.waitingPassNum = waitingPassNum;
-    }
-
-    public Integer getFriendsNum() {
-        return friendsNum;
-    }
-
-    public void setFriendsNum(Integer friendsNum) {
-        this.friendsNum = friendsNum;
-    }
-
-    public String getEquipmentStatus() {
-        return equipmentStatus;
-    }
-
-    public void setEquipmentStatus(String equipmentStatus) {
-        this.equipmentStatus = equipmentStatus;
-    }
-
-    public String getSalesGroup() {
-        return salesGroup;
-    }
-
-    public void setSalesGroup(String salesGroup) {
-        this.salesGroup = salesGroup;
-    }
-
-    public String getPersonalNoCategory() {
-        return personalNoCategory;
-    }
-
-    public void setPersonalNoCategory(String personalNoCategory) {
-        this.personalNoCategory = personalNoCategory;
-    }
-
-    public String getHeadPortraitUrl() {
-        return headPortraitUrl;
-    }
-
-    public void setHeadPortraitUrl(String headPortraitUrl) {
-        this.headPortraitUrl = headPortraitUrl;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Integer getSuperId() {
-        return superId;
-    }
-
-    public void setSuperId(Integer superId) {
-        this.superId = superId;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
 
     @Override
     protected Serializable pkVal() {

@@ -2,6 +2,7 @@ package com.warm.utils;
 
 
 import com.aliyun.oss.OSSClient;
+import com.warm.utils.ImageUpload.TinifyClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,13 @@ public class OSSClientUtil {
         // 上传
         long time = new Date().getTime();
         int i1 = uploadFile.getOriginalFilename().lastIndexOf(".");
-        ossClient.putObject(bucketName, folder + "/" + time + uploadFile.getOriginalFilename().substring(i1), new ByteArrayInputStream(uploadFile.getBytes()));
+        String substring1 = uploadFile.getOriginalFilename().substring(i1);
+        System.err.println(substring1);
+        byte[] bytes = uploadFile.getBytes();
+        if(".jpeg".equals(uploadFile.getOriginalFilename().substring(i1)) || ".png".equals(uploadFile.getOriginalFilename().substring(i1)) || ".jpeg".equals(uploadFile.getOriginalFilename().substring(i1))){
+            bytes = TinifyClient.getbyteImageBybyte(uploadFile.getBytes());
+        }
+        ossClient.putObject(bucketName, folder + "/" + time + substring1, new ByteArrayInputStream(bytes));
         // 关闭client
         ossClient.shutdown();
         Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);

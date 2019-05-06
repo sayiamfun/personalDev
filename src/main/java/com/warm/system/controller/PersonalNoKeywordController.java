@@ -2,9 +2,11 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.system.entity.PersonalNoKeyword;
 import com.warm.system.service.db1.PersonalNoKeywordService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,8 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
@@ -69,8 +69,8 @@ public class PersonalNoKeywordController {
             if(VerifyUtils.isEmpty(keyword)){
                 return R.error().message("添加参数为空");
             }
-            boolean b = keywordService.insertInfo(keyword);
-            if(!b){
+            int b = keywordService.add(keyword);
+            if(b==0){
                 return R.error().message("添加关键词失败");
             }
             return R.ok().data("");
@@ -88,7 +88,9 @@ public class PersonalNoKeywordController {
     ){
         try {
             log.info("根据id获取关键词信息");
-            return R.ok().data(keywordService.getInfoById(keyWordId));
+            String sql = DaoGetSql.getById(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_keyword), keyWordId);
+            PersonalNoKeyword one = keywordService.getOne(sql);
+            return R.ok().data(keywordService.getInfoById(one));
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新。。。");

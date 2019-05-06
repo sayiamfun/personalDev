@@ -61,6 +61,9 @@ public class PersonalNoLableCategory extends Model<PersonalNoLableCategory> {
     @TableField(exist = false)
     private Integer userNum;
 
+    @TableField(exist = false)
+    private String db;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

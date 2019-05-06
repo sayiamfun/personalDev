@@ -16,9 +16,19 @@ import java.util.List;
  */
 public interface PersonalNoLableCategoryService extends IService<PersonalNoLableCategory> {
 
-    List<PersonalNoLableCategory> listByName(String name);
-
     Page<PersonalNoLableCategory> pageList(Page<PersonalNoLableCategory> page, String name);
 
     List<PersonalNoLableCategory> getInfo(List<PersonalNoLableCategory> personalList);
+
+    Integer add(PersonalNoLableCategory entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoLableCategory> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoLableCategory getOne(String sql);
+
+    Long getCount(String sql);
 }

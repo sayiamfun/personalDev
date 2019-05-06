@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoChannelMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoChannel">
+        <id column="id" property="id" />
+        <result column="channel_name" property="channelName" />
+        <result column="super_id" property="superId" />
+        <result column="super_name" property="superName" />
+        <result column="create_time" property="createTime" />
+        <result column="remarks" property="remarks" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoChannel" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,channel_name,super_id,super_name,create_time,remarks)
+        values
+          (#{entity.id},#{entity.channelName},#{entity.superId},#{entity.superName},#{entity.createTime},#{entity.remarks})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoChannel" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.channelName!=null">
+                channel_name = #{entity.channelName},
+            </if>
+            <if test="entity.superId!=null">
+                super_id = #{entity.superId},
+            </if>
+            <if test="entity.superName!=null">
+                super_name = #{entity.superName},
+            </if>
+            <if test="entity.createTime!=null">
+                create_time = #{entity.createTime},
+            </if>
+            <if test="entity.remarks!=null">
+                remarks = #{entity.remarks},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

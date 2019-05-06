@@ -15,6 +15,16 @@ import java.util.List;
  */
 public interface PersonalNoCategoryService extends IService<PersonalNoCategory> {
 
-    List<PersonalNoCategory> listAll();
+    Integer add(PersonalNoCategory entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoCategory> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoCategory getOne(String sql);
+
+    Long getCount(String sql);
 
 }

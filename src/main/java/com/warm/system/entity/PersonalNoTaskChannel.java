@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_task_channel")
 public class PersonalNoTaskChannel extends Model<PersonalNoTaskChannel> {
 
@@ -44,46 +47,11 @@ public class PersonalNoTaskChannel extends Model<PersonalNoTaskChannel> {
      */
     private Integer deleted;
 
+    @TableField("url")
+    private String url;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPersonalNoTaskId() {
-        return personalNoTaskId;
-    }
-
-    public void setPersonalNoTaskId(Integer personalNoTaskId) {
-        this.personalNoTaskId = personalNoTaskId;
-    }
-
-    public Integer getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(Integer channelId) {
-        this.channelId = channelId;
-    }
-
-    public String getChannelName() {
-        return channelName;
-    }
-
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
+    @TableField("road_or_task")
+    private String roadOrTask;
 
     @Override
     protected Serializable pkVal() {

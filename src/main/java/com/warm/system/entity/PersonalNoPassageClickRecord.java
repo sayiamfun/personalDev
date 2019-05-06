@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_passage_click_record")
 public class PersonalNoPassageClickRecord extends Model<PersonalNoPassageClickRecord> {
 
@@ -39,46 +42,8 @@ public class PersonalNoPassageClickRecord extends Model<PersonalNoPassageClickRe
     @TableField("click_time")
     private Date clickTime;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPassageId() {
-        return passageId;
-    }
-
-    public void setPassageId(Integer passageId) {
-        this.passageId = passageId;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
-    }
-
-    public String getRequestInfo() {
-        return requestInfo;
-    }
-
-    public void setRequestInfo(String requestInfo) {
-        this.requestInfo = requestInfo;
-    }
-
-    public Date getClickTime() {
-        return clickTime;
-    }
-
-    public void setClickTime(Date clickTime) {
-        this.clickTime = clickTime;
-    }
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

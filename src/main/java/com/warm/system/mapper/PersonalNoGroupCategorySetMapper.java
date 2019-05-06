@@ -2,6 +2,7 @@ package com.warm.system.mapper;
 
 import com.warm.system.entity.PersonalNoGroupCategorySet;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -16,8 +17,11 @@ import java.util.List;
  */
 public interface PersonalNoGroupCategorySetMapper extends BaseMapper<PersonalNoGroupCategorySet> {
 
-    @Select("SELECT id,sname,sdescription,create_time FROM personal_no_group_category_set ORDER BY id DESC")
-    List<PersonalNoGroupCategorySet> listAll();
-    @Select("SELECT id,sname,sdescription,create_time FROM qunliebian_01.group_category_set ORDER BY id DESC")
-    List<PersonalNoGroupCategorySet> listQunLie01All();
+    List<PersonalNoGroupCategorySet> list(@Param("sql") String sql);
+
+    List<String> listString(@Param("sql") String sql);
+
+    PersonalNoGroupCategorySet getOne(@Param("sql") String sql);
+
+    Long getCount(@Param("sql") String sql);
 }

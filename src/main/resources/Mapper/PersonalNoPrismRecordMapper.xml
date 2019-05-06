@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoPrismRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoPrismRecord">
+        <id column="id" property="id" />
+        <result column="beta_type" property="betaType" />
+        <result column="by_owner" property="byOwner" />
+        <result column="by_qrcode" property="byQrcode" />
+        <result column="chatroom" property="chatroom" />
+        <result column="content" property="content" />
+        <result column="create_time" property="createTime" />
+        <result column="ext_content" property="extContent" />
+        <result column="from_nickname" property="fromNickname" />
+        <result column="is_reporter_mentioned" property="isReporterMentioned" />
+        <result column="is_robot_mentioned" property="isRobotMentioned" />
+        <result column="is_sent" property="isSent" />
+        <result column="logic_id" property="logicId" />
+        <result column="md5" property="md5" />
+        <result column="package_id" property="packageId" />
+        <result column="to_user_type" property="toUserType" />
+        <result column="to_user_name_list" property="toUserNameList" />
+        <result column="type" property="type" />
+        <result column="unit" property="unit" />
+        <result column="we_chatmsg_type" property="weChatmsgType" />
+        <result column="whatever" property="whatever" />
+        <result column="from_username" property="fromUsername" />
+        <result column="report_logic_id" property="reportLogicId" />
+        <result column="report_internet_ip" property="reportInternetIp" />
+        <result column="report_time" property="reportTime" />
+        <result column="get_logic_id" property="getLogicId" />
+        <result column="get_internet_ip" property="getInternetIp" />
+        <result column="get_time" property="getTime" />
+    </resultMap>
+
+</mapper>

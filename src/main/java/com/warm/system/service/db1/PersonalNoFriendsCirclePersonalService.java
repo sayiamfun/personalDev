@@ -16,7 +16,17 @@ import java.util.List;
  */
 public interface PersonalNoFriendsCirclePersonalService extends IService<PersonalNoFriendsCirclePersonal> {
 
-    List<PersonalNoFriendsCirclePersonal> listByCircleId(Integer id);
-
     boolean batchSave(PersonalNoFriendsCircle noFriendsCircle);
+
+    Integer add(PersonalNoFriendsCirclePersonal entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoFriendsCirclePersonal> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoFriendsCirclePersonal getOne(String sql);
+
+    Long getCount(String sql);
 }

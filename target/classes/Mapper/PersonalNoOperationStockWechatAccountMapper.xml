@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoOperationStockWechatAccountMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoOperationStockWechatAccount">
+        <id column="id" property="id" />
+        <result column="asset_id" property="assetId" />
+        <result column="wx_buy_id" property="wxBuyId" />
+        <result column="wx_id" property="wxId" />
+        <result column="wx_id_bie_ming" property="wxIdBieMing" />
+        <result column="assign_phone" property="assignPhone" />
+        <result column="email" property="email" />
+        <result column="id_card" property="idCard" />
+        <result column="yin_hang_ka" property="yinHangKa" />
+        <result column="nick_name" property="nickName" />
+        <result column="sex" property="sex" />
+        <result column="province" property="province" />
+        <result column="country" property="country" />
+        <result column="city" property="city" />
+        <result column="area" property="area" />
+        <result column="whats_up" property="whatsUp" />
+        <result column="qr_code" property="qrCode" />
+        <result column="avatar" property="avatar" />
+        <result column="is_have_realname" property="isHaveRealname" />
+        <result column="is_slient_download" property="isSlientDownload" />
+        <result column="operation_project_instance_id" property="operationProjectInstanceId" />
+        <result column="wx_class" property="wxClass" />
+        <result column="phone_stock_id" property="phoneStockId" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="password" property="password" />
+        <result column="wx_login_time" property="wxLoginTime" />
+        <result column="project_instance_reg_time" property="projectInstanceRegTime" />
+        <result column="last_request_job_time" property="lastRequestJobTime" />
+        <result column="last_finished_job_time" property="lastFinishedJobTime" />
+        <result column="last_connect_time" property="lastConnectTime" />
+        <result column="last_update_local_ip" property="lastUpdateLocalIp" />
+        <result column="last_connect_internet_ip" property="lastConnectInternetIp" />
+        <result column="click_id" property="clickId" />
+        <result column="current_client_wehook_version" property="currentClientWehookVersion" />
+        <result column="current_client_wechat_version" property="currentClientWechatVersion" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoOperationStockWechatAccount" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,asset_id,wx_buy_id,wx_id,wx_id_bie_ming,assign_phone,email,id_card,yin_hang_ka,nick_name,sex,province,country,city,area,whats_up,qr_code,avatar,is_have_realname,is_slient_download
+          ,operation_project_instance_id,wx_class,phone_stock_id,status,remark,password,wx_login_time,project_instance_reg_time,last_request_job_time,last_finished_job_time,last_connect_time,last_update_local_ip
+          ,last_connect_internet_ip,click_id,current_client_wehook_version,current_client_wechat_version)
+        values
+          (#{entity.id},#{entity.assetId},#{entity.wxBuyId},#{entity.wxId},#{entity.wxIdBieMing},#{entity.assignPhone},#{entity.email},#{entity.idCard},#{entity.yinHangKa},#{entity.nickName},#{entity.sex}
+          ,#{entity.province},#{entity.country},#{entity.city},#{entity.area},#{entity.whatsUp},#{entity.qrCode},#{entity.avatar},#{entity.isHaveRealname},#{entity.isSlientDownload},#{entity.operationProjectInstanceId}
+          ,#{entity.wxClass},#{entity.phoneStockId},#{entity.status},#{entity.remark},#{entity.password},#{entity.wxLoginTime},#{entity.projectInstanceRegTime},#{entity.lastRequestJobTime},#{entity.lastFinishedJobTime}
+          ,#{entity.lastConnectTime},#{entity.lastUpdateLocalIp},#{entity.lastConnectInternetIp},#{entity.clickId},#{entity.currentClientWehookVersion},#{entity.currentClientWechatVersion})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoOperationStockWechatAccount" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.assetId!=null">
+                asset_id = #{entity.assetId},
+            </if>
+            <if test="entity.currentClientWechatVersion!=null">
+                current_client_wechat_version = #{entity.currentClientWechatVersion},
+            </if>
+            <if test="entity.currentClientWehookVersion!=null">
+                current_client_wehook_version = #{entity.currentClientWehookVersion},
+            </if>
+            <if test="entity.clickId!=null">
+                click_id = #{entity.clickId},
+            </if>
+            <if test="entity.lastConnectInternetIp!=null">
+                last_connect_internet_ip = #{entity.lastConnectInternetIp},
+            </if>
+            <if test="entity.lastUpdateLocalIp!=null">
+                last_update_local_ip = #{entity.lastUpdateLocalIp},
+            </if>
+            <if test="entity.lastConnectTime!=null">
+                last_connect_time = #{entity.lastConnectTime},
+            </if>
+            <if test="entity.lastFinishedJobTime!=null">
+                last_finished_job_time = #{entity.lastFinishedJobTime},
+            </if>
+            <if test="entity.lastRequestJobTime!=null">
+                last_request_job_time = #{entity.lastRequestJobTime},
+            </if>
+            <if test="entity.projectInstanceRegTime!=null">
+                project_instance_reg_time = #{entity.projectInstanceRegTime},
+            </if>
+            <if test="entity.wxBuyId!=null">
+                wx_buy_id = #{entity.wxBuyId},
+            </if>
+            <if test="entity.wxId!=null">
+                wx_id = #{entity.wxId},
+            </if>
+            <if test="entity.wxIdBieMing!=null">
+                wx_id_bie_ming = #{entity.wxIdBieMing},
+            </if>
+            <if test="entity.assignPhone!=null">
+                assign_phone = #{entity.assignPhone},
+            </if>
+            <if test="entity.email!=null">
+                email = #{entity.email},
+            </if>
+            <if test="entity.idCard!=null">
+                id_card = #{entity.idCard},
+            </if>
+            <if test="entity.yinHangKa!=null">
+                yin_hang_ka = #{entity.yinHangKa},
+            </if>
+            <if test="entity.nickName!=null">
+                nick_name = #{entity.nickName},
+            </if>
+            <if test="entity.sex!=null">
+                sex = #{entity.sex},
+            </if>
+            <if test="entity.province!=null">
+                province = #{entity.province},
+            </if>
+            <if test="entity.country!=null">
+                country = #{entity.country},
+            </if>
+            <if test="entity.city!=null">
+                city = #{entity.city},
+            </if>
+            <if test="entity.area!=null">
+                area = #{entity.area},
+            </if>
+            <if test="entity.whatsUp!=null">
+                whats_up = #{entity.whatsUp},
+            </if>
+            <if test="entity.qrCode!=null">
+                qr_code = #{entity.qrCode},
+            </if>
+            <if test="entity.avatar!=null">
+                avatar = #{entity.avatar},
+            </if>
+            <if test="entity.isHaveRealname!=null">
+                is_have_realname = #{entity.isHaveRealname},
+            </if>
+            <if test="entity.isSlientDownload!=null">
+                is_slient_download = #{entity.isSlientDownload},
+            </if>
+            <if test="entity.operationProjectInstanceId!=null">
+                operation_project_instance_id = #{entity.operationProjectInstanceId},
+            </if>
+            <if test="entity.wxClass!=null">
+                wx_class = #{entity.wxClass},
+            </if>
+            <if test="entity.phoneStockId!=null">
+                phone_stock_id = #{entity.phoneStockId},
+            </if>
+            <if test="entity.status!=null">
+                status = #{entity.status},
+            </if>
+            <if test="entity.remark!=null">
+                remark = #{entity.remark},
+            </if>
+            <if test="entity.password!=null">
+                password = #{entity.password},
+            </if>
+            <if test="entity.wxLoginTime!=null">
+                wx_login_time = #{entity.wxLoginTime},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

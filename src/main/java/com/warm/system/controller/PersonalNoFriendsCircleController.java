@@ -2,7 +2,7 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
-import com.warm.entity.PageResult;
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.query.QueryFriendsCircle;
 import com.warm.system.entity.PersonalNoFriendsCircle;
@@ -11,7 +11,9 @@ import com.warm.system.entity.PersonalNoFriendsCirclePhoto;
 import com.warm.system.service.db1.PersonalNoFriendsCirclePersonalService;
 import com.warm.system.service.db1.PersonalNoFriendsCirclePhotoService;
 import com.warm.system.service.db1.PersonalNoFriendsCircleService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
+import com.warm.utils.WebConst;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -21,7 +23,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
@@ -51,10 +52,13 @@ public class PersonalNoFriendsCircleController {
     public R list(){
         try {
             log.info("开始查询所有朋友圈");
-            List<PersonalNoFriendsCircle> personalList = noFriendsCircleService.selectList(null);
+            String sql = "";
+            sql = DaoGetSql.listAll(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_photo), "desc");
+            List<PersonalNoFriendsCircle> personalList = noFriendsCircleService.list(sql);
             log.info("根据朋友圈id查询对应的个人号数量");
             for (PersonalNoFriendsCircle noFriendsCircle : personalList) {
-                List<PersonalNoFriendsCirclePersonal> personals = noFriendsCirclePersonalService.listByCircleId(noFriendsCircle.getId());
+                sql = DaoGetSql.getSql("select * from "+ DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal) + " where friends_circle_id = ?",noFriendsCircle.getId());
+                List<PersonalNoFriendsCirclePersonal> personals = noFriendsCirclePersonalService.list(sql);
                 noFriendsCircle.setPersonalNum(personals==null?0:personals.size());
             }
             log.info("查询成功返回数据列表");
@@ -83,10 +87,13 @@ public class PersonalNoFriendsCircleController {
             Page<PersonalNoFriendsCircle> page = new Page<>(VerifyUtils.setPageNum(pageNum), VerifyUtils.setSize(size));
             page = noFriendsCircleService.pageQuery(page, searchObj);
             log.info("根据朋友圈id查询对应的个人号数量，朋友圈图片列表");
+            String sql = "";
             for (PersonalNoFriendsCircle noFriendsCircle : page.getRecords()) {
-                List<PersonalNoFriendsCirclePersonal> personals = noFriendsCirclePersonalService.listByCircleId(noFriendsCircle.getId());
+                sql = DaoGetSql.getSql("select * from "+ DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal) + " where friends_circle_id = ?",noFriendsCircle.getId());
+                List<PersonalNoFriendsCirclePersonal> personals = noFriendsCirclePersonalService.list(sql);
                 noFriendsCircle.setPersonalNum(personals.size());
-                List<PersonalNoFriendsCirclePhoto> photoList = circlePhotoService.listByCircleId(noFriendsCircle.getId());
+                sql = DaoGetSql.getSql("select * from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_photo)+" where `friends_circle_id` = ?",noFriendsCircle.getId());
+                List<PersonalNoFriendsCirclePhoto> photoList = circlePhotoService.list(sql);
                 noFriendsCircle.setPhotoList(photoList);
             }
             if(!VerifyUtils.collectionIsEmpty(page.getRecords())){
@@ -136,8 +143,10 @@ public class PersonalNoFriendsCircleController {
     ){
         try {
             log.info("添加朋友圈信息开始");
-            boolean result =  noFriendsCircleService.insertNoFriendCircle(noFriendsCircle);
-            if(!result){
+            Object attribute = request.getAttribute(WebConst.SUPERUSERID);
+            noFriendsCircle.setSuperId(Integer.valueOf(attribute.toString()));
+            int result =  noFriendsCircleService.add(noFriendsCircle);
+            if(result==0){
                 log.info("添加朋友圈信息失败");
                 return R.error().message("新增朋友圈失败");
             }

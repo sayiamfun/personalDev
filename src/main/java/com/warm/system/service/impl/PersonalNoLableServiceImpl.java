@@ -33,9 +33,7 @@ import java.util.*;
 public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMapper, PersonalNoLable> implements PersonalNoLableService {
     private static Log log = LogFactory.getLog(PersonalNoLableServiceImpl.class);
     @Autowired
-    private PersonalNoService noService;
-    @Autowired
-    private PersonalNoUserService userService;
+    private PersonalNoLableMapper personalNoLableMapper;
     @Autowired
     private PersonalNoTaskPersonalService taskPersonalService;
     @Autowired
@@ -43,26 +41,7 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
     @Autowired
     private PersonalNoPeopleService noPeopleService;
 
-    /*
-     * 根据类别查找标签列表
-     */
-    @Override
-    public List<PersonalNoLable> listByCategory(String category) {
-        List<PersonalNoLable> list = new ArrayList<>();
-        log.info("判断要查找的类别参数是否为空");
-        EntityWrapper<PersonalNoLable> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        if(VerifyUtils.isEmpty(category)){
-            log.info("参数为空,查找全部");
-            list = baseMapper.selectList(null);
-        }else{
-            log.info("参数不为空,根据类别查找");
-            entityWrapper.eq("lable_category" , category);
-            list = baseMapper.selectList(entityWrapper);
-        }
-        log.info("从数据库根据类别查找标签成功");
-        return list;
-    }
+
     /*
      * 分页查询标签
      */
@@ -160,18 +139,6 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
         return true;
     }
 
-    /**
-     * 根据标签名称查询模糊查询类别名称
-     * @param lableName
-     * @return
-     */
-    @Override
-    public List<PersonalNoLable> listByLableName(String lableName) {
-        EntityWrapper<PersonalNoLable> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        entityWrapper.like("lable_name", lableName);
-        return baseMapper.selectList(entityWrapper);
-    }
 
     /**
      * 根据个人号集合查找标签
@@ -205,22 +172,35 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
         log.info("数据库根据个人号集合查询标签集合结束");
         return lableNameSet;
     }
-
-    /**
-     * 根据标签名查找标签
-     * @param s
-     * @return
-     */
     @Override
-    public PersonalNoLable getByName(String s) {
-        EntityWrapper<PersonalNoLable> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        entityWrapper.eq("lable_name", s);
-        PersonalNoLable noLable = null;
-        List<PersonalNoLable> personalNoLables = baseMapper.selectList(entityWrapper);
-        if(!VerifyUtils.collectionIsEmpty(personalNoLables)){
-            noLable = personalNoLables.get(0);
-        }
-        return noLable;
+    public Integer add(PersonalNoLable entity) {
+        if(VerifyUtils.isEmpty(entity.getId()))
+            return personalNoLableMapper.add(entity);
+        return personalNoLableMapper.updateOne(entity);
+    }
+
+    @Override
+    public Integer delete(String sql) {
+        return personalNoLableMapper.delete(sql);
+    }
+
+    @Override
+    public List<PersonalNoLable> list(String sql) {
+        return personalNoLableMapper.list(sql);
+    }
+
+    @Override
+    public List<String> listString(String sql) {
+        return personalNoLableMapper.listString(sql);
+    }
+
+    @Override
+    public PersonalNoLable getOne(String sql) {
+        return personalNoLableMapper.getOne(sql);
+    }
+
+    @Override
+    public Long getCount(String sql) {
+        return personalNoLableMapper.getCount(sql);
     }
 }

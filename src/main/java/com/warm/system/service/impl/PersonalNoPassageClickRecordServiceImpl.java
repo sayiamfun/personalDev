@@ -4,11 +4,11 @@ import com.warm.system.entity.PersonalNoPassageClickRecord;
 import com.warm.system.mapper.PersonalNoPassageClickRecordMapper;
 import com.warm.system.service.db1.PersonalNoPassageClickRecordService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import com.warm.utils.WebConst;
+import com.warm.utils.VerifyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -22,14 +22,36 @@ import java.util.Date;
 public class PersonalNoPassageClickRecordServiceImpl extends ServiceImpl<PersonalNoPassageClickRecordMapper, PersonalNoPassageClickRecord> implements PersonalNoPassageClickRecordService {
     @Autowired
     private PersonalNoPassageClickRecordMapper passageClickRecordMapper;
-    /**
-     * 查询最近十分钟之内是否存在此ip
-     * @param ipAddress
-     * @param date
-     * @return
-     */
+
     @Override
-    public PersonalNoPassageClickRecord getByIpAndTime(String ipAddress, Date date) {
-        return passageClickRecordMapper.getByIpAndTime(ipAddress, WebConst.getNowDate(new Date(date.getTime()-20*60*1000)), WebConst.getNowDate(new Date(date.getTime()+60*1000)));
+    public Integer add(PersonalNoPassageClickRecord entity) {
+        if(VerifyUtils.isEmpty(entity.getId()))
+            return passageClickRecordMapper.add(entity);
+        return passageClickRecordMapper.updateOne(entity);
+    }
+
+    @Override
+    public Integer delete(String sql) {
+        return passageClickRecordMapper.delete(sql);
+    }
+
+    @Override
+    public List<PersonalNoPassageClickRecord> list(String sql) {
+        return passageClickRecordMapper.list(sql);
+    }
+
+    @Override
+    public List<String> listString(String sql) {
+        return passageClickRecordMapper.listString(sql);
+    }
+
+    @Override
+    public PersonalNoPassageClickRecord getOne(String sql) {
+        return passageClickRecordMapper.getOne(sql);
+    }
+
+    @Override
+    public Long getCount(String sql) {
+        return passageClickRecordMapper.getCount(sql);
     }
 }

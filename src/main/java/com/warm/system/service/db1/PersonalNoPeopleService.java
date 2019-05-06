@@ -22,27 +22,17 @@ public interface PersonalNoPeopleService extends IService<PersonalNoPeople> {
 
     Set<LableShow> listByPersonalIdAndTaskId(Set<LableShow> noSet, List<PersonalNoTaskLable> taskLableList);
 
-    Set<String> getByNoListAndLableNameList(PeopleNumReq peopleNumReq);
+    List<String> getByNoListAndLableNameList(PeopleNumReq peopleNumReq);
 
-    List<String> listUserWxIdByTaskIdAndPersonalWxId(Integer taskId, String username, Date startTime, Date endTime);
+    Integer add(PersonalNoPeople entity);
 
-    List<String> listUserWxIdByPersonalWxId(String wxId, Date startTime, Date endTime);
+    Integer delete(String sql);
 
-    PersonalNoPeople getByPersonalIdAndUserId(String wxId, String username, Integer flag);
+    List<PersonalNoPeople> list(String sql);
 
-    List<PersonalNoPeople> getByPersonalWxIdAndUserName(String wxId, String nickname);
+    List<String> listString(String sql);
 
-    PersonalNoPeople getByTaskIdAndUserNickName(int parseInt, String nickname);
+    PersonalNoPeople getOne(String sql);
 
-    Integer getPeopleCountByTaskId(Integer personaNoTaskId);
-
-    List<Integer> listIdByPersonalWxIdAndUserWxId(String username, String userWxId);
-
-    PersonalNoPeople getByPersonalWxIdAndUserWxId(String username, String userWxId);
-
-    PersonalNoPeople getByTaskIdAndUserWxId(int parseInt, String wxId);
-
-    List<PersonalNoPeople> ListByTaskIdAndPersonalWxId(Integer taskId, String personalNoWxId);
-
-    List<PersonalNoPeople> listByTaskIdAndTime(Integer id, Date date, Date datTaskDate);
+    Long getCount(String sql);
 }

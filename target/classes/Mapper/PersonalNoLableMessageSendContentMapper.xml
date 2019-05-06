@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoLableMessageSendContentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoLableMessageSendContent">
+        <id column="id" property="id" />
+        <result column="personal_no_lable_message_send_id" property="personalNoLableMessageSendId" />
+        <result column="content_type" property="contentType" />
+        <result column="content" property="content" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoLableMessageSendContent" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,personal_no_lable_message_send_id,content_type,content)
+        values
+          (#{entity.id},#{entity.personalNoLableMessageSendId},#{entity.contentType},#{entity.content})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoLableMessageSendContent" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personalNoLableMessageSendId!=null">
+                personal_no_lable_message_send_id = #{entity.personalNoLableMessageSendId},
+            </if>
+            <if test="entity.contentType!=null">
+                content_type = #{entity.contentType},
+            </if>
+            <if test="entity.content!=null">
+                content = #{entity.content},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

@@ -1,6 +1,7 @@
 package com.warm.utils;
 
 
+import com.warm.entity.DB;
 import com.warm.system.entity.*;
 import com.warm.system.service.db1.*;
 import org.apache.commons.logging.Log;
@@ -12,6 +13,9 @@ import java.util.Map;
 
 public class TaskUtiles {
     public static Log log = LogFactory.getLog(TaskUtiles.class);
+
+    private static String ZCDBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
+    private static String ZCDBPeople = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_people);
 
     //下发任务
     public static Map<String, Object> getMap(PersonalNoPeopleService peopleService, PersonalNoPhoneTaskGroupService taskGroupService, PersonalNoTaskService noTaskService, PersonalNoPhoneTaskService taskService, PersonalNoKeywordService keywordService) {
@@ -28,7 +32,8 @@ public class TaskUtiles {
         PersonalNoPeopleService peopleService = (PersonalNoPeopleService) map.get("peopleService");
         log.info("根据任务id获取要发送的任务信息");
         if(VerifyUtils.isEmpty(taskId)){
-            PersonalNoPeople people = peopleService.getByPersonalWxIdAndUserWxId(personalWxId, userWxId);
+            String sql = DaoGetSql.getSql("SELECT id,personal_friend_wx_id,personal_task_id,personal_no_wx_id,channel_id,flag,be_friend_time,remarks,personal_friend_nick_name,deleted FROM " + ZCDBPeople + " WHERE personal_no_wx_id = ? and personal_friend_wx_id = ? and deleted = 0 order by id desc LIMIT 0,1", personalWxId, userWxId);
+            PersonalNoPeople people = peopleService.getOne(sql);
             if(!VerifyUtils.isEmpty(people)) {
                 insertTaskGroup(people.getPersonalNoWxId(), people.getPersonalFriendWxId(), map, people.getPersonalTaskId(), time);
             }
@@ -52,8 +57,9 @@ public class TaskUtiles {
             taskGroup.setTname(personalWxId + "发送回复消息" + userWxId);
             taskGroup.setCurrentRobotId(personalWxId);
             taskGroup.setTotalStep(taskById.getNoTaskReplyContentList().size());
-            boolean save = taskGroupService.insert(taskGroup);
-            if (save) {
+            taskGroup.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group));
+            int save = taskGroupService.add(taskGroup);
+            if (save != 0) {
                 log.info("开始添加任务");
                 for (int j = 0; j < taskById.getNoTaskReplyContentList().size(); j++) {
                     PersonalNoPhoneTask task = new PersonalNoPhoneTask();
@@ -78,8 +84,9 @@ public class TaskUtiles {
                         task.setRobotId(userWxId);
                         task.setCreateTime(new Date());
                     }
-                    boolean save1 = taskService.insert(task);
-                    if (!save1) {
+                    task.setDb(ZCDBTask);
+                    int save1 = taskService.add(task);
+                    if (save1 == 0) {
                         log.info("插入任务失败");
                         throw new RuntimeException("插入任务失败");
                     }
@@ -92,7 +99,9 @@ public class TaskUtiles {
         PersonalNoKeywordService keywordService = (PersonalNoKeywordService) map.get("keywordService");
         PersonalNoPhoneTaskGroupService taskGroupService = (PersonalNoPhoneTaskGroupService) map.get("taskGroupService");
         PersonalNoPhoneTaskService taskService = (PersonalNoPhoneTaskService) map.get("TaskService");
-        PersonalNoKeyword infoById = keywordService.getInfoById(i);
+        String sql = DaoGetSql.getById(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_keyword), i);
+        PersonalNoKeyword one = keywordService.getOne(sql);
+        PersonalNoKeyword infoById = keywordService.getInfoById(one);
         if(VerifyUtils.isEmpty(infoById)){
             return;
         }
@@ -105,8 +114,9 @@ public class TaskUtiles {
         taskGroup.setTname(s + "发送问候消息" + fromUsername);
         taskGroup.setCurrentRobotId(s);
         taskGroup.setTotalStep(infoById.getKeywordContentList().size());
-        boolean save = taskGroupService.insert(taskGroup);
-        if (save) {
+        taskGroup.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group));
+        int save = taskGroupService.add(taskGroup);
+        if (save!=0) {
             log.info("开始添加任务");
             for (int j = 0; j < infoById.getKeywordContentList().size(); j++) {
                 PersonalNoPhoneTask task = new PersonalNoPhoneTask();
@@ -131,8 +141,9 @@ public class TaskUtiles {
                     task.setRobotId(fromUsername);
                     task.setCreateTime(new Date());
                 }
-                boolean save1 = taskService.insert(task);
-                if (!save1) {
+                task.setDb(ZCDBTask);
+                int save1 = taskService.add(task);
+                if (save1 == 0) {
                     log.info("插入任务失败");
                     throw new RuntimeException("插入任务失败");
                 }
@@ -161,8 +172,9 @@ public class TaskUtiles {
             taskGroup.setTname(personalNoWxId + "发送开课提醒消息" + personalFriendWxId);
             taskGroup.setCurrentRobotId(personalNoWxId);
             taskGroup.setTotalStep(taskById.getNoTaskBeginRemindList().size());
-            boolean save = taskGroupService.insert(taskGroup);
-            if (save) {
+            taskGroup.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group));
+            int save = taskGroupService.add(taskGroup);
+            if (save!= 0) {
                 log.info("开始添加任务");
                 for (int j = 0; j < taskById.getNoTaskBeginRemindList().size(); j++) {
                     PersonalNoPhoneTask task = new PersonalNoPhoneTask();
@@ -187,8 +199,9 @@ public class TaskUtiles {
                         task.setCreateTime(new Date());
                         task.setStatus("未下发");
                     }
-                    boolean save1 = taskService.insert(task);
-                    if (!save1) {
+                    task.setDb(ZCDBTask);
+                    int save1 = taskService.add(task);
+                    if (save1 == 0) {
                         log.info("插入任务失败");
                         throw new RuntimeException("插入任务失败");
                     }

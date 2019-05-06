@@ -5,6 +5,8 @@ import com.warm.entity.query.QueryFriendsCircle;
 import com.warm.system.entity.PersonalNoFriendsCircle;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -17,7 +19,17 @@ public interface PersonalNoFriendsCircleService extends IService<PersonalNoFrien
 
     Page<PersonalNoFriendsCircle> pageQuery(Page<PersonalNoFriendsCircle> page, QueryFriendsCircle searchObj);
 
-    PersonalNoFriendsCircle getCircleById(Integer id);
+    Integer add(PersonalNoFriendsCircle entity);
 
-    boolean insertNoFriendCircle(PersonalNoFriendsCircle noFriendsCircle);
+    Integer delete(String sql);
+
+    List<PersonalNoFriendsCircle> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoFriendsCircle getOne(String sql);
+
+    Long getCount(String sql);
+
+    PersonalNoFriendsCircle getCircleById(Integer id);
 }

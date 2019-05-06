@@ -33,7 +33,6 @@ public class PersonalNoTaskReplyContentServiceImpl extends ServiceImpl<PersonalN
     public List<PersonalNoTaskReplyContent> getListByTaskId(Integer id) {
         log.info("根据任务id查询任务回复内容列表开始");
         EntityWrapper<PersonalNoTaskReplyContent> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
         entityWrapper.eq("personal_no_task_id" , id);
         List<PersonalNoTaskReplyContent> replyContentList = baseMapper.selectList(entityWrapper);
         log.info("根据任务id查询任务回复内容列表结束");

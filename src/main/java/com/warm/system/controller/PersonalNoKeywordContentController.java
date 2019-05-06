@@ -1,6 +1,7 @@
 package com.warm.system.controller;
 
 
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.system.entity.PersonalNoKeywordContent;
 import com.warm.system.service.db1.PersonalNoKeywordContentService;
@@ -12,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
 
 import java.util.List;
 
@@ -32,6 +32,7 @@ public class PersonalNoKeywordContentController {
     private static Log log = LogFactory.getLog(PersonalNoKeywordContentController.class);
     @Autowired
     private PersonalNoKeywordContentService keywordContentService;
+    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_keyword_content);
 
     @ApiOperation(value = "根据关键词id查询内容")
     @GetMapping("/{keyWordId}/")
@@ -40,8 +41,9 @@ public class PersonalNoKeywordContentController {
             @PathVariable("keyWordId") Integer keyWordId
     ){
         try {
-            log.info("开始查询对应个人号的好友列表");
-            List<PersonalNoKeywordContent> personalNoKeywordContents = keywordContentService.listByKeywordId(keyWordId);
+            log.info("根据关键词id查询关键词内容");
+            String sql = "select * from "+ZCDB+" where personal_no_keyword_id = "+keyWordId;
+            List<PersonalNoKeywordContent> personalNoKeywordContents = keywordContentService.list(sql);
             return R.ok().data(personalNoKeywordContents);
         }catch (Exception e){
             e.printStackTrace();

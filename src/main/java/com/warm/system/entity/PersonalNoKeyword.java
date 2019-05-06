@@ -43,6 +43,21 @@ public class PersonalNoKeyword extends Model<PersonalNoKeyword> {
     @TableField(exist = false)
     private String keywordContentShow;
 
+    @TableField(exist = false)
+    private List<Integer> personalIdList;
+
+    @TableField(exist = false)
+    private List<PersonalNo> personalList;
+
+    @TableField(exist = false)
+    private String nickNames;
+
+    @TableField(exist = false)
+    private String groupName;
+
+    @TableField(exist = false)
+    private String db;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

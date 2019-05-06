@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoLableMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoLable">
+        <id column="id" property="id" />
+        <result column="lable_name" property="lableName" />
+        <result column="lable_category" property="lableCategory" />
+        <result column="super_id" property="superId" />
+        <result column="create_time" property="createTime" />
+        <result column="remarks" property="remarks" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoLable" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,name,age,super_id,create_time,remarks)
+        values
+          (#{entity.id},#{entity.lableName},#{entity.lableCategory},#{entity.superId},#{entity.createTime},#{entity.remarks})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoLable" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.lableName!=null">
+                lable_name = #{entity.lableName},
+            </if>
+            <if test="entity.lableCategory!=null">
+                lable_category = #{entity.lableCategory},
+            </if>
+            <if test="entity.superId!=null">
+                super_id = #{entity.superId},
+            </if>
+            <if test="entity.createTime!=null">
+                create_time = #{entity.createTime},
+            </if>
+            <if test="entity.remarks!=null">
+                remarks = #{entity.remarks},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

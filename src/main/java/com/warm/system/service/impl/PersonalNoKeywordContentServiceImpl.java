@@ -4,6 +4,7 @@ import com.warm.system.entity.PersonalNoKeywordContent;
 import com.warm.system.mapper.PersonalNoKeywordContentMapper;
 import com.warm.system.service.db1.PersonalNoKeywordContentService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.utils.VerifyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,22 +22,36 @@ import java.util.List;
 public class PersonalNoKeywordContentServiceImpl extends ServiceImpl<PersonalNoKeywordContentMapper, PersonalNoKeywordContent> implements PersonalNoKeywordContentService {
     @Autowired
     private PersonalNoKeywordContentMapper keywordContentMapper;
-    /**
-     * 根据关键词id获取关键词内容
-     * @param id
-     * @return
-     */
+
     @Override
-    public List<PersonalNoKeywordContent> listByKeywordId(Integer id) {
-        return keywordContentMapper.listByKeywordId(id);
+    public Integer add(PersonalNoKeywordContent entity) {
+        if(VerifyUtils.isEmpty(entity.getId()))
+            return keywordContentMapper.add(entity);
+        return keywordContentMapper.updateOne(entity);
     }
 
-    /**
-     * 根据关键词id删除内容
-     * @param id
-     */
     @Override
-    public void deleteByKeyWordId(Integer id) {
-        keywordContentMapper.deleteByKeyWordId(id);
+    public Integer delete(String sql) {
+        return keywordContentMapper.delete(sql);
+    }
+
+    @Override
+    public List<PersonalNoKeywordContent> list(String sql) {
+        return keywordContentMapper.list(sql);
+    }
+
+    @Override
+    public List<String> listString(String sql) {
+        return keywordContentMapper.listString(sql);
+    }
+
+    @Override
+    public PersonalNoKeywordContent getOne(String sql) {
+        return keywordContentMapper.getOne(sql);
+    }
+
+    @Override
+    public Long getCount(String sql) {
+        return keywordContentMapper.getCount(sql);
     }
 }

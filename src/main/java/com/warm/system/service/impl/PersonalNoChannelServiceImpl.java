@@ -6,6 +6,7 @@ import com.warm.system.entity.PersonalNoChannel;
 import com.warm.system.mapper.PersonalNoChannelMapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.warm.system.service.db1.PersonalNoChannelService;
+import com.warm.utils.VerifyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,23 +25,37 @@ import java.util.List;
 public class PersonalNoChannelServiceImpl extends ServiceImpl<PersonalNoChannelMapper, PersonalNoChannel> implements PersonalNoChannelService {
     @Autowired
     private PersonalNoChannelMapper personalNoChannelMapper;
+
+
     @Override
-    public Page<PersonalNoChannel> pageQuery(Page<PersonalNoChannel> page, Object o) {
-        EntityWrapper<PersonalNoChannel> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        List<PersonalNoChannel> personalNoChannels = baseMapper.selectPage(page, entityWrapper);
-        page.setRecords(personalNoChannels);
-        return page;
+    public Integer add(PersonalNoChannel entity) {
+        if(VerifyUtils.isEmpty(entity.getId()))
+            return personalNoChannelMapper.add(entity);
+        return personalNoChannelMapper.updateOne(entity);
     }
 
-    /**
-     * 根据渠道名称查询渠道
-     * @param s
-     * @return
-     */
     @Override
-    public PersonalNoChannel getByChannelName(String s) {
-        PersonalNoChannel channel = personalNoChannelMapper.getByName(s);
-        return channel;
+    public Integer delete(String sql) {
+        return personalNoChannelMapper.delete(sql);
+    }
+
+    @Override
+    public List<PersonalNoChannel> list(String sql) {
+        return personalNoChannelMapper.list(sql);
+    }
+
+    @Override
+    public List<String> listString(String sql) {
+        return personalNoChannelMapper.listString(sql);
+    }
+
+    @Override
+    public PersonalNoChannel getOne(String sql) {
+        return personalNoChannelMapper.getOne(sql);
+    }
+
+    @Override
+    public Long getCount(String sql) {
+        return personalNoChannelMapper.getCount(sql);
     }
 }

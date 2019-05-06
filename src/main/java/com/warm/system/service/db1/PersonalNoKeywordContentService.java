@@ -15,7 +15,15 @@ import java.util.List;
  */
 public interface PersonalNoKeywordContentService extends IService<PersonalNoKeywordContent> {
 
-    void deleteByKeyWordId(Integer id);
+    Integer add(PersonalNoKeywordContent entity);
 
-    List<PersonalNoKeywordContent> listByKeywordId(Integer id);
+    Integer delete(String sql);
+
+    List<PersonalNoKeywordContent> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoKeywordContent getOne(String sql);
+
+    Long getCount(String sql);
 }

@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoAutoReplayNo;
 import com.baomidou.mybatisplus.service.IService;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,7 +18,15 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface PersonalNoAutoReplayNoService extends IService<PersonalNoAutoReplayNo> {
 
-    Page<PersonalNoAutoReplayNo> pageQuery(Page<PersonalNoAutoReplayNo> page, String nickName);
+    Integer add(PersonalNoAutoReplayNo entity);
 
-    boolean insertInfo(PersonalNo no);
+    Integer delete(String sql);
+
+    List<PersonalNoAutoReplayNo> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoAutoReplayNo getOne(String sql);
+
+    Long getCount(String sql);
 }

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoLableMessageSendMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoLableMessageSend">
+        <id column="id" property="id" />
+        <result column="personal_no_lable_message_lable_list" property="personalNoLableMessageLableList" />
+        <result column="personal_no_lable_message_content_show" property="personalNoLableMessageContentShow" />
+        <result column="persona_nol_lable_message_status" property="personaNolLableMessageStatus" />
+        <result column="super_id" property="superId" />
+        <result column="send_time" property="sendTime" />
+        <result column="send_num" property="sendNum" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoLableMessageSend" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,personal_no_lable_message_lable_list,personal_no_lable_message_content_show,persona_nol_lable_message_status,super_id,send_time,send_num)
+        values
+          (#{entity.id},#{entity.personalNoLableMessageLableList},#{entity.personalNoLableMessageContentShow},#{entity.personaNolLableMessageStatus},#{entity.superId},#{entity.sendTime},#{entity.sendNum})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoLableMessageSend" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personalNoLableMessageLableList!=null">
+                personal_no_lable_message_lable_list = #{entity.personalNoLableMessageLableList},
+            </if>
+            <if test="entity.personalNoLableMessageContentShow!=null">
+                personal_no_lable_message_content_show = #{entity.personalNoLableMessageContentShow},
+            </if>
+            <if test="entity.personaNolLableMessageStatus!=null">
+                persona_nol_lable_message_status = #{entity.personaNolLableMessageStatus},
+            </if>
+            <if test="entity.superId!=null">
+                super_id = #{entity.superId},
+            </if>
+            <if test="entity.sendTime!=null">
+                send_time = #{entity.sendTime},
+            </if>
+            <if test="entity.sendNum!=null">
+                send_num = #{entity.age},
+            </if>
+            <if test="entity.deleted!=deleted">
+                deleted = #{entity.deleted},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

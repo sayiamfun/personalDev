@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_friends_circle_personal")
 public class PersonalNoFriendsCirclePersonal extends Model<PersonalNoFriendsCirclePersonal> {
 
@@ -49,54 +52,8 @@ public class PersonalNoFriendsCirclePersonal extends Model<PersonalNoFriendsCirc
      */
     private Integer deleted;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getFriendsCircleId() {
-        return friendsCircleId;
-    }
-
-    public void setFriendsCircleId(Integer friendsCircleId) {
-        this.friendsCircleId = friendsCircleId;
-    }
-
-    public Integer getPersonalNoId() {
-        return personalNoId;
-    }
-
-    public void setPersonalNoId(Integer personalNoId) {
-        this.personalNoId = personalNoId;
-    }
-
-    public String getPersonalNoWxId() {
-        return personalNoWxId;
-    }
-
-    public void setPersonalNoWxId(String personalNoWxId) {
-        this.personalNoWxId = personalNoWxId;
-    }
-
-    public String getPersonalNoName() {
-        return personalNoName;
-    }
-
-    public void setPersonalNoName(String personalNoName) {
-        this.personalNoName = personalNoName;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

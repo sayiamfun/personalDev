@@ -3,6 +3,7 @@ package com.warm.system.service.db1;
 import com.warm.system.entity.PersonalNoFriendsCircle;
 import com.warm.system.entity.PersonalNoFriendsCirclePhoto;
 import com.baomidou.mybatisplus.service.IService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,7 +17,18 @@ import java.util.List;
  */
 public interface PersonalNoFriendsCirclePhotoService extends IService<PersonalNoFriendsCirclePhoto> {
 
-    List<PersonalNoFriendsCirclePhoto> listByCircleId(Integer id);
-
+    @Transactional
     boolean batchSave(PersonalNoFriendsCircle noFriendsCircle);
+
+    Integer add(PersonalNoFriendsCirclePhoto entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoFriendsCirclePhoto> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoFriendsCirclePhoto getOne(String sql);
+
+    Long getCount(String sql);
 }

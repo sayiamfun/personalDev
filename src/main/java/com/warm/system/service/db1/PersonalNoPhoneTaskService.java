@@ -14,9 +14,16 @@ import java.util.List;
  * @since 2019-03-29
  */
 public interface PersonalNoPhoneTaskService extends IService<PersonalNoPhoneTask> {
-    PersonalNoPhoneTask getOneBytask_group_idAndstep(Integer id, Integer nextStep);
 
-    List<PersonalNoPhoneTask> listBytask_group_id(Integer id);
+    Integer add(PersonalNoPhoneTask entity);
 
-    void deleteByTaskGrouPId(Integer id);
+    Integer delete(String sql);
+
+    List<PersonalNoPhoneTask> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoPhoneTask getOne(String sql);
+
+    Long getCount(String sql);
 }

@@ -21,17 +21,22 @@ import java.util.List;
  */
 public class WebConst {
 
-    public static final int COOKIE_MAXAGE = 7 * 24 * 3600;
+    public static final int COOKIE_MAXAGE = 24 * 3600;
 
     public static final String VERIFY_ADDRESS = "http://passport.gmall.com/verify";
     //未登录状态下跳转的登录界面
-    public static final String LOGIN_ADDRESS = "http://192.168.3.5/#/login";
+    public static final String LOGINFLAG = "LOGINFLG";
     //注册邀请码
     public static final String CODE = "jiazhangjia";
     //session存放超级用户的key
     public static final String SUPERUSER = "superUser";
     public static final String TASKINFOKEY = "PersonalNoUserInfoSuff";
-    public static final String COOKIEUSERKEY = "PersonalNoCookieUserInfoSuff";
+    public static final String ASC = "SSwRiGtYA76Vd2OAwyFGRzR3w2IHnunK";
+    public static final String TOCKEN = "PersonalNoCookieUserInfoSuff";
+    public static final String SESSIONPRE = "PersonalNoSession";
+    public static final String SESSSUFF = "InfoSuff";
+    public static final String SUPERUSERID = "superUserId";
+    public static final String ADDLOGADDRESS = "http://192.168.1.6/personalNoLogInfo/addLog";
     private static int textNum = 0; //文字
     private static int photoNum = 0; //图片
     private static int cardNum = 0; //名片
@@ -50,7 +55,6 @@ public class WebConst {
         smallProgramNum = 0; //小程序
         voiceMessage = 0;
     }
-
 
     public static String getTaskContentShow(List<PersonalNoTaskMessageSendContent> personalNoTaskMessageSendContents) {
 

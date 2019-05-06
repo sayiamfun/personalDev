@@ -20,21 +20,36 @@ public class PersonalNoAccessTockenServiceImpl extends ServiceImpl<PersonalNoAcc
     @Autowired
     private PersonalNoAccessTockenMapper accessTockenMapper;
     /**
-     * 取得最后一条数据
+     * 取得一条数据
      * @return
      */
     @Override
-    public PersonalNoAccessTocken getLast() {
-        return accessTockenMapper.getLast();
+    public PersonalNoAccessTocken getOne(String sql) {
+        return accessTockenMapper.getOne(sql);
+    }
+
+    /**
+     * 删除数据
+     * @param sql
+     */
+    @Override
+    public void delete(String sql) {
+        accessTockenMapper.delete(sql);
+    }
+
+    /**
+     * 修改数据
+     * @param personalNoAccessTocken
+     * @return
+     */
+    @Override
+    public int updateOneById(PersonalNoAccessTocken personalNoAccessTocken) {
+        return accessTockenMapper.updateOneById(personalNoAccessTocken);
     }
 
     @Override
-    public void deleteByOpenIdId(String openid) {
-        accessTockenMapper.deleteByOpenIdId(openid);
+    public int add(PersonalNoAccessTocken personalNoAccessTocken) {
+        return accessTockenMapper.add(personalNoAccessTocken);
     }
 
-    @Override
-    public PersonalNoAccessTocken getByOpenId(String openid) {
-        return accessTockenMapper.getByOpenId(openid);
-    }
 }

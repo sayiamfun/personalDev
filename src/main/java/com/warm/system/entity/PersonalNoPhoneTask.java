@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_phone_task")
 public class PersonalNoPhoneTask extends Model<PersonalNoPhoneTask> {
 
@@ -91,174 +94,8 @@ public class PersonalNoPhoneTask extends Model<PersonalNoPhoneTask> {
     @TableField("task_type")
     private Integer taskType;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getTaskGroupId() {
-        return taskGroupId;
-    }
-
-    public void setTaskGroupId(Integer taskGroupId) {
-        this.taskGroupId = taskGroupId;
-    }
-
-    public String getTname() {
-        return tname;
-    }
-
-    public void setTname(String tname) {
-        this.tname = tname;
-    }
-
-    public Integer getStep() {
-        return step;
-    }
-
-    public void setStep(Integer step) {
-        this.step = step;
-    }
-
-    public String getRobotId() {
-        return robotId;
-    }
-
-    public void setRobotId(String robotId) {
-        this.robotId = robotId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getTdescription() {
-        return tdescription;
-    }
-
-    public void setTdescription(String tdescription) {
-        this.tdescription = tdescription;
-    }
-
-    public String getTaskJson() {
-        return taskJson;
-    }
-
-    public void setTaskJson(String taskJson) {
-        this.taskJson = taskJson;
-    }
-
-    public Integer getGroupPoolId() {
-        return groupPoolId;
-    }
-
-    public void setGroupPoolId(Integer groupPoolId) {
-        this.groupPoolId = groupPoolId;
-    }
-
-    public Integer getWxGroupId() {
-        return wxGroupId;
-    }
-
-    public void setWxGroupId(Integer wxGroupId) {
-        this.wxGroupId = wxGroupId;
-    }
-
-    public String getTaskFinishedTag() {
-        return taskFinishedTag;
-    }
-
-    public void setTaskFinishedTag(String taskFinishedTag) {
-        this.taskFinishedTag = taskFinishedTag;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getPickupTime() {
-        return pickupTime;
-    }
-
-    public void setPickupTime(Date pickupTime) {
-        this.pickupTime = pickupTime;
-    }
-
-    public Integer getIsClientFeedbackReceived() {
-        return isClientFeedbackReceived;
-    }
-
-    public void setIsClientFeedbackReceived(Integer isClientFeedbackReceived) {
-        this.isClientFeedbackReceived = isClientFeedbackReceived;
-    }
-
-    public Date getFeedbackReceivedTime() {
-        return feedbackReceivedTime;
-    }
-
-    public void setFeedbackReceivedTime(Date feedbackReceivedTime) {
-        this.feedbackReceivedTime = feedbackReceivedTime;
-    }
-
-    public Integer getIsClientFeedbackFinished() {
-        return isClientFeedbackFinished;
-    }
-
-    public void setIsClientFeedbackFinished(Integer isClientFeedbackFinished) {
-        this.isClientFeedbackFinished = isClientFeedbackFinished;
-    }
-
-    public Date getFeedbackFinishedTime() {
-        return feedbackFinishedTime;
-    }
-
-    public void setFeedbackFinishedTime(Date feedbackFinishedTime) {
-        this.feedbackFinishedTime = feedbackFinishedTime;
-    }
-
-    public String getFailedReason() {
-        return failedReason;
-    }
-
-    public void setFailedReason(String failedReason) {
-        this.failedReason = failedReason;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public Integer getTaskType() {
-        return taskType;
-    }
-
-    public void setTaskType(Integer taskType) {
-        this.taskType = taskType;
-    }
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

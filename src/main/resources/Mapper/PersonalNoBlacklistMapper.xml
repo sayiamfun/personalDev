@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoBlacklistMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoBlacklist">
+        <id column="id" property="id" />
+        <result column="wx_id" property="wxId" />
+        <result column="nick_name" property="nickName" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoBlacklist" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,wx_id,nick_name)
+        values
+          (#{entity.id},#{entity.wxId},#{entity.nickName})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoBlacklist" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.wxId!=null">
+                wx_id = #{entity.wxId},
+            </if>
+            <if test="entity.nickName!=null">
+                nick_name = #{entity.nickName},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultType="com.warm.system.entity.PersonalNoBlacklist" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

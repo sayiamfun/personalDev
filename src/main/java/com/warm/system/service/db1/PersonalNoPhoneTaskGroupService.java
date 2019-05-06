@@ -16,13 +16,15 @@ import java.util.List;
  */
 public interface PersonalNoPhoneTaskGroupService extends IService<PersonalNoPhoneTaskGroup> {
 
-    List<PersonalNoPhoneTaskGroup> listBycurrent_robot_idAndStatusGoingAndTime(String currRobotWxid, Date date, Integer order);
+    Integer add(PersonalNoPhoneTaskGroup entity);
 
-    List<PersonalNoPhoneTaskGroup> listBycurrent_robot_idAndStatusWating(String wxid_o72bs8evoigc22, Integer order);
+    Integer delete(String sql);
 
-    List<PersonalNoPhoneTaskGroup> listByTaskMessageId(Integer id);
+    List<PersonalNoPhoneTaskGroup> list(String sql);
 
-    PersonalNoPhoneTaskGroup listBycurrent_robot_idAndStatusWatingDesc(String wxId, int i);
+    List<String> listString(String sql);
 
-    PersonalNoPhoneTaskGroup getByPersonalWxIdAndTheme(String wxId, String s, String status);
+    PersonalNoPhoneTaskGroup getOne(String sql);
+
+    Long getCount(String sql);
 }

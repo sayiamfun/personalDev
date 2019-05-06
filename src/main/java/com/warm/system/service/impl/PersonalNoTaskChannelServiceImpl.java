@@ -1,6 +1,7 @@
 package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.warm.entity.DB;
 import com.warm.system.entity.PersonalNoChannel;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskChannel;
@@ -8,6 +9,7 @@ import com.warm.system.mapper.PersonalNoTaskChannelMapper;
 import com.warm.system.service.db1.PersonalNoChannelService;
 import com.warm.system.service.db1.PersonalNoTaskChannelService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +33,10 @@ public class PersonalNoTaskChannelServiceImpl extends ServiceImpl<PersonalNoTask
     private static Log log = LogFactory.getLog(PersonalNoTaskChannelServiceImpl.class);
     @Autowired
     private PersonalNoChannelService channelService;
+    @Autowired
+    private PersonalNoTaskChannelMapper taskChannelMapper;
+
+    private String ZCDBChannel = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_channel);
     /*
      * 根据任务id查询相对的渠道信息列表
      */
@@ -63,7 +69,8 @@ public class PersonalNoTaskChannelServiceImpl extends ServiceImpl<PersonalNoTask
         if(!VerifyUtils.collectionIsEmpty(channelNameList)){
             log.info("将任务渠道列表保存到数据库开始");
             for (String s : channelNameList) {
-                PersonalNoChannel channel = channelService.getByChannelName(s);
+                String sql = DaoGetSql.getSql("select * from " + ZCDBChannel + " where channel_name = ? limit 0,1", s);
+                PersonalNoChannel channel = channelService.getOne(sql);
                 PersonalNoTaskChannel taskChannel = new PersonalNoTaskChannel();
                 taskChannel.setPersonalNoTaskId(noTask.getId());
                 taskChannel.setChannelId(channel.getId());
@@ -89,5 +96,10 @@ public class PersonalNoTaskChannelServiceImpl extends ServiceImpl<PersonalNoTask
         EntityWrapper<PersonalNoTaskChannel> entityWrapper = new EntityWrapper<>();
         entityWrapper.eq("personal_no_task_id", taskId);
         return baseMapper.delete(entityWrapper)>0;
+    }
+
+    @Override
+    public PersonalNoTaskChannel selectByTaskIdAndChannelId(String roadId, Integer channelId, Integer roadOrTask) {
+        return taskChannelMapper.selectByTaskIdAndChannelId(roadId, channelId,roadOrTask);
     }
 }

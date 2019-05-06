@@ -24,13 +24,24 @@ public class PersonalNoGroupCategorySetServiceImpl extends ServiceImpl<PersonalN
     private static Log log = LogFactory.getLog(PersonalNoGroupCategorySetServiceImpl.class);
     @Autowired
     private PersonalNoGroupCategorySetMapper groupCategorySetMapper;
+
     @Override
-    public List<PersonalNoGroupCategorySet> listAll() {
-        return groupCategorySetMapper.listAll();
+    public List<PersonalNoGroupCategorySet> list(String sql) {
+        return groupCategorySetMapper.list(sql);
     }
 
     @Override
-    public List<PersonalNoGroupCategorySet> listQunLie01All() {
-        return groupCategorySetMapper.listQunLie01All();
+    public List<String> listString(String sql) {
+        return groupCategorySetMapper.listString(sql);
+    }
+
+    @Override
+    public PersonalNoGroupCategorySet getOne(String sql) {
+        return groupCategorySetMapper.getOne(sql);
+    }
+
+    @Override
+    public Long getCount(String sql) {
+        return groupCategorySetMapper.getCount(sql);
     }
 }

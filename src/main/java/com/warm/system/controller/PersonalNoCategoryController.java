@@ -1,9 +1,11 @@
 package com.warm.system.controller;
 
 
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.system.entity.PersonalNoCategory;
 import com.warm.system.service.db1.PersonalNoCategoryService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -36,7 +38,8 @@ public class PersonalNoCategoryController {
     @ApiOperation(value = "查询所有个人号类别列表")
     @GetMapping
     public R list(){
-        List<PersonalNoCategory> personalCategoryList = noCategoryService.listAll();
+        String sql = DaoGetSql.getSql("select * from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category) + " order by id desc");
+        List<PersonalNoCategory> personalCategoryList = noCategoryService.list(sql);
         log.info("查找个人号类别完成");
         return R.ok().data(personalCategoryList);
     }
@@ -45,8 +48,7 @@ public class PersonalNoCategoryController {
     @PostMapping("addCategory")
     public R addCategory(
             @ApiParam(name = "noCategory", value = "添加个人号类别对象", required = true)
-            @RequestBody PersonalNoCategory noCategory,
-            HttpServletRequest request
+            @RequestBody PersonalNoCategory noCategory
     ) throws Exception {
         try {
             log.info("添加个人号类别任务开始");
@@ -55,19 +57,8 @@ public class PersonalNoCategoryController {
                 return R.error().message("待添加的个人号类别信息为空");
             }
             //如果存在id则修改,id不存在则添加
-            if(VerifyUtils.isEmpty(noCategory.getId())){
-                log.info("id不存在,插入数据到数据库");
-                boolean b = noCategoryService.insert(noCategory);
-                if(!b){
-                    return R.error().message("添加个人号类别信息到数据库失败");
-                }
-            }else{
-                log.info("id存在,修改数据库数据");
-                boolean b = noCategoryService.updateById(noCategory);
-                if(!b){
-                    return R.error().message("更新个人号类别信息到数据库失败");
-                }
-            }
+            noCategory.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_category));
+            noCategoryService.add(noCategory);
             log.info("更新个人号类别到数据库成功");
             return R.ok();
         }catch (Exception e){
@@ -87,8 +78,9 @@ public class PersonalNoCategoryController {
                 log.info("传入的id为空,删除失败");
                 return R.error().message("待删除类别id为空");
             }
-            boolean b = noCategoryService.deleteById(categoryId.intValue());
-            if(!b){
+            String sql = DaoGetSql.getSql("delete from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category)+" where id = ?", categoryId.intValue());
+            Integer delete = noCategoryService.delete(sql);
+            if(delete>0){
                 log.info("数据库根据id删除类别成功");
                 return R.error().message("删除类别数据库数据失败");
             }

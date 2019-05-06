@@ -112,4 +112,7 @@ public class PersonalNoFriendsCircle extends Model<PersonalNoFriendsCircle> {
     @ApiModelProperty(value = "朋友圈类型")
     @TableField(exist = false)
     private String circleType;
+
+    @TableField(exist = false)
+    private String db;
 }

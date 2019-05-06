@@ -19,17 +19,23 @@ import java.util.Map;
  */
 public interface PersonalNoDataService extends IService<PersonalNoData> {
 
+    Integer add(PersonalNoData entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoData> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoData getOne(String sql);
+
+    Long getCount(String sql);
+
     ResultPersonalData getInfoByDateList(List<PersonalNoData> records);
-
-    List<PersonalNoData> listByDate(String toString);
-
-    boolean deleteByDate(List<PersonalNoData> list);
-
-    PersonalNoData getByTaskNameAndTime(String taskName, String date);
 
     List<PersonalNoData> listAll(QueryPersonalData queryPersonalData);
 
-    Map<String,List<String>> getDateByDateList(String flag, List<PersonalNoData> list);
-
     List<PersonalNoData> listAllAsc(QueryPersonalData queryPersonalData);
+
+    Map<String,List<String>> getDateByDateList(String flag, List<PersonalNoData> list);
 }

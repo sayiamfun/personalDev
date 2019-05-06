@@ -44,7 +44,8 @@ spring:
         initialSize: 5
         minIdle: 5
         maxActive: 20
-#返回json的全局时间格式
+      connection-init-sqls: set names utf8mb4
+  #返回json的全局时间格式
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
@@ -58,10 +59,7 @@ mybatis-plus:
   #mybatis日志打印
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-  #全局设置主键生成策略
-  global-config:
-    db-config:
-      id-type: id_worker_str
+
 #文件上传线下
 fileServer:
   #文件上传服务器地址

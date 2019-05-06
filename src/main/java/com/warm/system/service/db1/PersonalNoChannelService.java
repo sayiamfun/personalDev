@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.system.entity.PersonalNoChannel;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -14,7 +16,15 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface PersonalNoChannelService extends IService<PersonalNoChannel> {
 
-    Page<PersonalNoChannel> pageQuery(Page<PersonalNoChannel> page, Object o);
+    Integer add(PersonalNoChannel entity);
 
-    PersonalNoChannel getByChannelName(String s);
+    Integer delete(String sql);
+
+    List<PersonalNoChannel> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoChannel getOne(String sql);
+
+    Long getCount(String sql);
 }

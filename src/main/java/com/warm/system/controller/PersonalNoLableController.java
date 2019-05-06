@@ -3,6 +3,7 @@ package com.warm.system.controller;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.requre.BatchUpdateObject;
 import com.warm.entity.result.LableManager;
@@ -10,6 +11,7 @@ import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoLable;
 import com.warm.system.entity.PersonalNoTaskLable;
 import com.warm.system.service.db1.PersonalNoLableService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.MediaSize;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -41,6 +44,7 @@ public class PersonalNoLableController {
     private static Log log = LogFactory.getLog(PersonalNoLableController.class);
     @Autowired
     private PersonalNoLableService noLableService;
+    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
 
     @ApiOperation(value = "根据个人号查找粉丝标签列表")
     @PostMapping("listByPersonal")
@@ -86,7 +90,8 @@ public class PersonalNoLableController {
     ){
         try {
             log.info("根据名称查找标签");
-            List<PersonalNoLable> noLables = noLableService.listByLableName(name);
+            String sql = "select * from " + ZCDB + " where lable_name like '%"+ name +"%'";
+            List<PersonalNoLable> noLables = noLableService.list(sql);
             log.info("根据名称查找标签结束");
             return R.ok().data(noLables);
         }catch (Exception e){
@@ -103,7 +108,8 @@ public class PersonalNoLableController {
     ){
         try {
             log.info("根据类别查找标签开始");
-            List<PersonalNoLable> list = noLableService.listByCategory(category);
+            String sql = DaoGetSql.getSql("select * from " + ZCDB + " where lable_category = ?", category);
+            List<PersonalNoLable> list = noLableService.list(sql);
             log.info("开始将  标签类型   转换成   任务标签类型");
             List<PersonalNoTaskLable> personalNoTaskLableList = new ArrayList<>();
             if(!VerifyUtils.collectionIsEmpty(list)){

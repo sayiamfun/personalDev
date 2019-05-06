@@ -16,7 +16,17 @@ import java.util.List;
  */
 public interface PersonalNoLableMessageSendContentService extends IService<PersonalNoLableMessageSendContent> {
 
-    List<PersonalNoLableMessageSendContent> listByLableMessageId(Integer id);
-
     boolean batchSave(PersonalNoLableMessageSend personalNoLableMessageSend);
+
+    Integer add(PersonalNoLableMessageSendContent entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoLableMessageSendContent> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoLableMessageSendContent getOne(String sql);
+
+    Long getCount(String sql);
 }

@@ -22,12 +22,6 @@ public interface PersonalNoService extends IService<PersonalNo> {
 
     Set<PersonalNo> listByLableName(Integer lableId);
 
-    PersonalNo getByWxId(String personalNoWxId);
-
-    List<PersonalNo> listByCategory(String category);
-
-    List<PersonalNo> listByNickName(String category);
-
     Page<PersonalNo> pageQuery(Page<PersonalNo> page, QueryPersonal searchObj);
 
     boolean batchUpdateCategory(List<PersonalNo> personalList, String object);
@@ -38,5 +32,15 @@ public interface PersonalNoService extends IService<PersonalNo> {
 
     Map<String, Object> getPersonalByTaskId(GetNoEntity getNoEntity);
 
-    List<PersonalNo> ListByNickName(String nickName);
+    Integer add(PersonalNo entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNo> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNo getOne(String sql);
+
+    Long getCount(String sql);
 }

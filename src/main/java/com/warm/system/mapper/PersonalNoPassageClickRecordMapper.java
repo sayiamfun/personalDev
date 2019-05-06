@@ -2,7 +2,10 @@ package com.warm.system.mapper;
 
 import com.warm.system.entity.PersonalNoPassageClickRecord;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,6 +17,17 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface PersonalNoPassageClickRecordMapper extends BaseMapper<PersonalNoPassageClickRecord> {
 
-    @Select("SELECT id,passage_id,ip,request_info,click_time FROM personal_no_passage_click_record where ip = #{param1} and click_time between #{param2} and #{param3} LIMIT 0,1")
-    PersonalNoPassageClickRecord getByIpAndTime(String ipAddress, String nowDate, String nowDate1);
+    List<PersonalNoPassageClickRecord> list(@Param("sql") String sql);
+
+    List<String> listString(@Param("sql") String sql);
+
+    Integer add(@Param("entity") PersonalNoPassageClickRecord entity);
+
+    PersonalNoPassageClickRecord getOne(@Param("sql") String sql);
+
+    Integer updateOne(@Param("entity")PersonalNoPassageClickRecord entity);
+
+    Integer delete(@Param("sql") String sql);
+
+    Long getCount(@Param("sql") String sql);
 }

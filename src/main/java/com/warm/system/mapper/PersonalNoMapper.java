@@ -19,11 +19,17 @@ import java.util.List;
  */
 public interface PersonalNoMapper extends BaseMapper<PersonalNo> {
 
-    @Select("SELECT id,wx_id,wx_name,qr_code,nickname,equipment_id,waiting_pass_num,friends_num,equipment_status,sales_group,personal_no_category AS personalNoCategoryName,head_portrait_url,create_time,super_id,remarks,deleted FROM personal_no WHERE wx_id = #{personalNoWxId} and deleted=0 limit 0,1")
-    PersonalNo selectOneByWxId(String personalNoWxId);
-    @Select("SELECT id,wx_id,wx_name,qr_code,nickname,equipment_id,waiting_pass_num,friends_num,equipment_status,sales_group,personal_no_category AS personalNoCategoryName,head_portrait_url,create_time,super_id,remarks,deleted FROM personal_no WHERE personal_no_category = #{category} and deleted=0 order by id desc")
-    List<PersonalNo> listByCategory(String category);
-    @Select("SELECT id,wx_id,wx_name,qr_code,nickname,equipment_id,waiting_pass_num,friends_num,equipment_status,sales_group,personal_no_category AS personalNoCategoryName,head_portrait_url,create_time,super_id,remarks,deleted FROM personal_no WHERE nickname like #{category} and deleted=0 order by id desc")
-    List<PersonalNo> listLikeNickName(String nickName);
+    List<PersonalNo> list(@Param("sql") String sql);
 
+    List<String> listString(@Param("sql") String sql);
+
+    Integer add(@Param("entity") PersonalNo entity);
+
+    PersonalNo getOne(@Param("sql") String sql);
+
+    Integer updateOne(@Param("entity")PersonalNo entity);
+
+    Integer delete(@Param("sql") String sql);
+
+    Long getCount(@Param("sql") String sql);
 }

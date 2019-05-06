@@ -6,9 +6,7 @@ import com.warm.entity.R;
 import com.warm.entity.requre.PeopleNumReq;
 import com.warm.system.entity.PersonalNoLableMessageSend;
 import com.warm.system.service.db1.PersonalNoLableMessageSendService;
-import com.warm.system.service.db1.PersonalNoLableService;
 import com.warm.system.service.db1.PersonalNoPeopleService;
-import com.warm.system.service.db1.PersonalNoService;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,8 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -115,8 +112,8 @@ public class PersonalNoLableMessageSendController {
             if(!VerifyUtils.isEmpty(peopleNumReq)){
                 log.info("请求参数为空");
             }
-            Set<String> peopleIdSet = noPeopleService.getByNoListAndLableNameList(peopleNumReq);
-            return R.ok().data(peopleIdSet.size());
+            List<String> peopleWxIdList = noPeopleService.getByNoListAndLableNameList(peopleNumReq);
+            return R.ok().data(peopleWxIdList.size());
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新后重试。。。");

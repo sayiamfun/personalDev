@@ -15,7 +15,12 @@ import java.util.List;
  */
 public interface PersonalNoGroupCategorySetService extends IService<PersonalNoGroupCategorySet> {
 
-    List<PersonalNoGroupCategorySet> listAll();
 
-    List<PersonalNoGroupCategorySet> listQunLie01All();
+    List<PersonalNoGroupCategorySet> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoGroupCategorySet getOne(String sql);
+
+    Long getCount(String sql);
 }

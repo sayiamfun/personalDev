@@ -1,6 +1,7 @@
 package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.warm.entity.DB;
 import com.warm.entity.query.QueryPersonalData;
 import com.warm.entity.result.ResultPersonalData;
 import com.warm.entity.result.ResultPersonalDataWithTask;
@@ -9,6 +10,7 @@ import com.warm.system.entity.PersonalNoData;
 import com.warm.system.mapper.PersonalNoDataMapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.warm.system.service.db1.PersonalNoDataService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import com.warm.utils.WebConst;
 import org.apache.commons.logging.Log;
@@ -32,14 +34,38 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
     @Autowired
     private PersonalNoDataMapper dataMapper;
 
-    /**
-     * 开始处理返回数据
-     * 总数据
-     * 根据时间数据
-     * 根据任务数据
-     * @param records
-     * @return
-     */
+    @Override
+    public Integer add(PersonalNoData entity) {
+        if(VerifyUtils.isEmpty(entity.getId()))
+            return dataMapper.add(entity);
+        return dataMapper.updateOne(entity);
+    }
+
+    @Override
+    public Integer delete(String sql) {
+        return dataMapper.delete(sql);
+    }
+
+    @Override
+    public List<PersonalNoData> list(String sql) {
+        return dataMapper.list(sql);
+    }
+
+    @Override
+    public List<String> listString(String sql) {
+        return dataMapper.listString(sql);
+    }
+
+    @Override
+    public PersonalNoData getOne(String sql) {
+        return dataMapper.getOne(sql);
+    }
+
+    @Override
+    public Long getCount(String sql) {
+        return dataMapper.getCount(sql);
+    }
+
     @Override
     public ResultPersonalData getInfoByDateList(List<PersonalNoData> records) {
         ResultPersonalData resultPersonalData = null;
@@ -110,38 +136,6 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
     }
 
     /**
-     * 根据时间查询数据信息
-     * @param toString
-     * @return
-     */
-    @Override
-    public List<PersonalNoData> listByDate(String toString) {
-        return dataMapper.listByDate(toString);
-    }
-
-    /**
-     * 根据时间删除数据
-     * @param list
-     * @return
-     */
-    @Override
-    public boolean deleteByDate(List<PersonalNoData> list) {
-        for (PersonalNoData noData : list) {
-            baseMapper.deleteById(noData.getId());
-        }
-        return true;
-    }
-    /**
-     * 根据时间和任务名称查询数据
-     * @param taskName
-     * @param date
-     * @return
-     */
-    @Override
-    public PersonalNoData getByTaskNameAndTime(String taskName, String date) {
-        return dataMapper.getByTaskNameAndTime(date,taskName);
-    }
-    /**
      * 根据条件分页查询个人号相关数据
      * @param queryPersonalData
      */
@@ -156,24 +150,33 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
     private List<PersonalNoData> getPersonalNoData(QueryPersonalData queryPersonalData, Integer flag) {
         log.info("开始处理数据查询条件");
         List<String> noTaskName = queryPersonalData.getNoTaskName();
+        //渠道暂时未启用
         String personalnoChannelName = queryPersonalData.getPersonalnoChannelName();
         Date startTime = queryPersonalData.getStartTime();
         Date endTime = queryPersonalData.getEndTime();
-        EntityWrapper<PersonalNoData> entityWrapper = new EntityWrapper<>();
-        if(flag ==1) {
-            entityWrapper.orderDesc(Arrays.asList(new String[]{"date"}));
-        }else {
-            entityWrapper.orderAsc(Arrays.asList(new String[]{"date"}));
-        }
+        StringBuffer temp = new StringBuffer("select * from "+ DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_data));
+        boolean F = false;
         if(!VerifyUtils.collectionIsEmpty(noTaskName)){
+            String names = DaoGetSql.getIds(noTaskName);
+            names.replaceAll(" ","");
             log.info("根据任务名称查询");
-            entityWrapper.in("task_name", noTaskName);
+            temp.append(" where task_name in "+names);
+            F = true;
         }
         if(!VerifyUtils.isEmpty(startTime) && !VerifyUtils.isEmpty(endTime)){
             log.info("根据时间查询");
-            entityWrapper.between("date", startTime, endTime);
+            if(true){
+                temp.append(" and date between '"+WebConst.getNowDate(startTime) + "' and '"+WebConst.getNowDate(endTime)+"'");
+            }else {
+                temp.append(" where date between '"+WebConst.getNowDate(startTime) + "' and '"+WebConst.getNowDate(endTime)+"'");
+            }
         }
-        List<PersonalNoData> personalNoData = baseMapper.selectList(entityWrapper);
+        if(flag ==1) {
+            temp.append(" order by date desc");
+        }else {
+            temp.append(" order by date asc");
+        }
+        List<PersonalNoData> personalNoData = dataMapper.list(temp.toString());
         return personalNoData;
     }
 

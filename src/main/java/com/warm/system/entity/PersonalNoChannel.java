@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_channel")
 public class PersonalNoChannel extends Model<PersonalNoChannel> {
 
@@ -51,62 +54,8 @@ public class PersonalNoChannel extends Model<PersonalNoChannel> {
      */
     private Integer deleted;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getChannelName() {
-        return channelName;
-    }
-
-    public void setChannelName(String channelName) {
-        this.channelName = channelName;
-    }
-
-    public Integer getSuperId() {
-        return superId;
-    }
-
-    public void setSuperId(Integer superId) {
-        this.superId = superId;
-    }
-
-    public String getSuperName() {
-        return superName;
-    }
-
-    public void setSuperName(String superName) {
-        this.superName = superName;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

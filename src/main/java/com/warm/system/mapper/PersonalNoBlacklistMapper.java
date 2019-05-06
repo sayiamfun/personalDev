@@ -2,7 +2,10 @@ package com.warm.system.mapper;
 
 import com.warm.system.entity.PersonalNoBlacklist;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,7 +17,17 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface PersonalNoBlacklistMapper extends BaseMapper<PersonalNoBlacklist> {
 
-    //根据微信id查询黑名单成员
-    @Select("SELECT id,wx_id,nick_name,deleted FROM personal_no_blacklist WHERE wx_id = #{wxId} and deleted = 0")
-    PersonalNoBlacklist getByWxId(String wxId);
+    List<PersonalNoBlacklist> list(@Param("sql") String sql);
+
+    List<String> listString(@Param("sql") String sql);
+
+    Integer add(@Param("entity") PersonalNoBlacklist entity);
+
+    PersonalNoBlacklist getOne(@Param("sql") String sql);
+
+    Integer updateOne(@Param("entity")PersonalNoBlacklist entity);
+
+    Integer delete(@Param("sql") String sql);
+
+    Long getCount(@Param("sql") String sql);
 }

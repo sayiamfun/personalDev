@@ -3,12 +3,17 @@ package com.warm.system.entity;
 import java.io.Serializable;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+import java.util.ArrayList;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -18,7 +23,8 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
-@TableName("personal_no_group_category")
+@Data
+@TableName("group_category")
 public class PersonalNoGroupCategory extends Model<PersonalNoGroupCategory> {
 
     private static final long serialVersionUID = 1L;
@@ -44,102 +50,15 @@ public class PersonalNoGroupCategory extends Model<PersonalNoGroupCategory> {
     @TableField("create_time")
     private Date createTime;
 
+    @TableField(exist = false)
+    private String personalIds;
 
-    public Integer getId() {
-        return id;
-    }
+    @TableField(exist = false)
+    private List<String> personalWxidList = new ArrayList<>();
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @TableField(exist = false)
+    private List<String> assistantList = new ArrayList<>();
 
-    public Integer getGroupCategorySetId() {
-        return groupCategorySetId;
-    }
-
-    public void setGroupCategorySetId(Integer groupCategorySetId) {
-        this.groupCategorySetId = groupCategorySetId;
-    }
-
-    public String getCname() {
-        return cname;
-    }
-
-    public void setCname(String cname) {
-        this.cname = cname;
-    }
-
-    public Integer getUpLimit() {
-        return upLimit;
-    }
-
-    public void setUpLimit(Integer upLimit) {
-        this.upLimit = upLimit;
-    }
-
-    public String getPrefix() {
-        return prefix;
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
-    }
-
-    public String getPostfix() {
-        return postfix;
-    }
-
-    public void setPostfix(String postfix) {
-        this.postfix = postfix;
-    }
-
-    public Integer getBeginIndex() {
-        return beginIndex;
-    }
-
-    public void setBeginIndex(Integer beginIndex) {
-        this.beginIndex = beginIndex;
-    }
-
-    public Integer getCurrentIndex() {
-        return currentIndex;
-    }
-
-    public void setCurrentIndex(Integer currentIndex) {
-        this.currentIndex = currentIndex;
-    }
-
-    public String getAssistantIds() {
-        return assistantIds;
-    }
-
-    public void setAssistantIds(String assistantIds) {
-        this.assistantIds = assistantIds;
-    }
-
-    public String getFullVerify() {
-        return fullVerify;
-    }
-
-    public void setFullVerify(String fullVerify) {
-        this.fullVerify = fullVerify;
-    }
-
-    public String getCdescription() {
-        return cdescription;
-    }
-
-    public void setCdescription(String cdescription) {
-        this.cdescription = cdescription;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 
     @Override
     protected Serializable pkVal() {

@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
-@TableName("personal_no_group_category_set")
+@TableName("group_category_set")
 public class PersonalNoGroupCategorySet extends Model<PersonalNoGroupCategorySet> {
 
     private static final long serialVersionUID = 1L;

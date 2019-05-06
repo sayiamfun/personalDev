@@ -2,8 +2,11 @@ package com.warm.system.mapper;
 
 import com.warm.system.entity.PersonalNoAccessTocken;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,13 +17,16 @@ import org.apache.ibatis.annotations.Update;
  * @since 2019-03-29
  */
 public interface PersonalNoAccessTockenMapper extends BaseMapper<PersonalNoAccessTocken> {
-    //取得最后一条数据
-    @Select("select id,flag,access_token,openid,refreshtoken,deleted from personal_no_access_tocken where deleted = 0 order by id desc limit 0,1 ")
-    PersonalNoAccessTocken getLast();
 
-    @Update("update personal_no_access_tocken set deleted = 1 where openid = #{openid} and deleted = 0")
-    void deleteByOpenIdId(String openid);
+    List<PersonalNoAccessTocken> listMore(@Param("sql") String sql);
 
-    @Select("select id,flag,access_token,openid,refreshtoken,deleted from personal_no_access_tocken where openid = #{openid} and deleted = 0 order by id desc limit 0,1")
-    PersonalNoAccessTocken getByOpenId(String openid);
+    int add(@Param("entity") PersonalNoAccessTocken entity);
+
+    List<String> listOne(@Param("sql") String sql);
+
+    PersonalNoAccessTocken getOne(@Param("sql") String sql);
+
+    int updateOneById(@Param("entity")PersonalNoAccessTocken entity);
+
+    int delete(@Param("sql") String sql);
 }

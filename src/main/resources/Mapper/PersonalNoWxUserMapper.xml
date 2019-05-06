@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoWxUserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoWxUser">
+        <id column="id" property="id" />
+        <result column="wx_id" property="wxId" />
+        <result column="open_id" property="openId" />
+        <result column="unionid" property="unionid" />
+        <result column="alias" property="alias" />
+        <result column="is_assistant" property="isAssistant" />
+        <result column="nick_name" property="nickName" />
+        <result column="real_name" property="realName" />
+        <result column="softbank_name" property="softbankName" />
+        <result column="head_photo" property="headPhoto" />
+        <result column="wx_qrcode" property="wxQrcode" />
+        <result column="sex" property="sex" />
+        <result column="province" property="province" />
+        <result column="country" property="country" />
+        <result column="city" property="city" />
+        <result column="email" property="email" />
+        <result column="whats_up" property="whatsUp" />
+        <result column="con_remark" property="conRemark" />
+        <result column="privilege" property="privilege" />
+        <result column="create_time" property="createTime" />
+        <result column="is_black" property="isBlack" />
+        <result column="black_reason" property="blackReason" />
+    </resultMap>
+
+</mapper>

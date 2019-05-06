@@ -2,12 +2,10 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
-import com.warm.entity.PageResult;
 import com.warm.entity.R;
 import com.warm.entity.query.QueryPersonalTask;
 import com.warm.entity.requre.GetNoEntity;
 import com.warm.system.entity.*;
-import com.warm.system.service.db1.PersonalNoPassageClickRecordService;
 import com.warm.system.service.db1.PersonalNoRoadService;
 import com.warm.system.service.db1.PersonalNoService;
 import com.warm.system.service.db1.PersonalNoTaskService;
@@ -47,8 +45,6 @@ public class PersonalNoTaskController {
     private PersonalNoService noService;
     @Autowired
     private PersonalNoRoadService roadService;
-    @Autowired
-    private PersonalNoPassageClickRecordService passageClickRecordService;
     @Autowired
     private PersonalNoGroupCategoryService groupCategoryService;
 
@@ -148,14 +144,13 @@ public class PersonalNoTaskController {
             log.info("开始条件分页查询个人号任务");
             Page<PersonalNoTask> page = new Page<>(VerifyUtils.setPageNum(pageNum) , VerifyUtils.setSize(size));
             page = noTaskService.pageQuery(page , queryPersonalTask);
-            PageResult<PersonalNoTask> pageResult = new PageResult<>(page.getTotal() , page.getRecords());
             //查询所有的数据集合
-            List<PersonalNoTask> resultRows = pageResult.getRows();
+            List<PersonalNoTask> resultRows = page.getRecords();
             //返回数据的集合
             List<PersonalNoTask> resultList = new ArrayList<>();
             log.info("开始查找任务的标签列表,个人号数，参与任务渠道数");
             for (PersonalNoTask resultRow : resultRows) {
-                PersonalNoTask taskById = noTaskService.getTaskInfoById(resultRow.getId());
+                PersonalNoTask taskById = noTaskService.getTaskInfoById(resultRow);
                 resultList.add(taskById);
             }
             log.info("条件分页查找个人号任务完成，返回数据");
@@ -220,7 +215,7 @@ public class PersonalNoTaskController {
             for (PersonalNoTaskReplyContent personalNoTaskReplyContent : noTaskReplyContentList) {
                 if("邀请入群".equals(personalNoTaskReplyContent.getContentType())){
                     String[] split = personalNoTaskReplyContent.getContent().split("/");
-                    PersonalNoGroupCategory groupCategory = getPersonalNoGroupCategory(split);
+                    PersonalNoGroupCategory groupCategory = groupCategoryService.getPersonalNoGroupCategory(split);
                     taskById.setCategoryName1(groupCategory.getCname());
                 }
             }
@@ -228,8 +223,8 @@ public class PersonalNoTaskController {
             for (PersonalNoTaskBeginRemind personalNoTaskBeginRemind : noTaskBeginRemindList) {
                 if("邀请入群".equals(personalNoTaskBeginRemind.getContentType())){
                     String[] split = personalNoTaskBeginRemind.getContent().split("/");
-                    PersonalNoGroupCategory personalNoGroupCategory = getPersonalNoGroupCategory(split);
-                    taskById.setCategoryName2(personalNoGroupCategory.getCname());
+                    PersonalNoGroupCategory personalNoGroupCategory = groupCategoryService.getPersonalNoGroupCategory(split);
+                    taskById.setCategoryName2(personalNoGroupCategory==null?"":personalNoGroupCategory.getCname());
                 }
             }
             log.info("根据任务id查询任务结束");
@@ -238,19 +233,6 @@ public class PersonalNoTaskController {
             e.printStackTrace();
             return R.error().message(e.getMessage());
         }
-    }
-    //获取群类别信息
-    private PersonalNoGroupCategory getPersonalNoGroupCategory(String[] split) {
-        PersonalNoGroupCategory groupCategory = null;
-        switch (Integer.parseInt(split[0])){
-            case 0:
-                groupCategory = groupCategoryService.getById(Integer.parseInt(split[1]));
-                break;
-            case 1:
-                groupCategory = groupCategoryService.getByIdFromQunLie01(Integer.parseInt(split[1]));
-                break;
-        }
-        return groupCategory;
     }
 
     @ApiOperation(value = "根据任务随机获取个人号")
@@ -296,9 +278,6 @@ public class PersonalNoTaskController {
         }
         if(VerifyUtils.isEmpty(task.getTaskTheme())){
             return "任务主题不能为空";
-        }
-        if(VerifyUtils.isEmpty(task.getPopularizeCategory())){
-            return "推广类型不能为空";
         }
         if(VerifyUtils.collectionIsEmpty(task.getRecommendedReasonsList())){
             return "推荐理由不能为空";

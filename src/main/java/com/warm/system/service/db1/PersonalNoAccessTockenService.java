@@ -13,9 +13,11 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface PersonalNoAccessTockenService extends IService<PersonalNoAccessTocken> {
 
-    PersonalNoAccessTocken getLast();
+    PersonalNoAccessTocken getOne(String sql);
 
-    void deleteByOpenIdId(String openid);
+    void delete(String sql);
 
-    PersonalNoAccessTocken getByOpenId(String openid);
+    int updateOneById(PersonalNoAccessTocken personalNoAccessTocken);
+
+    int add(PersonalNoAccessTocken personalNoAccessTocken);
 }

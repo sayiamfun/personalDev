@@ -2,9 +2,11 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.system.entity.PersonalNoLableCategory;
 import com.warm.system.service.db1.PersonalNoLableCategoryService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +36,7 @@ public class PersonalNoLableCategoryController {
     private static Log log = LogFactory.getLog(PersonalNoLableCategoryController.class);
     @Autowired
     private PersonalNoLableCategoryService noLableCategoryService;
+    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_category);
 
     @ApiOperation(value = "根据id删除标签类别信息")
     @DeleteMapping("deleteById/{id}/")
@@ -42,8 +45,9 @@ public class PersonalNoLableCategoryController {
             @PathVariable("id") Integer id
     ){
         try {
-            boolean b = noLableCategoryService.deleteById(id);
-            if(!b){
+            String sql = DaoGetSql.deleteById(ZCDB, id);
+            int b = noLableCategoryService.delete(sql);
+            if(b==0){
                 return R.error().message("删除标签类别失败");
             }
             return R.ok().data(null);
@@ -57,11 +61,12 @@ public class PersonalNoLableCategoryController {
     @GetMapping("getById/{id}/")
     public R getById(
             @ApiParam(name = "id", value = "标签类别id", required = true)
-            @PathVariable("id") PersonalNoLableCategory id
+            @PathVariable("id") Integer id
     ){
         try {
             log.info("根据id查询类别信息");
-            PersonalNoLableCategory byId = noLableCategoryService.selectById(id);
+            String sql = DaoGetSql.getById(ZCDB, id);
+            PersonalNoLableCategory byId = noLableCategoryService.getOne(sql);
             log.info("根据id查询类别信息结束");
             return R.ok().data(byId);
         }catch (Exception e){
@@ -74,8 +79,7 @@ public class PersonalNoLableCategoryController {
     @PostMapping("addLableCategory")
     public R addLableCategory(
             @ApiParam(name = "lableCategory", value = "标签类别信息", required = true)
-            @RequestBody PersonalNoLableCategory lableCategory,
-            HttpServletRequest request
+            @RequestBody PersonalNoLableCategory lableCategory
     ){
         try {
             log.info("添加类别信息");
@@ -84,13 +88,9 @@ public class PersonalNoLableCategoryController {
                 return R.error().message("要添加的类别信息为空");
             }
             lableCategory.setCreateTime(new Date());
-            boolean save = false;
-            if(VerifyUtils.isEmpty(lableCategory.getId())){
-                save = noLableCategoryService.insert(lableCategory);
-            }else {
-                save = noLableCategoryService.updateById(lableCategory);
-            }
-            if(!save){
+            lableCategory.setDb(ZCDB);
+            Integer add = noLableCategoryService.add(lableCategory);
+            if(add==0){
                 log.info("添加标签类别失败");
                 return R.error().message("添加标签类别失败");
             }
@@ -104,14 +104,12 @@ public class PersonalNoLableCategoryController {
     }
 
     @ApiOperation(value = "查询所有粉丝标签类别列表")
-    @GetMapping("/{name}/")
-    public R list(
-            @ApiParam(name = "lableName", value = "标签类别名称", required = true)
-            @PathVariable("name") String name
-    ){
+    @GetMapping()
+    public R list(){
         try {
             log.info("查询所有粉丝标签类别列表开始");
-            List<PersonalNoLableCategory> personalList = noLableCategoryService.listByName(name);
+            String sql = DaoGetSql.listAll(ZCDB,"desc");
+            List<PersonalNoLableCategory> personalList = noLableCategoryService.list(sql);
             List<PersonalNoLableCategory> resultList = noLableCategoryService.getInfo(personalList);
             log.info("查询标签类别列表成功,返回数据");
             return R.ok().data(resultList);

@@ -24,8 +24,8 @@ public class G
 	public static List<String> ms_phoneList;		// = Arrays.asList("17319402380", "17310011324", "18513668642", "17073549676");
 
 	// 微信公众号配置
-	public static String WX_APPID = "wx32859e17a216fe34";		// = "wx8e17aa77af6c4ae3";
-	public static String WX_SECRET = "1ccbc3c0cab508e923557ccd5cbe573b";   // = "702c3bfc75d8bed0bfe105679513c7d0";
+	public static String WX_APPID = "wx8e17aa77af6c4ae3";		// = "wx8e17aa77af6c4ae3";
+	public static String WX_SECRET = "702c3bfc75d8bed0bfe105679513c7d0";   // = "702c3bfc75d8bed0bfe105679513c7d0";
 	public static String WX_GRANT_TYPE = "authorization_code";		// = "authorization_code";
 
 

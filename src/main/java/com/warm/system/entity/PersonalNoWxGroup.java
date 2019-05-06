@@ -18,7 +18,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
-@TableName("personal_no_wx_group")
+@TableName("wx_group")
 public class PersonalNoWxGroup extends Model<PersonalNoWxGroup> {
 
     private static final long serialVersionUID = 1L;

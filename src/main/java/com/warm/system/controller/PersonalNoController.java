@@ -2,6 +2,7 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.query.QueryPersonal;
 import com.warm.entity.requre.BatchUpdateObject;
@@ -11,6 +12,7 @@ import com.warm.system.service.db1.PersonalNoFriendsService;
 import com.warm.system.service.db1.PersonalNoService;
 import com.warm.system.service.db1.PersonalNoTaskService;
 import com.warm.system.service.db1.PersonalNoUserService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,7 +22,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -50,6 +51,9 @@ public class PersonalNoController {
     @Autowired
     private PersonalNoUserService userService;
 
+    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends);
+    private String ZCDBPersonalNo = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no);
+
     @ApiOperation(value = "根据标签id查询所有个人号列表")
     @GetMapping("/{lableId}/")
     public R listByLableId(
@@ -72,7 +76,8 @@ public class PersonalNoController {
     public R list(){
         try {
             log.info("开始查询所有个人号");
-            List<PersonalNo> personalList = noService.selectList(null);
+            String sql = DaoGetSql.listAll(ZCDBPersonalNo, "desc");
+            List<PersonalNo> personalList = noService.list(sql);
             log.info("查询成功返回数据列表");
             return R.ok().data(personalList);
         }catch (Exception e){
@@ -86,7 +91,8 @@ public class PersonalNoController {
     public R listByBickName(@PathVariable("nickName") String nickName){
         try {
             log.info("开始查询所有个人号");
-            List<PersonalNo> personalList = noService.ListByNickName(nickName);
+            String sql = "select * from " + ZCDBPersonalNo + " where nickname like '%"+nickName+"%' order by id desc";
+            List<PersonalNo> personalList = noService.list(sql);
             log.info("查询成功返回数据列表");
             return R.ok().data(personalList);
         }catch (Exception e){
@@ -95,7 +101,7 @@ public class PersonalNoController {
         }
     }
 
-    @ApiOperation(value = "根据条件查询所有个人号列表（flag为1，根据类别。flag为0，根据昵称）(type为1 ，个人号。type为0，朋友圈。type为3，返回个人号列表。)")
+    @ApiOperation(value = "根据条件查询所有个人号列表（flag为1，根据类别。flag为0，根据昵称）(type为1 ，个人号。type为2，朋友圈。type为3，返回个人号列表。)")
     @GetMapping(value = "getByCategory/{category}/{flag}/{type}/")
     public R list(
             @ApiParam(name = "flag", value = "根据什么参数查询标志", required = true)
@@ -108,15 +114,16 @@ public class PersonalNoController {
             @PathVariable("category") String category
     ){
         try {
-            List<PersonalNo> personalList = new ArrayList<>();
+            StringBuffer temp = new StringBuffer("select * from "+ZCDBPersonalNo);
             if("1".equals(flag)){
                 log.info("开始根据类别查询个人号");
-                personalList = noService.listByCategory(category);
+                temp.append(" where personal_no_category = '"+category+"' order by id desc");
                 log.info("根据类别查询个人号成功,返回数据");
             }else {
                 log.info("开始根据昵称查询个人号");
-                personalList = noService.listByNickName(category);
+                temp.append(" where nickname like '%"+category+"%' order by id desc");
             }
+            List<PersonalNo> personalList = noService.list(temp.toString());
             if (!VerifyUtils.collectionIsEmpty(personalList)) {
                 if("1".equals(type)) {
                     log.info("将个人号类型  转换成任务添加的  任务个人号类型");
@@ -125,6 +132,7 @@ public class PersonalNoController {
                         PersonalNoTaskPersonal personalNoTaskPersonal = new PersonalNoTaskPersonal();
                         personalNoTaskPersonal.setPersonalNoWxId(no.getWxId());
                         personalNoTaskPersonal.setPersonalNoName(no.getNickname());
+                        personalNoTaskPersonal.setPersonalNoWxId(no.getWxId());
                         personalNoTaskPersonal.setEquipmentId(no.getEquipmentId());
                         personalListResult.add(personalNoTaskPersonal);
                     }
@@ -137,6 +145,7 @@ public class PersonalNoController {
                         PersonalNoFriendsCirclePersonal circlePersonal = new PersonalNoFriendsCirclePersonal();
                         circlePersonal.setPersonalNoId(no.getId());
                         circlePersonal.setPersonalNoName(no.getNickname());
+                        circlePersonal.setPersonalNoWxId(no.getWxId());
                         personalListResult.add(circlePersonal);
                     }
                     log.info("转换为朋友圈个人号成功");
@@ -196,13 +205,15 @@ public class PersonalNoController {
                 log.info("要修改的个人号信息为空");
                 return R.error().message("要修改的个人号信息为空");
             }
-            PersonalNo byId = noService.selectById(personalId);
+            String sql = DaoGetSql.getById(ZCDBPersonalNo,personalId);
+            PersonalNo byId = noService.getOne(sql);
             if(!VerifyUtils.isEmpty(byId)){
                 log.info("开始修改个人号数据");
                 byId.setPersonalNoCategory(no.getPersonalNoCategory());
                 byId.setSalesGroup(no.getSalesGroup());
-                boolean b = noService.updateById(byId);
-                if(!b){
+                byId.setDb(ZCDBPersonalNo);
+                int b = noService.add(byId);
+                if(b == 0){
                     log.info("根据id修改个人号信息失败");
                     return R.error().message("根据id修改个人号信息失败");
                 }
@@ -221,7 +232,8 @@ public class PersonalNoController {
         try {
             log.info("开始查询首页显示的三个总数据");
             Num num = new Num();
-            List<PersonalNo> personalList = noService.selectList(null);
+            String sql = DaoGetSql.listAll(ZCDBPersonalNo, "asc");
+            List<PersonalNo> personalList = noService.list(sql);
             if(!VerifyUtils.collectionIsEmpty(personalList)){
                 Integer friendsNum = 0;
                 log.info("个人号集合查询成功,开始计算好友数量");
@@ -254,7 +266,8 @@ public class PersonalNoController {
     ){
         try {
             log.info("查询此个人号下的所有好友列表");
-            List<PersonalNoFriends> personalNoFriends = friendsService.listByPersonalId(personalId);
+            String sql = DaoGetSql.getSql("select * from " + ZCDB + " where `personal_no_id` = ?", personalId);
+            List<PersonalNoFriends> personalNoFriends = friendsService.list(sql);
             Set<PersonalNoUser> userSet = new HashSet<>();
             log.info("根据好友表的好友id查询好友详细信息");
             for (PersonalNoFriends personalNoFriend : personalNoFriends) {

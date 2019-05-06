@@ -48,16 +48,12 @@ public class CookieUtil {
             Cookie cookie = new Cookie(cookieName, cookieValue);
             if (cookieMaxage >= 0)
                 cookie.setMaxAge(cookieMaxage);
-            if (null != request)// 设置域名的cookie
-                cookie.setDomain(getDomainName(request));
             cookie.setPath("/");
             response.addCookie(cookie);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
 
     /**
      * 得到cookie的域名
@@ -94,7 +90,7 @@ public class CookieUtil {
     }
 
     public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String cookieName) {
-        setCookie(request, response, cookieName, null, 0, false);
+        setCookie(request, response, cookieName, null, 0, true);
     }
 
 

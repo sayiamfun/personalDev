@@ -18,9 +18,7 @@ public interface PersonalNoKeywordService extends IService<PersonalNoKeyword> {
 
     Page<PersonalNoKeyword> pageQuery(Page<PersonalNoKeyword> page, String keyWord);
 
-    boolean insertInfo(PersonalNoKeyword keyword);
-
-    PersonalNoKeyword getInfoById(Integer i);
+    PersonalNoKeyword getInfoById(PersonalNoKeyword keyWordId);
 
     void deleteById(Integer keyWordId);
 
@@ -29,4 +27,16 @@ public interface PersonalNoKeywordService extends IService<PersonalNoKeyword> {
     void onById(Integer keyWordId);
 
     List<PersonalNoKeyword> getStart();
+
+    Integer add(PersonalNoKeyword entity);
+
+    Integer delete(String sql);
+
+    List<PersonalNoKeyword> list(String sql);
+
+    List<String> listString(String sql);
+
+    PersonalNoKeyword getOne(String sql);
+
+    Long getCount(String sql);
 }

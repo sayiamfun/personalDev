@@ -28,7 +28,7 @@ public interface PersonalNoTaskService extends IService<PersonalNoTask> {
 
     boolean addPersonalTask(PersonalNoTask task);
 
-    PersonalNoTask getTaskInfoById(Integer id);
+    PersonalNoTask getTaskInfoById(PersonalNoTask id);
 
     List<Integer> listByPersonalWxId(String wxId);
 

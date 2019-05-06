@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_people")
 public class PersonalNoPeople extends Model<PersonalNoPeople> {
 
@@ -68,86 +71,9 @@ public class PersonalNoPeople extends Model<PersonalNoPeople> {
      */
     private Integer flag;
 
+    @TableField(exist = false)
+    private String db;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getPersonalFriendWxId() {
-        return personalFriendWxId;
-    }
-
-    public void setPersonalFriendWxId(String personalFriendWxId) {
-        this.personalFriendWxId = personalFriendWxId;
-    }
-
-    public String getPersonalFriendNickName() {
-        return personalFriendNickName;
-    }
-
-    public void setPersonalFriendNickName(String personalFriendNickName) {
-        this.personalFriendNickName = personalFriendNickName;
-    }
-
-    public String getPersonalNoWxId() {
-        return personalNoWxId;
-    }
-
-    public void setPersonalNoWxId(String personalNoWxId) {
-        this.personalNoWxId = personalNoWxId;
-    }
-
-    public Integer getPersonalTaskId() {
-        return personalTaskId;
-    }
-
-    public void setPersonalTaskId(Integer personalTaskId) {
-        this.personalTaskId = personalTaskId;
-    }
-
-    public Integer getChannelId() {
-        return channelId;
-    }
-
-    public void setChannelId(Integer channelId) {
-        this.channelId = channelId;
-    }
-
-    public Date getBeFriendTime() {
-        return beFriendTime;
-    }
-
-    public void setBeFriendTime(Date beFriendTime) {
-        this.beFriendTime = beFriendTime;
-    }
-
-    public String getRemarks() {
-        return remarks;
-    }
-
-    public void setRemarks(String remarks) {
-        this.remarks = remarks;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
-
-    public Integer getFlag() {
-        return flag;
-    }
-
-    public void setFlag(Integer flag) {
-        this.flag = flag;
-    }
 
     @Override
     protected Serializable pkVal() {
