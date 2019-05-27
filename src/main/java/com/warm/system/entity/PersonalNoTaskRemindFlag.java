@@ -44,6 +44,9 @@ public class PersonalNoTaskRemindFlag extends Model<PersonalNoTaskRemindFlag> {
     @TableField("personal_no_task_id")
     private Integer personalNoTaskId;
 
+    @TableField(exist = false)
+    private String db;
+
 
     @Override
     protected Serializable pkVal() {

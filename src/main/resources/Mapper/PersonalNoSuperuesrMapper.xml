@@ -14,4 +14,39 @@
         <result column="openid" property="openid" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoSuperuesr" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,super_name,password,head_portrait,code,deleted,wx_id,openid)
+        values
+          (#{entity.id},#{entity.superName},#{entity.password},#{entity.headPortrait},#{entity.code},#{entity.deleted},#{entity.wxId},#{entity.openid})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoSuperuesr" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.superName!=null">
+                super_name = #{entity.superName},
+            </if>
+            <if test="entity.password!=null">
+                password = #{entity.password},
+            </if>
+            <if test="entity.headPortrait!=null">
+                head_portrait = #{entity.headPortrait},
+            </if>
+            <if test="entity.code!=null">
+                code = #{entity.code},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+            <if test="entity.wxId!=null">
+                wx_id = #{entity.wxId},
+            </if>
+            <if test="entity.openid!=null">
+                openid = #{entity.openid},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

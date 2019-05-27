@@ -2,10 +2,13 @@ package com.warm.system.entity;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.enums.IdType;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -16,6 +19,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_small_face")
 public class PersonalNoSmallFace extends Model<PersonalNoSmallFace> {
 
@@ -29,21 +33,8 @@ public class PersonalNoSmallFace extends Model<PersonalNoSmallFace> {
     private String face;
 
 
-    public Integer getId() {
-        return Id;
-    }
-
-    public void setId(Integer Id) {
-        this.Id = Id;
-    }
-
-    public String getFace() {
-        return face;
-    }
-
-    public void setFace(String face) {
-        this.face = face;
-    }
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

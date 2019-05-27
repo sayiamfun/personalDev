@@ -1,14 +1,17 @@
 package com.warm.system.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskReplyContent;
 import com.warm.system.mapper.PersonalNoTaskReplyContentMapper;
 import com.warm.system.service.db1.PersonalNoTaskReplyContentService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,18 +29,10 @@ import java.util.List;
 @Service
 public class PersonalNoTaskReplyContentServiceImpl extends ServiceImpl<PersonalNoTaskReplyContentMapper, PersonalNoTaskReplyContent> implements PersonalNoTaskReplyContentService {
     private static Log log = LogFactory.getLog(PersonalNoTaskReplyContentServiceImpl.class);
-    /*
-     * 根据任务id查询回复列表
-     */
-    @Override
-    public List<PersonalNoTaskReplyContent> getListByTaskId(Integer id) {
-        log.info("根据任务id查询任务回复内容列表开始");
-        EntityWrapper<PersonalNoTaskReplyContent> entityWrapper = new EntityWrapper<>();
-        entityWrapper.eq("personal_no_task_id" , id);
-        List<PersonalNoTaskReplyContent> replyContentList = baseMapper.selectList(entityWrapper);
-        log.info("根据任务id查询任务回复内容列表结束");
-        return replyContentList;
-    }
+    @Autowired
+    private PersonalNoTaskReplyContentMapper replyContentMapper;
+
+    private String DBTaskReply = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_reply_content);
 
     /**
      * 批量添加自动回复消息
@@ -48,14 +43,19 @@ public class PersonalNoTaskReplyContentServiceImpl extends ServiceImpl<PersonalN
     @Override
     public boolean batchSave(PersonalNoTask noTask) {
         log.info("根据任务id删除回复消息");
-        deleteByTaskId(noTask.getId());
+        String getSql = DaoGetSql.getSql("DELETE FROM "+DBTaskReply+" where personal_no_task_id = ?",noTask.getId());
+        Sql sql = new Sql(getSql);
+        replyContentMapper.deleteBySql(sql);
         List<PersonalNoTaskReplyContent> noTaskReplyContentList = noTask.getNoTaskReplyContentList();
         if(!VerifyUtils.collectionIsEmpty(noTaskReplyContentList)){
             log.info("开始插入任务回复消息内容");
             for (PersonalNoTaskReplyContent noTaskReplyContent : noTaskReplyContentList) {
+                noTaskReplyContent.setId(null);
                 noTaskReplyContent.setPersonalNoTaskId(noTask.getId());
-                int save = baseMapper.insert(noTaskReplyContent);
-                if(save != 1){
+                noTaskReplyContent.setDeleted(0);
+                noTaskReplyContent.setDb(DBTaskReply);
+                int save = replyContentMapper.add(noTaskReplyContent);
+                if(save < 0){
                     log.info("将回复消息插入到数据库失败");
                     return false;
                 }
@@ -65,15 +65,18 @@ public class PersonalNoTaskReplyContentServiceImpl extends ServiceImpl<PersonalN
         return true;
     }
 
-    /**
-     * 根据任务id删除任务消息
-     * @param taskId
-     * @return
-     */
     @Override
-    public boolean deleteByTaskId(Integer taskId) {
-        EntityWrapper<PersonalNoTaskReplyContent> entityWrapper = new EntityWrapper<>();
-        entityWrapper.eq("personal_no_task_id", taskId);
-        return baseMapper.delete(entityWrapper)>0;
+    public PersonalNoTaskReplyContent getBySql(Sql sql) {
+        return replyContentMapper.getBySql(sql);
+    }
+
+    @Override
+    public List<PersonalNoTaskReplyContent> listBySql(Sql sql) {
+        return replyContentMapper.listBySql(sql);
+    }
+
+    @Override
+    public boolean delBySql(Sql sql) {
+        return replyContentMapper.deleteBySql(sql)>=0;
     }
 }

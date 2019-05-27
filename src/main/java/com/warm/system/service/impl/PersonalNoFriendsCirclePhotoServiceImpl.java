@@ -31,6 +31,8 @@ public class PersonalNoFriendsCirclePhotoServiceImpl extends ServiceImpl<Persona
     private static Log log = LogFactory.getLog(PersonalNoFriendsCirclePhotoServiceImpl.class);
     @Autowired
     private PersonalNoFriendsCirclePhotoMapper friendsCirclePhotoMapper;
+
+    private String DBFriendsCirclePhoto  = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_photo );
     /**
      * 批量添加朋友圈照片数据
      * @param noFriendsCircle
@@ -41,7 +43,7 @@ public class PersonalNoFriendsCirclePhotoServiceImpl extends ServiceImpl<Persona
     public boolean batchSave(PersonalNoFriendsCircle noFriendsCircle) {
         log.info("数据库开始批量添加朋友圈相关照片数据");
         log.info("先根据朋友圈id删除照片数据");
-        String sql = DaoGetSql.getSql("delete from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_photo )+ " where `friends_circle_id` = ?", noFriendsCircle.getId());
+        String sql = DaoGetSql.getSql("update  " +DBFriendsCirclePhoto+ " set deleted = 1 where `friends_circle_id` = ?", noFriendsCircle.getId());
         friendsCirclePhotoMapper.delete(sql);
         List<PersonalNoFriendsCirclePhoto> photoList = noFriendsCircle.getPhotoList();
         if(!VerifyUtils.collectionIsEmpty(photoList)){
@@ -49,9 +51,10 @@ public class PersonalNoFriendsCirclePhotoServiceImpl extends ServiceImpl<Persona
             for (PersonalNoFriendsCirclePhoto noFriendsCirclePhoto : photoList) {
                 noFriendsCirclePhoto.setId(null);
                 noFriendsCirclePhoto.setFriendsCircleId(noFriendsCircle.getId());
-                noFriendsCirclePhoto.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_photo ));
+                noFriendsCirclePhoto.setDeleted(0);
+                noFriendsCirclePhoto.setDb(DBFriendsCirclePhoto);
                 int insert = add(noFriendsCirclePhoto);
-                if(insert != 1){
+                if(insert < 0){
                     log.info("数据库插入朋友圈照片失败");
                     return false;
                 }

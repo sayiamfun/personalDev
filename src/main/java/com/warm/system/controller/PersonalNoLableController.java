@@ -7,8 +7,8 @@ import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.requre.BatchUpdateObject;
 import com.warm.entity.result.LableManager;
-import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoLable;
+import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import com.warm.system.entity.PersonalNoTaskLable;
 import com.warm.system.service.db1.PersonalNoLableService;
 import com.warm.utils.DaoGetSql;
@@ -22,15 +22,13 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.MediaSize;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author dgd123
@@ -44,23 +42,23 @@ public class PersonalNoLableController {
     private static Log log = LogFactory.getLog(PersonalNoLableController.class);
     @Autowired
     private PersonalNoLableService noLableService;
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
+    private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_lable);
 
     @ApiOperation(value = "根据个人号查找粉丝标签列表")
     @PostMapping("listByPersonal")
     public R listLableByPersonal(
-            @ApiParam(name = "name", value = "要查找的标签类别", required = true)
-            @RequestBody List<PersonalNo> list
-    ){
+            @ApiParam(name = "list", value = "个人号集合", required = true)
+            @RequestBody List<PersonalNoOperationStockWechatAccount> list
+    ) {
         try {
-            if(VerifyUtils.collectionIsEmpty(list)){
+            if (VerifyUtils.collectionIsEmpty(list)) {
                 return R.error().message("查询的参数为空");
             }
             log.info("根据个人号查找粉丝标签列表开始");
-            Set<String> lableSet = noLableService.listByPersonal(list);
+            List<String> lableSet = noLableService.listByPersonal(list);
             log.info("根据个人号查找粉丝标签列表结束");
             return R.ok().data(lableSet);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新后重试。。。");
         }
@@ -68,17 +66,16 @@ public class PersonalNoLableController {
 
     @ApiOperation(value = "查找粉丝标签列表")
     @GetMapping
-    public R listLable(){
+    public R listLable() {
         try {
             log.info("查找粉丝标签列表开始");
-            EntityWrapper<PersonalNoLable> entityWrapper = new EntityWrapper<>();
-            entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-            List<PersonalNoLable> list = noLableService.selectList(entityWrapper);
+            String getSql = DaoGetSql.listAll(DBLable, "desc");
+            List<PersonalNoLable> list = noLableService.list(getSql);
             log.info("查找粉丝标签列表成功,返回数据");
             return R.ok().data(list);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -87,14 +84,14 @@ public class PersonalNoLableController {
     public R listByName(
             @ApiParam(name = "name", value = "要查找的标签类别", required = true)
             @PathVariable("name") String name
-    ){
+    ) {
         try {
             log.info("根据名称查找标签");
-            String sql = "select * from " + ZCDB + " where lable_name like '%"+ name +"%'";
+            String sql = "select * from " + DBLable + " where lable_name like '%" + name + "%'";
             List<PersonalNoLable> noLables = noLableService.list(sql);
             log.info("根据名称查找标签结束");
             return R.ok().data(noLables);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新后重试。。。");
         }
@@ -105,14 +102,14 @@ public class PersonalNoLableController {
     public R listLableByCategory(
             @ApiParam(name = "category", value = "要查找的标签类别", required = true)
             @PathVariable("category") String category
-    ){
+    ) {
         try {
             log.info("根据类别查找标签开始");
-            String sql = DaoGetSql.getSql("select * from " + ZCDB + " where lable_category = ?", category);
+            String sql = DaoGetSql.getSql("select * from " + DBLable + " where lable_category = ?", category);
             List<PersonalNoLable> list = noLableService.list(sql);
             log.info("开始将  标签类型   转换成   任务标签类型");
             List<PersonalNoTaskLable> personalNoTaskLableList = new ArrayList<>();
-            if(!VerifyUtils.collectionIsEmpty(list)){
+            if (!VerifyUtils.collectionIsEmpty(list)) {
                 for (PersonalNoLable noLable : list) {
                     PersonalNoTaskLable personalNoTaskLable = new PersonalNoTaskLable();
                     personalNoTaskLable.setLableId(noLable.getId());
@@ -123,9 +120,9 @@ public class PersonalNoLableController {
             log.info("任务页面查找粉丝标签列表成功,返回数据");
             log.info("根据类别查找标签成功,返回数据");
             return R.ok().data(personalNoTaskLableList);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -133,33 +130,24 @@ public class PersonalNoLableController {
     @PostMapping(value = "addLable")
     public R addLable(
             @ApiParam(name = "noLable", value = "要添加的标签对象", required = true)
-            @RequestBody PersonalNoLable noLable,
-            HttpServletRequest request
-    ){
+            @RequestBody PersonalNoLable noLable
+    ) {
         try {
             log.info("添加粉丝标签对象开始");
-            if(VerifyUtils.isEmpty(noLable)){
+            if (VerifyUtils.isEmpty(noLable)) {
                 log.info("要插入的对象数据为空,插入失败");
                 return R.error().message("要添加的标签对象为空");
             }
-            if(VerifyUtils.isEmpty(noLable.getId())){
-                log.info("id为空,插入数据到数据库");
-                boolean b = noLableService.insert(noLable);
-                if(!b){
-                    return R.error().message("添加标签到数据库失败");
-                }
-            }else{
-                log.info("id不为空,更新数据到数据库");
-                boolean b = noLableService.updateById(noLable);
-                if(!b){
-                    return R.error().message("更新标签到数据库失败");
-                }
+            noLable.setDb(DBLable);
+            boolean b = noLableService.add(noLable) > 0;
+            if (!b) {
+                return R.error().message("添加标签到数据库失败");
             }
             log.info("插入标签成功");
             return R.ok();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -174,18 +162,18 @@ public class PersonalNoLableController {
 
             @ApiParam(name = "lableName", value = "标签名称模糊查询", required = true)
             @PathVariable("lableName") String lableName
-    ){
+    ) {
         try {
             log.info("开始分页查询标签管理");
             Page<PersonalNoLable> page = new Page<>(VerifyUtils.setPageNum(pageNum), VerifyUtils.setSize(size));
-            page = noLableService.pageQuery(page , lableName);
+            page = noLableService.pageQuery(page, lableName);
             log.info("分页查询标签成功，将集合传入下一个方法，开始统计数据");
-            List<LableManager> lableManagerList =  noLableService.getNumData(page.getRecords());
+            List<LableManager> lableManagerList = noLableService.getNumData(page.getRecords());
             log.info("统计数据成功");
             return R.ok().data(lableManagerList);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -194,23 +182,23 @@ public class PersonalNoLableController {
     public R batchUpdateLableCategory(
             @ApiParam(name = "batchUpdateObject", value = "要批量需改的请求参数", required = true)
             @RequestBody BatchUpdateObject batchUpdateObject
-    ){
+    ) {
         try {
             log.info("批量修改标签类别");
-            if(VerifyUtils.isEmpty(batchUpdateObject)){
+            if (VerifyUtils.isEmpty(batchUpdateObject)) {
                 log.info("请求参数为空");
                 return R.error().message("请求参数为空");
             }
             boolean b = noLableService.batchUpdateCategory(batchUpdateObject);
-            if(!b){
+            if (!b) {
                 log.info("批量修改标签类别失败");
                 return R.error().message("批量修改标签数据失败");
             }
             log.info("批量修改标签类别成功");
             return R.ok();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 }

@@ -47,7 +47,7 @@ public class PersonalNoKeyword extends Model<PersonalNoKeyword> {
     private List<Integer> personalIdList;
 
     @TableField(exist = false)
-    private List<PersonalNo> personalList;
+    private List<PersonalNoOperationStockWechatAccount> personalList;
 
     @TableField(exist = false)
     private String nickNames;
@@ -57,6 +57,10 @@ public class PersonalNoKeyword extends Model<PersonalNoKeyword> {
 
     @TableField(exist = false)
     private String db;
+
+    @TableField(exist = false)
+    private List<Integer> taskIds;
+
 
     @Override
     protected Serializable pkVal() {

@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <link href="css/index.css" rel="stylesheet"/>
+    <title th:text="${taskTheme}"></title>
+</head>
+<body style="margin: 0;padding: 0;">
+<div class="personHFive">
+    <div th:if="${flag == '0'}" class="perBg">
+        <div class="qr-details">
+            <div class="title">
+                <!--个人号头像 img标签中的id用来判断当前个人号是否有头像-->
+                <img src="" th:src="${headPortraitUrl != null}?${headPortraitUrl}:'./image/beauGirl.jpg'" id="img"/>
+            </div>
+            <div class="addQrcode">
+                <!--个人号名字-->
+                <span style="color: #ff9100;font-weight: 700;font-size: 0.3rem;" id="name" th:text="${Nickname}"></span>
+                <!--加个人号的理由-->
+                <span id="resona" style="font-size: 0.3rem;" th:text="${recommendedReasons}"></span>
+                <!--个人号二维码-->
+                <img src="" th:src="${QrCode}" id="img2"/>
+            </div>
+            <div class="title t1"><i class="el-icon-success" style="padding-right: 0.1rem;"></i>此二维码已经过安全认证，请放心扫描</div>
+        </div>
+    </div>
+    <!--当没有cookie的时候做一个判断，好让自己知道是什么位置出了什么问题-->
+    <div th:if="${flag == '1'}" class="showPage">
+        <span>错误代码100</span>
+        <span>请联系管理人员</span>
+        <span>联系电话：17073549676</span>
+    </div>
+    <div th:if="${flag == '2'}" class="showPage">
+        <span>任务已经结束了。。。</span>
+    </div>
+</div>
+</body>
+</html>

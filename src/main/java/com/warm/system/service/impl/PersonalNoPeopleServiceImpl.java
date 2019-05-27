@@ -1,27 +1,29 @@
 package com.warm.system.service.impl;
 
 import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.entity.requre.PeopleNumReq;
-import com.warm.entity.result.LableShow;
-import com.warm.system.entity.PersonalNo;
+import com.warm.entity.robot.G;
+import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import com.warm.system.entity.PersonalNoPeople;
 import com.warm.system.entity.PersonalNoTaskLable;
 import com.warm.system.mapper.PersonalNoPeopleMapper;
 import com.warm.system.service.db1.PersonalNoPeopleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.warm.system.service.db1.PersonalNoTaskLableService;
+import com.warm.system.service.db2.PersonalNoOperationStockWechatAccountService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import com.warm.utils.WebConst;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author dgd123
@@ -30,16 +32,22 @@ import java.util.*;
 @Service
 public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMapper, PersonalNoPeople> implements PersonalNoPeopleService {
 
-    private static Log log = LogFactory.getLog(PersonalNoPeopleServiceImpl.class);
-    @Autowired
-    private PersonalNoTaskLableService noTaskLableService;
     @Autowired
     private PersonalNoPeopleMapper taskPeopleMapper;
-    private String ZCDBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
+    @Autowired
+    private PersonalNoTaskLableService taskLableService;
+    @Autowired
+    private PersonalNoPeopleService peopleService;
+    @Autowired
+    private PersonalNoOperationStockWechatAccountService wechatAccountService;
+
+    private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_lable);
+    private String DBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
+    private String DBWeChat = DB.DBAndTable(DB.OA,DB.operation_stock_wechat_account);
 
     @Override
     public Integer add(PersonalNoPeople entity) {
-        if(VerifyUtils.isEmpty(entity.getId()))
+        if (VerifyUtils.isEmpty(entity.getId()))
             return taskPeopleMapper.add(entity);
         return taskPeopleMapper.updateOne(entity);
     }
@@ -68,61 +76,46 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
     public Long getCount(String sql) {
         return taskPeopleMapper.getCount(sql);
     }
-    /**
-     * 根据个人号wxid和任务id查询对应的粉丝数量
-     * @param noSet
-     * @param taskLableList
-     * @return
-     */
+
     @Override
-    public Set<LableShow> listByPersonalIdAndTaskId(Set<LableShow> noSet, List<PersonalNoTaskLable> taskLableList) {
-        String sql = "";
-        String sql1 = "";
-        if(!VerifyUtils.collectionIsEmpty(noSet)){
-            for (LableShow lableShow : noSet) {
-                sql = "select count(*) from "+ZCDBNoPeople+" where personal_no_wx_id = '"+lableShow.getPersonalWxId()+"'";
-                if(!VerifyUtils.collectionIsEmpty(taskLableList)){
-                    for (PersonalNoTaskLable personalNoTaskLable : taskLableList) {
-                        sql1 = sql + " and personal_task_id = "+personalNoTaskLable.getPersonalNoTaskId();
-                        Long count = taskPeopleMapper.getCount(sql1);
-                        lableShow.setPeopleNum(lableShow.getPeopleNum() + count.intValue());
-                    }
-                }else {
-                    Long count = taskPeopleMapper.getCount(sql);
-                    lableShow.setPeopleNum(lableShow.getPeopleNum() + count.intValue());
-                }
+    public List<PersonalNoPeople> listByLableAndPersonal(PeopleNumReq peopleNumReq) {
+        String lableIds = DaoGetSql.getIds(peopleNumReq.getLableIdList());
+        String getSql = "SELECT DISTINCT personal_no_task_id FROM "+DBTaskLable+" where lable_id in "+lableIds;
+        Sql sql = new Sql(getSql);
+        List<String> taskIdList = taskLableService.listStringBySql(sql);
+        String taskIds = DaoGetSql.getIds(taskIdList);
+        List<PersonalNoPeople> peopleList = new ArrayList<>();
+        for (String personalNoWxId : peopleNumReq.getNoWxIdList()) {
+            getSql = DaoGetSql.getSql("SELECT * from "+DBWeChat+" where wx_id = ? and  operation_project_instance_id = ? limit 0,1",personalNoWxId, G.ms_OPERATION_PROJECT_INSTANCE_ID);
+            sql.setSql(getSql);
+            PersonalNoOperationStockWechatAccount wechatAccount = wechatAccountService.getBySql(sql);
+            if(VerifyUtils.isEmpty(wechatAccount) || WebConst.WECHATSTATUS.equals(wechatAccount.getStatus())){
+                continue;
             }
+            if(VerifyUtils.isEmpty(peopleNumReq.getStartTime())){
+                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' and personal_task_id in "+taskIds+" and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
+            }else {
+                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' and personal_task_id in "+taskIds+" and be_friend_time  BETWEEN '"+WebConst.getNowDate(peopleNumReq.getStartTime())+"' and '"+WebConst.getNowDate(peopleNumReq.getEndTime())+"'  and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
+            }
+
+            peopleList = peopleService.list(getSql);
         }
-        return noSet;
+        return peopleList;
     }
-    /**
-     * 根据个人号集合和标签名称集合查询粉丝id集合
-     * 标签查询个人号任务id集合
-     * 根据个人号wxid和个人号任务呀查询任务粉丝
-     * @param peopleNumReq
-     * @return
-     */
+
     @Override
-    public List<String> getByNoListAndLableNameList(PeopleNumReq peopleNumReq) {
-        log.info("用来存放y好友微信id");
-        List<String> peopleIdSet = null;
-        log.info("取得所有的任务id");
-        String sql = "";
-        Set<Integer> taskIdSet = noTaskLableService.listByLableNameList(peopleNumReq.getLableNameList());
-        if(!VerifyUtils.isEmpty(peopleNumReq.getNoList())){
-            for (PersonalNo no : peopleNumReq.getNoList()) {
-                if(!VerifyUtils.collectionIsEmpty(taskIdSet)){
-                    for (Integer integer : taskIdSet) {
-                        sql = "select DISTINCT personal_friend_wx_id from "+ZCDBNoPeople+" where personal_no_wx_id = '"+no.getWxId()+"' and personal_task_id = "+integer+" and flag = 2";
-                        if(!VerifyUtils.isEmpty(peopleNumReq.getStartTime()) && !VerifyUtils.isEmpty(peopleNumReq.getEndTime())){
-                            sql += " and be_friend_time between '"+ WebConst.getNowDate(peopleNumReq.getStartTime()) +"' and '"+WebConst.getNowDate(peopleNumReq.getEndTime())+"'";
-                        }
-                        peopleIdSet = taskPeopleMapper.listString(sql);
-                    }
-                }
+    public Map<String, List<String>> MapByPeopleList(List<PersonalNoPeople> peopleList) {
+        Map<String,List<String>> map = new HashMap<>();
+        for (PersonalNoPeople people : peopleList) {
+            if(map.containsKey(people.getPersonalNoWxId())){
+                map.get(people.getPersonalNoWxId()).add(people.getPersonalFriendWxId());
+            }else {
+                List<String> list = new ArrayList<>();
+                list.add(people.getPersonalFriendWxId());
+                map.put(people.getPersonalNoWxId(),list);
             }
         }
-        return peopleIdSet;
+        return map;
     }
 
 }

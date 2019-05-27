@@ -29,7 +29,7 @@ public class PersonalNoCategoryServiceImpl extends ServiceImpl<PersonalNoCategor
 
     @Override
     public Integer add(PersonalNoCategory entity) {
-        if(VerifyUtils.isEmpty(entity))
+        if(VerifyUtils.isEmpty(entity.getId()))
             return noCategoryMapper.add(entity);
         return noCategoryMapper.updateOne(entity);
     }

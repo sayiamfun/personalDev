@@ -58,10 +58,12 @@ public class PersonalNoTaskPersonal extends Model<PersonalNoTaskPersonal> {
     @TableField("to_people_num")
     private Integer toPeopleNum;
 
-
-    @ApiModelProperty(value = "渠道数量")
+    @ApiModelProperty(value = "好友数量")
     @TableField(exist = false)
     private Integer peopleNum;
+
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

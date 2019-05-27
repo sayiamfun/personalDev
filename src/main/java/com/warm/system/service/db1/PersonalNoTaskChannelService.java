@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskChannel;
 import com.baomidou.mybatisplus.service.IService;
@@ -18,9 +19,11 @@ public interface PersonalNoTaskChannelService extends IService<PersonalNoTaskCha
 
     boolean batchSave(PersonalNoTask noTask);
 
-    List<PersonalNoTaskChannel> getListByTaskId(Integer id);
+    List<Integer> listChannelIdsBySql(Sql sql);
 
-    boolean deleteByTaskId(Integer taskId);
+    Integer getIdBySql(Sql sql);
 
-    PersonalNoTaskChannel selectByTaskIdAndChannelId(String roadId, Integer channelId, Integer roadOrTask);
+    List<PersonalNoTaskChannel> listBySql(Sql sql);
+
+    boolean deleteBySql(Sql sql);
 }

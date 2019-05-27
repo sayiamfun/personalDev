@@ -3,6 +3,7 @@ package com.warm.system.controller;
 
 import com.warm.entity.DB;
 import com.warm.entity.R;
+import com.warm.entity.Sql;
 import com.warm.entity.robot.CreateGroupCategoryEntity;
 import com.warm.entity.robot.GroupCategory;
 import com.warm.entity.robot.ResponseInfo;
@@ -41,8 +42,9 @@ public class PersonalNoGroupCategoryController {
     private PersonalNoWxUserService wxUserService;
 
     private static Log log = LogFactory.getLog(PersonalNoGroupCategoryController.class);
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP,DB.group_category);
+    private String DBGroupCategory = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP,DB.group_category);
     private String QUNLIEBIAN = DB.DBAndTable(DB.QUNLIEBINA_01,DB.group_category);
+    private String DBWxUser = DB.DBAndTable(DB.QUNLIEBINA_01,DB.wx_user);
     @Autowired
     private PersonalNoGroupCategoryService groupCategoryService;
 
@@ -57,7 +59,7 @@ public class PersonalNoGroupCategoryController {
     ){
         try {
             log.info("根据群类别集合id查询所有的群类别");
-            String database = ZCDB;
+            String database = DBGroupCategory;
             switch (flag){
                 case 0:
                     break;
@@ -65,7 +67,7 @@ public class PersonalNoGroupCategoryController {
                     database = QUNLIEBIAN;
                     break;
             }
-            String sql = DaoGetSql.getSql("select * from " + database + " where `group_category_set_id` = ?", setId);
+            String sql = DaoGetSql.getSql("select * from " + database + " where `group_category_set_id` = ? order by id desc", setId);
             List<PersonalNoGroupCategory> list = groupCategoryService.list(sql);
             log.info("根据群类别集合id查询所有的群类别结束");
             return R.ok().data(list);
@@ -110,7 +112,8 @@ public class PersonalNoGroupCategoryController {
     @PostMapping("listU")
     public R listU(){
         try {
-            List<String> list = wxUserService.listByASS(1);
+            String getSql = DaoGetSql.getSql("select nick_name from "+DBWxUser+" where is_assistant = 1");
+            List<String> list = wxUserService.listBySql(new Sql(getSql));
             return R.ok().data(list);
         }catch (Exception e){
             e.printStackTrace();

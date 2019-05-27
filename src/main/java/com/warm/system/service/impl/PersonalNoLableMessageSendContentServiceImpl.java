@@ -32,6 +32,8 @@ public class PersonalNoLableMessageSendContentServiceImpl extends ServiceImpl<Pe
     @Autowired
     private PersonalNoLableMessageSendContentMapper lableMessageSendContentMapper;
 
+    private String DBLableMessageContent = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_message_send_content);
+
     /**
      * 批量添加标签消息内容
      * @param personalNoLableMessageSend
@@ -40,16 +42,18 @@ public class PersonalNoLableMessageSendContentServiceImpl extends ServiceImpl<Pe
     @Transactional
     @Override
     public boolean batchSave(PersonalNoLableMessageSend personalNoLableMessageSend) {
-        String sql = DaoGetSql.getSql("delete from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_lable_message_send_content) + " where personal_no_lable_message_send_id = ?", personalNoLableMessageSend.getId());
+        String sql = DaoGetSql.getSql("delete from " + DBLableMessageContent + " where personal_no_lable_message_send_id = ?", personalNoLableMessageSend.getId());
         lableMessageSendContentMapper.delete(sql);
         List<PersonalNoLableMessageSendContent> personalNoLableMessageSendContentList = personalNoLableMessageSend.getPersonalNoLableMessageSendContentList();
         if(!VerifyUtils.collectionIsEmpty(personalNoLableMessageSendContentList)) {
             log.info("开始添加标签消息内容到数据库");
             for (PersonalNoLableMessageSendContent personalNoLableMessageSendContent : personalNoLableMessageSendContentList) {
+                personalNoLableMessageSendContent.setId(null);
                 personalNoLableMessageSendContent.setPersonalNoLableMessageSendId(personalNoLableMessageSend.getId());
-                personalNoLableMessageSendContent.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_message_send_content));
+                personalNoLableMessageSendContent.setDb(DBLableMessageContent);
+                personalNoLableMessageSendContent.setDeleted(0);
                 int insert = lableMessageSendContentMapper.add(personalNoLableMessageSendContent);
-                if(insert==0){
+                if(insert<0){
                     return false;
                 }
             }

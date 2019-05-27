@@ -9,8 +9,9 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
-import java.io.Serializable;
+import javax.validation.constraints.NotNull;
 
 /**
  * <p>
@@ -31,13 +32,17 @@ public class PersonalNoChannel extends Model<PersonalNoChannel> {
     /**
      * 渠道名称
      */
+    @NotBlank(message = "渠道名称不能为空")
     @TableField("channel_name")
     private String channelName;
     /**
      * 超级用户id
      */
+    @NotNull(message = "请退出重新登录")
     @TableField("super_id")
     private Integer superId;
+
+    @NotBlank(message = "请退出重新登录")
     @TableField("super_name")
     private String superName;
     /**

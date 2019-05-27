@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTaskMessageSend;
 import com.warm.system.entity.PersonalNoTaskMessageSendContent;
 import com.baomidou.mybatisplus.service.IService;
@@ -16,7 +17,7 @@ import java.util.List;
  */
 public interface PersonalNoTaskMessageSendContentService extends IService<PersonalNoTaskMessageSendContent> {
 
-    List<PersonalNoTaskMessageSendContent> listByTaskMessageContentId(Integer id);
-
     boolean batchSave(PersonalNoTaskMessageSend personalNoTaskMessageSend);
+
+    List<PersonalNoTaskMessageSendContent> listBySql(Sql sql);
 }

@@ -9,6 +9,7 @@
         <result column="personal_no_wx_id" property="personalNoWxId" />
         <result column="personal_no_nick_name" property="personalNoNickName" />
         <result column="keyword_id" property="keywordId" />
+        <result column="keyword_name" property="keywordName" />
     </resultMap>
 
     <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
@@ -25,9 +26,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoAndKeyword" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_no_id,personal_no_wx_id,personal_no_nick_name,keyword_id)
+          (id,personal_no_id,personal_no_wx_id,personal_no_nick_name,keyword_id,keyword_name)
         values
-          (#{entity.id},#{entity.personalNoId},#{entity.personalNoWxId},#{entity.personalNoNickName},#{entity.keywordId})
+          (#{entity.id},#{entity.personalNoId},#{entity.personalNoWxId},#{entity.personalNoNickName},#{entity.keywordId},#{entity.keywordName})
     </insert>
 
     <update id="updateOneById" parameterType="com.warm.system.entity.PersonalNoAndKeyword" useGeneratedKeys="true" keyProperty="entity.id">
@@ -44,6 +45,9 @@
             </if>
             <if test="entity.keywordId!=null">
                 keyword_id = #{entity.keywordId},
+            </if>
+            <if test="entity.keywordName!=null">
+                keyword_name = #{entity.keywordName},
             </if>
         </set>
         where id = #{entity.id}

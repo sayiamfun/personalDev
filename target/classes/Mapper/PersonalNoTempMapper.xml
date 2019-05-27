@@ -11,4 +11,7 @@
         <result column="flag" property="flag" />
     </resultMap>
 
+
+
+
 </mapper>

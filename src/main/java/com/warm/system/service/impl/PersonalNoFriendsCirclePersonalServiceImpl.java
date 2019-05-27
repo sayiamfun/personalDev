@@ -32,6 +32,8 @@ public class PersonalNoFriendsCirclePersonalServiceImpl extends ServiceImpl<Pers
     @Autowired
     private PersonalNoFriendsCirclePersonalMapper noFriendsCirclePersonalMapper;
 
+    private String DBFriendsCirclePersonal = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal);
+
     /**
      * 批量添加朋友圈个人号
      * @param noFriendsCircle
@@ -42,7 +44,7 @@ public class PersonalNoFriendsCirclePersonalServiceImpl extends ServiceImpl<Pers
     public boolean batchSave(PersonalNoFriendsCircle noFriendsCircle) {
         log.info("数据库添加朋友圈个人号开始");
         log.info("根据朋友圈id删除个人号");
-        String sql = DaoGetSql.getSql("delete from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal) + " where friends_circle_id = ?", noFriendsCircle.getId());
+        String sql = DaoGetSql.getSql("update " + DBFriendsCirclePersonal + " set deleted = 1 where friends_circle_id = ?", noFriendsCircle.getId());
         noFriendsCirclePersonalMapper.delete(sql);
         List<PersonalNoFriendsCirclePersonal> personalList = noFriendsCircle.getPersonalList();
         if(!VerifyUtils.collectionIsEmpty(personalList)){
@@ -50,9 +52,10 @@ public class PersonalNoFriendsCirclePersonalServiceImpl extends ServiceImpl<Pers
             for (PersonalNoFriendsCirclePersonal noFriendsCirclePersonal : personalList) {
                 noFriendsCirclePersonal.setId(null);
                 noFriendsCirclePersonal.setFriendsCircleId(noFriendsCircle.getId());
-                noFriendsCirclePersonal.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal));
+                noFriendsCirclePersonal.setDb(DBFriendsCirclePersonal);
+                noFriendsCirclePersonal.setDeleted(0);
                 int insert = noFriendsCirclePersonalMapper.add(noFriendsCirclePersonal);
-                if(insert == 0){
+                if(insert < 0){
                     log.info("添加朋友圈个人号失败");
                     return false;
                 }

@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskReplyContent;
 import com.baomidou.mybatisplus.service.IService;
@@ -18,7 +19,9 @@ public interface PersonalNoTaskReplyContentService extends IService<PersonalNoTa
 
     boolean batchSave(PersonalNoTask noTask);
 
-    List<PersonalNoTaskReplyContent> getListByTaskId(Integer id);
+    PersonalNoTaskReplyContent getBySql(Sql sql);
 
-    boolean deleteByTaskId(Integer taskId);
+    List<PersonalNoTaskReplyContent> listBySql(Sql sql);
+
+    boolean delBySql(Sql sql);
 }

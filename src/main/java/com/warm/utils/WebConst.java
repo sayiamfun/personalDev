@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -23,8 +24,6 @@ public class WebConst {
 
     public static final int COOKIE_MAXAGE = 24 * 3600;
 
-    public static final String VERIFY_ADDRESS = "http://passport.gmall.com/verify";
-    //未登录状态下跳转的登录界面
     public static final String LOGINFLAG = "LOGINFLG";
     //注册邀请码
     public static final String CODE = "jiazhangjia";
@@ -36,7 +35,8 @@ public class WebConst {
     public static final String SESSIONPRE = "PersonalNoSession";
     public static final String SESSSUFF = "InfoSuff";
     public static final String SUPERUSERID = "superUserId";
-    public static final String ADDLOGADDRESS = "http://192.168.1.6/personalNoLogInfo/addLog";
+    public static final String WECHATSTATUS = "封禁";
+
     private static int textNum = 0; //文字
     private static int photoNum = 0; //图片
     private static int cardNum = 0; //名片
@@ -376,4 +376,20 @@ public class WebConst {
         return b1.divide(b2,len,BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
+    public static String getNames(Collection<?> list) {
+        StringBuffer temp = new StringBuffer();
+        boolean b = false;
+        for (Object integer : list) {
+            if(b){
+                temp.append("|");
+            }
+            if(integer instanceof String){
+                temp.append("'"+integer+"'");
+            }else {
+                temp.append(integer);
+            }
+            b = true;
+        }
+        return temp.toString();
+    }
 }

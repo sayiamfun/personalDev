@@ -47,27 +47,8 @@ public class PersonalNoFriendsCircleController {
     @Autowired
     private PersonalNoFriendsCirclePhotoService circlePhotoService;
 
-    @ApiOperation(value = "查询所有朋友圈列表")
-    @GetMapping
-    public R list(){
-        try {
-            log.info("开始查询所有朋友圈");
-            String sql = "";
-            sql = DaoGetSql.listAll(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_photo), "desc");
-            List<PersonalNoFriendsCircle> personalList = noFriendsCircleService.list(sql);
-            log.info("根据朋友圈id查询对应的个人号数量");
-            for (PersonalNoFriendsCircle noFriendsCircle : personalList) {
-                sql = DaoGetSql.getSql("select * from "+ DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal) + " where friends_circle_id = ?",noFriendsCircle.getId());
-                List<PersonalNoFriendsCirclePersonal> personals = noFriendsCirclePersonalService.list(sql);
-                noFriendsCircle.setPersonalNum(personals==null?0:personals.size());
-            }
-            log.info("查询成功返回数据列表");
-            return R.ok().data(personalList);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error().message(e.getMessage());
-        }
-    }
+    private String DBFriendsCirclePersonal = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal);
+    private String DBFriendsCirclePhoto = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_photo);
 
     @ApiOperation(value = "分页查询朋友圈列表")
     @PostMapping(value = "{pageNum}/{size}/")
@@ -89,10 +70,10 @@ public class PersonalNoFriendsCircleController {
             log.info("根据朋友圈id查询对应的个人号数量，朋友圈图片列表");
             String sql = "";
             for (PersonalNoFriendsCircle noFriendsCircle : page.getRecords()) {
-                sql = DaoGetSql.getSql("select * from "+ DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal) + " where friends_circle_id = ?",noFriendsCircle.getId());
+                sql = DaoGetSql.getSql("select * from "+ DBFriendsCirclePersonal + " where friends_circle_id = ? and deleted = 0",noFriendsCircle.getId());
                 List<PersonalNoFriendsCirclePersonal> personals = noFriendsCirclePersonalService.list(sql);
                 noFriendsCircle.setPersonalNum(personals.size());
-                sql = DaoGetSql.getSql("select * from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_photo)+" where `friends_circle_id` = ?",noFriendsCircle.getId());
+                sql = DaoGetSql.getSql("select * from "+DBFriendsCirclePhoto+" where `friends_circle_id` = ? and deleted = 0",noFriendsCircle.getId());
                 List<PersonalNoFriendsCirclePhoto> photoList = circlePhotoService.list(sql);
                 noFriendsCircle.setPhotoList(photoList);
             }
@@ -107,7 +88,7 @@ public class PersonalNoFriendsCircleController {
             return R.ok().data(page);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
     //返回朋友圈类型
@@ -143,8 +124,10 @@ public class PersonalNoFriendsCircleController {
     ){
         try {
             log.info("添加朋友圈信息开始");
-            Object attribute = request.getAttribute(WebConst.SUPERUSERID);
-            noFriendsCircle.setSuperId(Integer.valueOf(attribute.toString()));
+            String s = veryTask(noFriendsCircle);
+            if(!"true".equals(s)){
+                return R.error().message(s);
+            }
             int result =  noFriendsCircleService.add(noFriendsCircle);
             if(result==0){
                 log.info("添加朋友圈信息失败");
@@ -154,7 +137,7 @@ public class PersonalNoFriendsCircleController {
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -173,8 +156,29 @@ public class PersonalNoFriendsCircleController {
             return R.ok().data(noFriendsCircle);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
+    }
+
+    //验证任务参数
+    private String veryTask(PersonalNoFriendsCircle friendsCircle){
+        if(VerifyUtils.isEmpty(friendsCircle.getFriendsCircleOfficial())){
+            return "朋友圈文案不能为空";
+        }
+        if(VerifyUtils.collectionIsEmpty(friendsCircle.getPersonalList())){
+            return "个人号不能为空";
+        }
+        if(!VerifyUtils.collectionIsEmpty(friendsCircle.getPhotoList())){
+            for (PersonalNoFriendsCirclePhoto personalNoFriendsCirclePhoto : friendsCircle.getPhotoList()) {
+                if(VerifyUtils.isEmpty(personalNoFriendsCirclePhoto.getPhoto())){
+                    return "选择照片上传失败请重新上传";
+                }
+            }
+        }
+        if(VerifyUtils.isEmpty(friendsCircle.getFriendsCircleTheme())){
+            return "朋友圈不能为空";
+        }
+        return "true";
     }
 }
 

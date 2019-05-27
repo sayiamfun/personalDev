@@ -13,4 +13,38 @@
         <result column="value" property="value" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoValueTable" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,wx_id,nick_name,`type`
+          ,deleted,`name`,`value`)
+        values
+          (#{entity.id},#{entity.wxId},#{entity.nickName},#{entity.type}
+          ,#{entity.deleted},#{entity.name},#{entity.value})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoValueTable" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.wxId!=null">
+                wx_id = #{entity.wxId},
+            </if>
+            <if test="entity.nickName!=null">
+                nick_name = #{entity.nickName},
+            </if>
+            <if test="entity.type!=null">
+                `type` = #{entity.type},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+            <if test="entity.name!=null">
+                `name` = #{entity.name},
+            </if>
+            <if test="entity.value!=null">
+                `value` = #{entity.value},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

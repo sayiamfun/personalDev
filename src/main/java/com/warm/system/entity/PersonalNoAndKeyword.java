@@ -49,6 +49,9 @@ public class PersonalNoAndKeyword extends Model<PersonalNoAndKeyword> {
     @TableField("keyword_id")
     private Integer keywordId;
 
+    @TableField("keyword_name")
+    private String keywordName;
+
     @TableField(exist = false)
     private String db;
 

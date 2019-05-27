@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -17,6 +19,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_task_lable")
 public class PersonalNoTaskLable extends Model<PersonalNoTaskLable> {
 
@@ -44,46 +47,8 @@ public class PersonalNoTaskLable extends Model<PersonalNoTaskLable> {
      */
     private Integer deleted;
 
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPersonalNoTaskId() {
-        return personalNoTaskId;
-    }
-
-    public void setPersonalNoTaskId(Integer personalNoTaskId) {
-        this.personalNoTaskId = personalNoTaskId;
-    }
-
-    public Integer getLableId() {
-        return lableId;
-    }
-
-    public void setLableId(Integer lableId) {
-        this.lableId = lableId;
-    }
-
-    public String getLableName() {
-        return lableName;
-    }
-
-    public void setLableName(String lableName) {
-        this.lableName = lableName;
-    }
-
-    public Integer getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Integer deleted) {
-        this.deleted = deleted;
-    }
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

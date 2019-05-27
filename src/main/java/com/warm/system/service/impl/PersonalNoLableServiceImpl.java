@@ -2,16 +2,19 @@ package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.entity.requre.BatchUpdateObject;
 import com.warm.entity.result.LableManager;
 import com.warm.entity.result.LableShow;
-import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoLable;
+import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import com.warm.system.entity.PersonalNoTaskLable;
 import com.warm.system.entity.PersonalNoTaskPersonal;
 import com.warm.system.mapper.PersonalNoLableMapper;
 import com.warm.system.service.db1.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -23,7 +26,7 @@ import java.util.*;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author dgd123
@@ -41,6 +44,11 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
     @Autowired
     private PersonalNoPeopleService noPeopleService;
 
+    private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_lable);
+    private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_lable);
+    private String DBTaskPersonal = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_personal);
+    private String DBPeople = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_people);
+
 
     /*
      * 分页查询标签
@@ -48,16 +56,21 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
     @Override
     public Page<PersonalNoLable> pageQuery(Page<PersonalNoLable> page, String lableName) {
         log.info("根据名称模糊查询标签列表");
-        EntityWrapper<PersonalNoLable> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        if(!"-1".equals(lableName)){
-            entityWrapper.like("lable_name", lableName);
+        StringBuffer temp = new StringBuffer();
+        if (!"-1".equals(lableName)) {
+            temp.append(" where lable_name like '%"+lableName+"%'");
         }
+        String getSql = DaoGetSql.getSql("select count(*) from "+DBLable+temp.toString());
+        Long count = personalNoLableMapper.getCount(getSql);
+        temp.append(" order by id desc limit "+page.getOffset()+","+page.getLimit());
+        getSql = DaoGetSql.getSql("select * from "+DBLable+temp.toString());
         log.info("根据名称模糊查询标签列表结束");
-        List<PersonalNoLable> personalNoLables = baseMapper.selectPage(page, entityWrapper);
+        List<PersonalNoLable> personalNoLables = baseMapper.list(getSql);
         page.setRecords(personalNoLables);
+        page.setTotal(count.intValue());
         return page;
     }
+
     /*
      * 根据标签集合开始统计数据
      */
@@ -65,8 +78,10 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
     public List<LableManager> getNumData(List<PersonalNoLable> rows) {
         log.info("数据库开始统计标签数据");
         List<LableManager> resultList = new ArrayList<>();
-        if(!VerifyUtils.collectionIsEmpty(rows)){
+        if (!VerifyUtils.collectionIsEmpty(rows)) {
             log.info("NoLable信息开始装换为LableManager");
+            String getSql = "";
+            Sql sql = new Sql();
             for (PersonalNoLable row : rows) {
                 LableManager lableManager = new LableManager();
                 lableManager.setLableId(row.getId());
@@ -78,36 +93,41 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
                  * 根据任务id查找个人号数量
                  */
                 //存放标签下的个人号列表（个人号id，个人号名称，粉丝数量）
-                Set<LableShow> noSet = new HashSet<>();
-                List<PersonalNoTaskLable> taskLableList =  taskLableService.listByLableId(lableManager.getLableId());
-                if(!VerifyUtils.collectionIsEmpty(taskLableList)){
-                    for (PersonalNoTaskLable personalNoTaskLable : taskLableList) {
-                        //根据任务id查找个人号id集合
-                        List<PersonalNoTaskPersonal> personals = taskPersonalService.listByTaskId(personalNoTaskLable.getPersonalNoTaskId());
-                        if(!VerifyUtils.collectionIsEmpty(personals)){
-                            for (PersonalNoTaskPersonal taskpersonal : personals) {
-                                LableShow lableShow = new LableShow();
-                                lableShow.setPersonalWxId(taskpersonal.getPersonalNoWxId());
-                                lableShow.setPersonalName(taskpersonal.getPersonalNoName());
-                                noSet.add(lableShow);
-                            }
-                        }
+                log.info("获取标签对应的所有任务id");
+                getSql = DaoGetSql.getSql("select DISTINCT personal_no_task_id from " + DBTaskLable + " where lable_id = ?", lableManager.getLableId());
+                sql.setSql(getSql);
+                List<String> taskIdList = taskLableService.listStringBySql(sql);
+                log.info("获取任务下的所有个人号");
+                String ids = DaoGetSql.getIds(taskIdList);
+                getSql = "SELECT *  FROM " + DBTaskPersonal + " where deleted = 0 and personal_no_task_id in "+ids;
+                sql.setSql(getSql);
+                List<PersonalNoTaskPersonal> personalNoTaskPersonalList = taskPersonalService.listBySql(sql);
+                log.info("存放个人号微信id，去重用");
+                Set<String> noWxIdSet = new HashSet<>();
+                log.info("存放好友人数");
+                Integer peopleNum = 0;
+                log.info("获取该个人号下的任务好友");
+                List<LableShow> lableShowList  = new ArrayList<>();
+                Map<String,LableShow> lableShowMap = new HashMap<>();
+                for (PersonalNoTaskPersonal personalNoTaskPersonal : personalNoTaskPersonalList) {
+                    noWxIdSet.add(personalNoTaskPersonal.getPersonalNoWxId());
+                    getSql = DaoGetSql.getSql("SELECT count(*) FROM " + DBPeople + " where personal_no_wx_id = ? and personal_task_id = ? and deleted = 0 and flag = 2", personalNoTaskPersonal.getPersonalNoWxId(), personalNoTaskPersonal.getPersonalNoTaskId());
+                    Long count = noPeopleService.getCount(getSql);
+                    peopleNum += count.intValue();
+                    if(lableShowMap.containsKey(personalNoTaskPersonal.getPersonalNoWxId())){
+                        lableShowMap.get(personalNoTaskPersonal.getPersonalNoWxId()).setPeopleNum(count.intValue()+lableShowMap.get(personalNoTaskPersonal.getPersonalNoWxId()).getPeopleNum());
+                    }else {
+                        LableShow lableShow = new LableShow();
+                        lableShow.setPersonalWxId(personalNoTaskPersonal.getPersonalNoWxId());
+                        lableShow.setPersonalName(personalNoTaskPersonal.getPersonalNoName());
+                        lableShow.setPeopleNum(count.intValue());
+                        lableShowMap.put(personalNoTaskPersonal.getPersonalNoWxId(),lableShow);
                     }
                 }
-                //根据任务id和个人号id查找粉丝id集合
-                Set<LableShow> lableShowSet = noPeopleService.listByPersonalIdAndTaskId(noSet, taskLableList);
-                lableManager.setLableShowList(lableShowSet);
-                //粉丝数量
-                int peopleNum = 0;
-                if(!VerifyUtils.collectionIsEmpty(lableShowSet)){
-                    for (LableShow lableShow : lableShowSet) {
-                        peopleNum+=lableShow.getPeopleNum();
-                    }
-                }
-                //设置粉丝数量
+                lableShowList.addAll(lableShowMap.values());
+                lableManager.setLableShowList(lableShowList);
                 lableManager.setPeopleNum(peopleNum);
-                //个人号数量
-                lableManager.setPersonalNoNum(lableShowSet.size());
+                lableManager.setPersonalNoNum(noWxIdSet.size());
                 resultList.add(lableManager);
             }
             log.info("标签列表不为空，开始统计数据 粉丝数量，个人号数量");
@@ -115,6 +135,7 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
         log.info("数据库统计标签数据成功");
         return resultList;
     }
+
     /*
      * 批量修改标签列表的类别
      */
@@ -122,15 +143,15 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
     @Override
     public boolean batchUpdateCategory(BatchUpdateObject batchUpdateObject) {
         log.info("数据库开始批量修改标签类别");
-        if(VerifyUtils.isEmpty(batchUpdateObject.getObject())){
+        if (VerifyUtils.isEmpty(batchUpdateObject.getObject())) {
             log.info("要修改的类别名称为空");
             return false;
         }
         List<PersonalNoLable> lableList = batchUpdateObject.getLableList();
         for (PersonalNoLable noLable : lableList) {
             noLable.setLableCategory(batchUpdateObject.getObject());
-            int i = baseMapper.updateById(noLable);
-            if(i!=1){
+            int i = personalNoLableMapper.add(noLable);
+            if (i < 0) {
                 log.info("数据库批量修改标签失败");
                 return false;
             }
@@ -142,12 +163,12 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
 
     /**
      * 根据个人号集合查找标签
+     *
      * @param list
      * @return
      */
     @Override
-    public Set<String> listByPersonal(List<PersonalNo> list) {
-        Set<String> lableNameSet = new HashSet<>();
+    public List<String> listByPersonal(List<PersonalNoOperationStockWechatAccount> list) {
         List<PersonalNoTaskLable> taskLableList = null;
         /**
          * 开始的任务个人号集合是为了存储前端传过来的个人号id集合
@@ -156,25 +177,27 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
          * 将任务标签集合  转化为  任务标签名集合
          */
         log.info("数据库根据个人号wxid查询任务个人号集合");
-        for (PersonalNo no : list) {
-            List<PersonalNoTaskPersonal> taskPersonalSet =  taskPersonalService.listByPersonalId(no.getWxId());
-            if(!VerifyUtils.collectionIsEmpty(taskPersonalSet)){
-                for (PersonalNoTaskPersonal personalNoTaskPersonal : taskPersonalSet) {
-                    taskLableList = taskLableService.listByTaskId(personalNoTaskPersonal.getPersonalNoTaskId());
-                }
-            }
+        String getSql = "";
+        Sql sql = new Sql();
+        StringBuffer noWxIds = new StringBuffer("(''");
+        for (PersonalNoOperationStockWechatAccount no : list) {
+            noWxIds.append(",'" + no.getWxId() + "'");
         }
-        if(!VerifyUtils.collectionIsEmpty(taskLableList)) {
-            for (PersonalNoTaskLable personalNoTaskLable : taskLableList) {
-                lableNameSet.add(personalNoTaskLable.getLableName());
-            }
-        }
+        noWxIds.append(")");
+        getSql = "SELECT DISTINCT personal_no_task_id FROM "+DBTaskPersonal+" where personal_no_wx_id in "+noWxIds+" and deleted = 0";
+        sql.setSql(getSql);
+        List<String> taskIdList = taskPersonalService.listStringBySql(sql);
+        String taskIds = DaoGetSql.getIds(taskIdList);
+        getSql = "SELECT DISTINCT lable_name FROM "+DBTaskLable+" where personal_no_task_id in "+taskIds;
+        sql.setSql(getSql);
+        List<String> strings = taskLableService.listStringBySql(sql);
         log.info("数据库根据个人号集合查询标签集合结束");
-        return lableNameSet;
+        return strings;
     }
+
     @Override
     public Integer add(PersonalNoLable entity) {
-        if(VerifyUtils.isEmpty(entity.getId()))
+        if (VerifyUtils.isEmpty(entity.getId()))
             return personalNoLableMapper.add(entity);
         return personalNoLableMapper.updateOne(entity);
     }

@@ -197,6 +197,9 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     @TableField(exist = false)
     private String categoryName2;
 
+    @TableField(exist = false)
+    private String db;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

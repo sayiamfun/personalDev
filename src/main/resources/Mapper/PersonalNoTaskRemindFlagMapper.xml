@@ -10,4 +10,27 @@
         <result column="personal_no_task_id" property="personalNoTaskId" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoTaskRemindFlag" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,personal_no_wx_id,user_wx_id,personal_no_task_id)
+        values
+          (#{entity.id},#{entity.personalNoWxId},#{entity.userWxId},#{entity.personalNoTaskId})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoTaskRemindFlag" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personalNoWxId!=null">
+                personal_no_wx_id = #{entity.personalNoWxId},
+            </if>
+            <if test="entity.userWxId!=null">
+                user_wx_id = #{entity.userWxId},
+            </if>
+            <if test="entity.personalNoTaskId!=null">
+                personal_no_task_id = #{entity.personalNoTaskId},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

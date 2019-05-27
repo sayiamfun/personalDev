@@ -73,6 +73,9 @@ public class PersonalNoRoad extends Model<PersonalNoRoad> {
     @TableField(exist = false)
     private Integer taskNum;
 
+    @TableField(exist = false)
+    private String db;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

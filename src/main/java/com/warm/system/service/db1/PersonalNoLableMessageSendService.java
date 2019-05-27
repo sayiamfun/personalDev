@@ -18,8 +18,6 @@ public interface PersonalNoLableMessageSendService extends IService<PersonalNoLa
 
     Page<PersonalNoLableMessageSend> pageQuery(Page<PersonalNoLableMessageSend> page, Object o);
 
-    PersonalNoLableMessageSend getLableMessageById(Integer id);
-
     boolean insertLableMessage(PersonalNoLableMessageSend personalNoLableMessageSend);
 
     Integer add(PersonalNoLableMessageSend entity);
@@ -33,4 +31,6 @@ public interface PersonalNoLableMessageSendService extends IService<PersonalNoLa
     PersonalNoLableMessageSend getOne(String sql);
 
     Long getCount(String sql);
+
+    PersonalNoLableMessageSend getLableMessageById(Integer id);
 }

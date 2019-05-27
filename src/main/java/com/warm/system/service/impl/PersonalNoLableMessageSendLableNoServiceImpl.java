@@ -1,10 +1,10 @@
 package com.warm.system.service.impl;
 
 import com.warm.entity.DB;
-import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoLable;
 import com.warm.system.entity.PersonalNoLableMessageSend;
 import com.warm.system.entity.PersonalNoLableMessageSendLableNo;
+import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import com.warm.system.mapper.PersonalNoLableMessageSendLableNoMapper;
 import com.warm.system.service.db1.PersonalNoLableMessageSendLableNoService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -34,7 +34,7 @@ public class PersonalNoLableMessageSendLableNoServiceImpl extends ServiceImpl<Pe
     @Autowired
     private PersonalNoLableMessageSendLableNoMapper lableMessageSendLableNoMapper;
 
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
+    private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
     /**
      * 批量添加标签消息发送的个人号和标签信息
      * @param personalNoLableMessageSend
@@ -45,17 +45,17 @@ public class PersonalNoLableMessageSendLableNoServiceImpl extends ServiceImpl<Pe
     public boolean batchSave(PersonalNoLableMessageSend personalNoLableMessageSend) {
         log.info("数据库开始批量插入标签消息的个人号和标签信息");
         List<String> lableList = personalNoLableMessageSend.getLableList();
-        List<PersonalNo> noList = personalNoLableMessageSend.getNoList();
+        List<PersonalNoOperationStockWechatAccount> noList = personalNoLableMessageSend.getNoList();
         if(!VerifyUtils.collectionIsEmpty(noList)){
             String sql = null;
-            for (PersonalNo no : noList) {
+            for (PersonalNoOperationStockWechatAccount no : noList) {
                 PersonalNoLableMessageSendLableNo messageSendLableNo = new PersonalNoLableMessageSendLableNo();
                 messageSendLableNo.setPersonalNoLableMessageSendId(personalNoLableMessageSend.getId());
                 messageSendLableNo.setPersonalNoId(no.getId());
                 messageSendLableNo.setWxId(no.getWxId());
                 if(!VerifyUtils.collectionIsEmpty(lableList)){
                     for (String s : lableList) {
-                        sql = " select * from "+ZCDB+" where lable_name = '"+s+"' limit 0,1";
+                        sql = " select * from "+DBLable+" where lable_name = '"+s+"' limit 0,1";
                         PersonalNoLable noLable = noLableService.getOne(sql);
                         if(!VerifyUtils.isEmpty(noLable)) {
                             messageSendLableNo.setLableId(noLable.getId());

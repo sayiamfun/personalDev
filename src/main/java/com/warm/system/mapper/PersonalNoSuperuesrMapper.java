@@ -1,8 +1,12 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoSuperuesr;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,8 +18,13 @@ import org.apache.ibatis.annotations.Select;
  */
 public interface PersonalNoSuperuesrMapper extends BaseMapper<PersonalNoSuperuesr> {
 
-    @Select("SELECT id,super_name,`password`,head_portrait,`code`,deleted,wx_id,openid FROM personal_no_superuesr WHERE openid = #{openid} AND deleted = 0 LIMIT 0,1;")
-    PersonalNoSuperuesr getByOpenId(String openid);
-    @Select("SELECT id,super_name,`password`,head_portrait,`code`,deleted,wx_id,openid FROM personal_no_superuesr WHERE super_name = #{superName} AND deleted = 0 LIMIT 0,1;")
-    PersonalNoSuperuesr getBySuperName(String superName);
+    Integer add(@Param("entity") PersonalNoSuperuesr entity);
+
+    Integer updateOne(@Param("entity")PersonalNoSuperuesr entity);
+
+    @Select("${sql}")
+    PersonalNoSuperuesr getBySql(Sql sql);
+
+    @Select("${sql}")
+    List<PersonalNoSuperuesr> listBySql(Sql sql);
 }

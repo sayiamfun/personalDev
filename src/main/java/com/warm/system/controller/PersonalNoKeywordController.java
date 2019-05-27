@@ -35,6 +35,8 @@ public class PersonalNoKeywordController {
     @Autowired
     private PersonalNoKeywordService keywordService;
 
+    private String DBKeyword = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_keyword);
+
     @ApiOperation(value = "根据关键词分页查询")
     @GetMapping("/{keyWord}/{pageNum}/{size}/")
     public R listUserByPersonalWxIdAndNickName(
@@ -88,8 +90,11 @@ public class PersonalNoKeywordController {
     ){
         try {
             log.info("根据id获取关键词信息");
-            String sql = DaoGetSql.getById(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_keyword), keyWordId);
+            String sql = DaoGetSql.getById(DBKeyword, keyWordId);
             PersonalNoKeyword one = keywordService.getOne(sql);
+            if(VerifyUtils.isEmpty(one)){
+                return R.ok().data("");
+            }
             return R.ok().data(keywordService.getInfoById(one));
         }catch (Exception e){
             e.printStackTrace();
@@ -112,32 +117,6 @@ public class PersonalNoKeywordController {
         }
     }
 
-    @ApiOperation(value = "根据id开启关键词信息")
-    @GetMapping("on/{keyWordId}")
-    public R onById(
-            @ApiParam(name = "keyWordId", value = "关键词id", required = true)
-            @PathVariable("keyWordId") Integer keyWordId
-    ){
-        try {
-            keywordService.onById(keyWordId);
-            return R.ok().data("");
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error().message("网页走丢了，请刷新。。。");
-        }
-    }
-
-    @ApiOperation(value = "获取前三条数据")
-    @GetMapping("getStart")
-    public R getStart(){
-        try {
-            List<PersonalNoKeyword> list = keywordService.getStart();
-            return R.ok().data(list);
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error().message("网页走丢了，请刷新。。。");
-        }
-    }
 
 }
 

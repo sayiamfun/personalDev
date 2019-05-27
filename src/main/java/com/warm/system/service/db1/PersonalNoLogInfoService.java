@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.service.IService;
  */
 public interface PersonalNoLogInfoService extends IService<PersonalNoLogInfo> {
 
+    Integer add(PersonalNoLogInfo logInfo);
 }

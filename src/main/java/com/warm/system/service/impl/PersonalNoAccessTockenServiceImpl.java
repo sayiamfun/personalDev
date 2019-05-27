@@ -4,6 +4,7 @@ import com.warm.system.entity.PersonalNoAccessTocken;
 import com.warm.system.mapper.PersonalNoAccessTockenMapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.warm.system.service.db1.PersonalNoAccessTockenService;
+import com.warm.utils.VerifyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,19 +38,12 @@ public class PersonalNoAccessTockenServiceImpl extends ServiceImpl<PersonalNoAcc
         accessTockenMapper.delete(sql);
     }
 
-    /**
-     * 修改数据
-     * @param personalNoAccessTocken
-     * @return
-     */
-    @Override
-    public int updateOneById(PersonalNoAccessTocken personalNoAccessTocken) {
-        return accessTockenMapper.updateOneById(personalNoAccessTocken);
-    }
-
     @Override
     public int add(PersonalNoAccessTocken personalNoAccessTocken) {
-        return accessTockenMapper.add(personalNoAccessTocken);
+        if(VerifyUtils.isEmpty(personalNoAccessTocken.getId())) {
+            return accessTockenMapper.add(personalNoAccessTocken);
+        }
+        return accessTockenMapper.updateOneById(personalNoAccessTocken);
     }
 
 }

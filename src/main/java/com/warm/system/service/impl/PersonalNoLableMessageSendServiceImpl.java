@@ -3,11 +3,15 @@ package com.warm.system.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.entity.DB;
+import com.warm.entity.Sql;
+import com.warm.entity.requre.PeopleNumReq;
+import com.warm.entity.robot.G;
 import com.warm.entity.robot.common.SunTaskType;
 import com.warm.system.entity.*;
 import com.warm.system.mapper.PersonalNoLableMessageSendMapper;
 import com.warm.system.service.db1.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.system.service.db2.PersonalNoOperationStockWechatAccountService;
 import com.warm.system.service.db3.PersonalNoGroupCategoryService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
@@ -19,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * <p>
@@ -35,12 +40,6 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
     @Autowired
     private PersonalNoLableMessageSendContentService personalNoLableMessageSendContentService;
     @Autowired
-    private PersonalNoLableMessageSendLableNoService messageSendLableNoService;
-    @Autowired
-    private PersonalNoService noService;
-    @Autowired
-    private PersonalNoTaskLableService taskLableService;
-    @Autowired
     private PersonalNoPeopleService taskPeopleService;
     @Autowired
     private PersonalNoPhoneTaskGroupService taskGroupService;
@@ -50,165 +49,110 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
     private PersonalNoGroupCategoryService groupCategoryService;
     @Autowired
     private PersonalNoLableMessageSendMapper lableMessageSendMapper;
+    @Autowired
+    private PersonalNoLableService lableService;
 
-    private String ZCDBLableMessageContent = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_message_send_content);
-    private String ZCDBLableMessage = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_message_send);
-    private String ZCDBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
-    private String ZCDBPersonalNo = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no);
-    private String ZCDBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
+
+    private String DBLableMessageContent = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_message_send_content);
+    private String DBLableMessage = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_message_send);
+    private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
+    private String DBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group);
+    private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
+
+    private Date taskDate = new Date();
     /*
      * 添加标签消息
      */
     @Transactional
     @Override
     public boolean insertLableMessage(PersonalNoLableMessageSend personalNoLableMessageSend) {
-        personalNoLableMessageSend.setDb(ZCDBLableMessage);
         Date sendTime = personalNoLableMessageSend.getSendTime();
+        log.info("获取标签下任务相关个人号的任务好友");
+        PeopleNumReq peopleNumReq = new PeopleNumReq();
+        peopleNumReq.setLableIdList(personalNoLableMessageSend.getLableList());
+        peopleNumReq.setNoWxIdList(personalNoLableMessageSend.getNoWxIdList());
+        List<PersonalNoPeople> peopleList = taskPeopleService.listByLableAndPersonal(peopleNumReq);
         log.info("开始添加标签消息到数据库");
-        personalNoLableMessageSend.setPersonaNolLableMessageStatus("0");
+        personalNoLableMessageSend.setPersonaNolLableMessageStatus("0/"+peopleList.size());
         List<PersonalNoLableMessageSendContent> personalNoLableMessageSendContentList = personalNoLableMessageSend.getPersonalNoLableMessageSendContentList();
-        log.info("构建标签消息内容预览开始");
+        log.info("构建标签消息内容预览");
         String lableContentShow = WebConst.getLableContentShow(personalNoLableMessageSendContentList);
-        log.info("构建标签消息内容预览成功");
-        log.info("构建标签列表集合开始");
-        List<String> lableList = personalNoLableMessageSend.getLableList();
-        if(!VerifyUtils.collectionIsEmpty(lableList)) {
-            log.info("构建标签集合显示");
-            StringBuffer lableTemp = new StringBuffer();
-            for (int i = 0; i < lableList.size(); i++) {
-                if(i>0){
-                    lableTemp.append("|");
-                }
-                lableTemp.append(lableList.get(i));
-            }
-            personalNoLableMessageSend.setPersonalNoLableMessageLableList(lableTemp.toString());
-            log.info("构建标签集合显示成功");
-        }
         personalNoLableMessageSend.setPersonalNoLableMessageContentShow(lableContentShow);
+        log.info("构建标签列表集合开始");
+        String lableIds = DaoGetSql.getIds(personalNoLableMessageSend.getLableList());
+        String getSql = "SELECT lable_name FROM "+DBLable+" where id in "+lableIds;
+        List<String> lableNameList = lableService.listString(getSql);
+        String lableNames = WebConst.getNames(lableNameList);
+        personalNoLableMessageSend.setPersonalNoLableMessageLableList(lableNames);
+        personalNoLableMessageSend.setDb(DBLableMessage);
+        if(VerifyUtils.isEmpty(sendTime)){
+            personalNoLableMessageSend.setSendTime(new Date());
+        }
+        lableMessageSendMapper.add(personalNoLableMessageSend);
+        log.info("添加标签消息内容");
+        personalNoLableMessageSendContentService.batchSave(personalNoLableMessageSend);
         //---------------------------------------------------------------------------
         log.info("将添加的标签消息任务拆解为手机请求的任务");
-        log.info("要发送的个人号集合");
-        List<PersonalNo> noList = personalNoLableMessageSend.getNoList();
-        log.info("标签名称集合");
-        List<String> lableList1 = personalNoLableMessageSend.getLableList();
-        log.info("根据标签查询任务id集合");
-        Set<Integer> integers = taskLableService.listByLableNameList(lableList1);
-        log.info("根据个人号微信id和任务id查询粉丝");
-        Set<String> userWxId = new HashSet<>();
-        String sql = "";
-        for (PersonalNo no : noList) {
-            for (Integer taskId : integers) {
-                sql = DaoGetSql.getSql("SELECT DISTINCT personal_friend_wx_id  FROM "+ZCDBNoPeople+" WHERE personal_task_id = ? AND personal_no_wx_id = ? and flag <> 0",taskId,no.getWxId());
-                List<String> strings = taskPeopleService.listString(sql);
-                userWxId.addAll(strings);
+        Map<String,List<String>> map = taskPeopleService.MapByPeopleList(peopleList);
+        for (Map.Entry<String, List<String>> stringListEntry : map.entrySet()) {
+            String key = stringListEntry.getKey();
+            if (!VerifyUtils.isEmpty(sendTime)) {
+                log.info("定时任务");
+                taskDate = personalNoLableMessageSend.getSendTime();
+            } else {
+                taskDate = new Date();
+                log.info("即时任务");
             }
-        }
-        log.info("拿到标签任务内容");
-        List<PersonalNoLableMessageSendContent> personalNoLableMessageSendContentList1 = personalNoLableMessageSend.getPersonalNoLableMessageSendContentList();
-        log.info("开始转换任务");
-
-        int num = 0;
-        String sql1 = "";
-        for (PersonalNo no : noList) {
-            //用来判断是否是此个人号的好友
-            List<String> idList = getUserWxIdList(personalNoLableMessageSend, no);
-            if(null!=idList) {
-                num += idList.size();
-            }
-        }
-        //--------------------------------------------------------------------------------------
-        int insert = 0;
-        personalNoLableMessageSend.setPersonaNolLableMessageStatus("0/"+num);
-        if(VerifyUtils.isEmpty(personalNoLableMessageSend.getId())){
-            log.info("插入标签消息到数据库");
-            if(VerifyUtils.isEmpty(sendTime)) {
-                personalNoLableMessageSend.setSendTime(new Date());
-            }
-            insert = lableMessageSendMapper.add(personalNoLableMessageSend);
-        }else {
-            log.info("更新标签消息到数据库");
-            insert = lableMessageSendMapper.updateOne(personalNoLableMessageSend);
-        }
-        if(insert == 0){
-            log.info("添加标签消息到数据库失败");
-            throw new RuntimeException("添加标签消息到数据库失败");
-        }
-        boolean b = false;
-        b = personalNoLableMessageSendContentService.batchSave(personalNoLableMessageSend);
-        if(!b){
-            log.info("批量添加标签消息内容失败");
-            throw new RuntimeException("批量添加标签消息内容失败");
-        }
-        b = messageSendLableNoService.batchSave(personalNoLableMessageSend);
-        if(!b){
-            log.info("批量添加消息个人号标签数据失败");
-            throw new RuntimeException("批量添加消息个人号标签数据失败");
-        }
-        log.info("添加标签消息到数据库成功");
-        //----------------------------------------处理手机任务组和任务------------------------
-
-        for (PersonalNo no : noList) {
-            //用来判断是否是此个人号的好友
-            List<String> idList = new ArrayList<>();
-            idList = getUserWxIdList(personalNoLableMessageSend, no);
-            Iterator<String> iterator = userWxId.iterator();
-            while (iterator.hasNext()){
-                String next = iterator.next();
-                if(idList.contains(next)) {
-                    log.info("插入组");
-                    PersonalNoPhoneTaskGroup taskGroup = new PersonalNoPhoneTaskGroup();
-                    taskGroup.setLableSendId(personalNoLableMessageSend.getId());
-                    taskGroup.setTotalStep(personalNoLableMessageSendContentList1.size());
-                    taskGroup.setNextStep(1);
-                    taskGroup.setStatus("未下发");
-                    taskGroup.setTname("发送标签消息");
-                    taskGroup.setLableSendId(personalNoLableMessageSend.getId());
-                    if(!VerifyUtils.isEmpty(sendTime)){
-                        taskGroup.setCreateTime(sendTime);
-                        taskGroup.setTaskOrder(1);
-                    }else {
-                        taskGroup.setTaskOrder(0);
-                    }
-                    taskGroup.setCurrentRobotId(no.getWxId());//将要发送消息的wxid
-                    int save = taskGroupService.add(taskGroup);
-                    if(save == 0){
-                        log.info("插入任务组失败");
-                        throw new RuntimeException("插入任务组失败");
-                    }
-                    for (int i = 0; i < personalNoLableMessageSendContentList1.size(); i++) {
-                        PersonalNoPhoneTask task = new PersonalNoPhoneTask();
-                        task.setStep((i+1));
-                        task.setTname("发第" + (i+1) + "条标签消息给" + next);
-                        task.setCreateTime(new Date());
-                        task.setRobotId(next);
-                        task.setContent(personalNoLableMessageSendContentList1.get(i).getContent());
-                        task.setContentType(personalNoLableMessageSendContentList.get(i).getContentType());
-                        task.setStatus("未下发");
-                        //发送消息
-                        task.setTaskType(SunTaskType.FRIEND_SEND_MSG);
-                        task.setTaskGroupId(taskGroup.getId());
-                        task.setDb(ZCDBTask);
-                        int save1 = taskService.add(task);
-                        if(save1 == 0){
-                            log.info("插入任务失败");
-                            throw new RuntimeException("插入任务失败");
-                        }
-                    }
-                    iterator.remove();
+            getSql = "SELECT * FROM "+DBTaskGroup+" where current_robot_id = '"+key+"' and `status` = '未下发' and message_send_id = 1";
+            List<PersonalNoPhoneTaskGroup> list = taskGroupService.list(getSql);
+            for (String userWxId : map.get(key)) {
+                log.info("筛选30秒内是否已有任务，没有则插入，有则判断下一个时间节点");
+                Stream<PersonalNoPhoneTaskGroup> stream = list.stream();
+                Long count = stream.filter(taskGroup -> taskGroup.getCreateTime().getTime() - taskDate.getTime() < 30000).filter(taskGroup -> taskDate.getTime() - taskGroup.getCreateTime().getTime() < 30000).count();
+                while (count.intValue()!=0) {
+                    taskDate = new Date(taskDate.getTime()+30000);
+                    stream = list.stream();
+                    count = stream.filter(taskGroup -> taskGroup.getCreateTime().getTime() - taskDate.getTime() < 30000).filter(taskGroup -> taskDate.getTime() - taskGroup.getCreateTime().getTime() < 30000).count();
                 }
+                PersonalNoPhoneTaskGroup taskGroup = new PersonalNoPhoneTaskGroup();
+                taskGroup.setTname(key + "发送标签消息组给" + userWxId);
+                taskGroup.setCurrentRobotId(key);
+                taskGroup.setTotalStep(personalNoLableMessageSendContentList.size());
+                taskGroup.setNextStep(1);
+                taskGroup.setStatus("未下发");
+                taskGroup.setLableSendId(personalNoLableMessageSend.getId());
+                taskGroup.setCreateTime(new Date());
+                taskGroup.setTaskOrder(0);
+                taskGroup.setMessageSendId(1);
+                taskGroup.setCreateTime(taskDate);
+                taskGroup.setDb(DBTaskGroup);
+                int save = taskGroupService.add(taskGroup);
+                if (save < 0) {
+                    throw new RuntimeException("插入" + taskGroup.getTname() + "失败");
+                }
+                for (int i = 0; i < personalNoLableMessageSendContentList.size(); i++) {
+                    PersonalNoPhoneTask task = new PersonalNoPhoneTask();
+                    task.setTaskGroupId(taskGroup.getId());
+                    task.setStatus("未下发");
+                    task.setCreateTime(taskDate);
+                    task.setRobotId(userWxId);
+                    task.setTname(key + "发送第" + (i + 1) + "条标签消息给" + userWxId);
+                    task.setStep(i + 1);
+                    task.setContentType(personalNoLableMessageSendContentList.get(i).getContentType());
+                    task.setContent(personalNoLableMessageSendContentList.get(i).getContent());
+                    //发送消息
+                    task.setTaskType(SunTaskType.FRIEND_SEND_MSG);
+                    task.setDb(DBTask);
+                    taskService.add(task);
+                }
+                list.add(taskGroup);
+                taskDate = new Date(taskDate.getTime()+30000);
             }
         }
         //------------------------------------处理手机任务组和任务结束----------------------------------------
         return true;
     }
 
-    private List<String> getUserWxIdList(PersonalNoLableMessageSend personalNoLableMessageSend, PersonalNo no) {
-        String sql1;
-        List<String> idList;
-        sql1 = DaoGetSql.getSql("SELECT DISTINCT personal_friend_wx_id  FROM " + ZCDBNoPeople + " WHERE personal_no_wx_id = ? and be_friend_time between ? and ? and flag <> 0", no.getWxId(), WebConst.getNowDate(personalNoLableMessageSend.getStartTime()), WebConst.getNowDate(personalNoLableMessageSend.getEndTime()));
-        idList = taskPeopleService.listString(sql1);
-        return idList;
-    }
 
     /*
      * 分页查询标签消息列表
@@ -216,64 +160,30 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
     @Override
     public Page<PersonalNoLableMessageSend> pageQuery(Page<PersonalNoLableMessageSend> page, Object o) {
         log.info("分页查找标签消息列表开始");
-        EntityWrapper<PersonalNoLableMessageSend> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        List<PersonalNoLableMessageSend> personalNoLableMessageSends = baseMapper.selectPage(page, entityWrapper);
-        page.setRecords(personalNoLableMessageSends);
-        if(!VerifyUtils.collectionIsEmpty(page.getRecords())){
-            log.info("根据标签消息id查询标签消息内容开始");
-            for (PersonalNoLableMessageSend record : page.getRecords()) {
-                String sql = DaoGetSql.getSql("select * from " + ZCDBLableMessageContent + " where personal_no_lable_message_send_id = ?", record.getId());
-                List<PersonalNoLableMessageSendContent> lableMessageSendContentList =  personalNoLableMessageSendContentService.list(sql);
-                record.setPersonalNoLableMessageSendContentList(lableMessageSendContentList);
+        String getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBLableMessage);
+        Long count = lableMessageSendMapper.getCount(getSql);
+        page.setTotal(count.intValue());
+        getSql = DaoGetSql.getSql("SELECT * FROM "+DBLableMessage+" order by id desc LIMIT ?,?",page.getOffset(),page.getLimit());
+        List<PersonalNoLableMessageSend> personalNoLableMessageSends = lableMessageSendMapper.list(getSql);
+        for (PersonalNoLableMessageSend personalNoLableMessageSend : personalNoLableMessageSends) {
+            log.info("查询发送数量");
+            if(!"已完成".equals(personalNoLableMessageSend.getPersonaNolLableMessageStatus())){
+                count = taskGroupService.getCount("SELECT COUNT(*) FROM " + DBTaskGroup + " where `status` = '已完成' and lable_send_id = " + personalNoLableMessageSend.getId());
+                String[] split = personalNoLableMessageSend.getPersonaNolLableMessageStatus().split("/");
+                if(count.intValue()>=Integer.parseInt(split[1])){
+                    personalNoLableMessageSend.setPersonaNolLableMessageStatus("已完成");
+                }else {
+                    personalNoLableMessageSend.setPersonaNolLableMessageStatus("" + count.intValue() + "/" + split[1]);
+                }
             }
-            log.info("根据标签消息id查询标签消息内容结束");
+            log.info("获取标签消息内容");
+            getSql = DaoGetSql.getSql("select * from " + DBLableMessageContent + " where personal_no_lable_message_send_id = ?", personalNoLableMessageSend.getId());
+            List<PersonalNoLableMessageSendContent> lableMessageSendContentList =  personalNoLableMessageSendContentService.list(getSql);
+            personalNoLableMessageSend.setPersonalNoLableMessageSendContentList(lableMessageSendContentList);
         }
+        page.setRecords(personalNoLableMessageSends);
         log.info("分页查找标签消息列表结束");
         return page;
-    }
-    /*
-     * 根据任务id查询任务消息
-     */
-    @Override
-    public PersonalNoLableMessageSend getLableMessageById(Integer id) {
-        log.info("数据库根据id查询标签消息");
-        PersonalNoLableMessageSend lableMessageSend = baseMapper.selectById(id);
-        if(!VerifyUtils.isEmpty(lableMessageSend)){
-            log.info("根据标签消息id查询标签消息内容");
-            String sql = DaoGetSql.getSql("select * from " + ZCDBLableMessageContent + " where personal_no_lable_message_send_id = ?",id);
-            List<PersonalNoLableMessageSendContent> lableMessageSendContentList =  personalNoLableMessageSendContentService.list(sql);
-            for (PersonalNoLableMessageSendContent personalNoLableMessageSendContent : lableMessageSendContentList) {
-                if("邀请入群".equals(personalNoLableMessageSendContent.getContentType())){
-                    String[] split = personalNoLableMessageSendContent.getContent().split("/");
-                    PersonalNoGroupCategory personalNoGroupCategory = groupCategoryService.getPersonalNoGroupCategory(split);
-                    lableMessageSend.setGroupName(personalNoGroupCategory==null?"":personalNoGroupCategory.getCname());
-                }
-            }
-            lableMessageSend.setPersonalNoLableMessageSendContentList(lableMessageSendContentList);
-            log.info("根据标签消息id查询标签列表");
-            sql = DaoGetSql.getSql("select * from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_lable_message_send_lable_no) + " where personal_no_lable_message_send_id = ?", lableMessageSend.getId());
-            List<PersonalNoLableMessageSendLableNo> messageSendLableNoList = messageSendLableNoService.list(sql);
-            Set<PersonalNo> noSet = new HashSet<>();
-            String sql1 = "";
-            if(!VerifyUtils.collectionIsEmpty(messageSendLableNoList)){
-                for (PersonalNoLableMessageSendLableNo messageSendLableNo : messageSendLableNoList) {
-                    sql1 = DaoGetSql.getById(ZCDBPersonalNo,messageSendLableNo.getPersonalNoId());
-                    PersonalNo no = noService.getOne(sql1);
-                    noSet.add(no);
-                }
-            }
-            String[] split = new String[]{};
-            if(!VerifyUtils.isEmpty(lableMessageSend.getPersonalNoLableMessageLableList())) {
-                split = lableMessageSend.getPersonalNoLableMessageLableList().split("\\|");
-            }
-            List<PersonalNo> noList = new ArrayList<>();
-            noList.addAll(noSet);
-            lableMessageSend.setNoList(noList);
-            lableMessageSend.setLableList(Arrays.asList(split));
-        }
-        log.info("数据库根据ID查询标签消息结束");
-        return lableMessageSend;
     }
 
     @Override
@@ -306,6 +216,22 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
     @Override
     public Long getCount(String sql) {
         return lableMessageSendMapper.getCount(sql);
+    }
+
+    @Override
+    public PersonalNoLableMessageSend getLableMessageById(Integer id) {
+        String getSql = DaoGetSql.getById(DBLableMessage, id);
+        PersonalNoLableMessageSend lableMessageSend = lableMessageSendMapper.getOne(getSql);
+
+        if(!VerifyUtils.isEmpty(lableMessageSend)){
+            String[] split = lableMessageSend.getPersonalNoLableMessageLableList().split("\\|");
+            List<String> strings = Arrays.asList(split);
+            lableMessageSend.setLableList(strings);
+            getSql = DaoGetSql.getSql("select * from " + DBLableMessageContent + " where personal_no_lable_message_send_id = ?",id);
+            List<PersonalNoLableMessageSendContent> lableMessageSendContentList =  personalNoLableMessageSendContentService.list(getSql);
+            lableMessageSend.setPersonalNoLableMessageSendContentList(lableMessageSendContentList);
+        }
+        return lableMessageSend;
     }
 
 }

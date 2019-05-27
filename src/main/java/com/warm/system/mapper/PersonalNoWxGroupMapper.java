@@ -15,6 +15,7 @@ import java.util.List;
  * @since 2019-03-29
  */
 public interface PersonalNoWxGroupMapper extends BaseMapper<PersonalNoWxGroup> {
+
     List<PersonalNoWxGroup> list(@Param("sql") String sql);
 
     List<String> listString(@Param("sql") String sql);

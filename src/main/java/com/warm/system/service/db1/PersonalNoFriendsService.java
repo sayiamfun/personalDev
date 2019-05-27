@@ -1,15 +1,12 @@
 package com.warm.system.service.db1;
 
 import com.baomidou.mybatisplus.plugins.Page;
-import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoFriends;
 import com.baomidou.mybatisplus.service.IService;
 import com.warm.system.entity.PersonalNoUser;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * <p>
@@ -21,9 +18,8 @@ import java.util.Set;
  */
 public interface PersonalNoFriendsService extends IService<PersonalNoFriends> {
 
-    List<PersonalNoUser> pageQuery(Page<PersonalNoFriends> page, Map<String, String> map);
+    Page<PersonalNoUser> pageQuery(Page<PersonalNoFriends> page, Map<String, String> map);
 
-    @Transactional
     boolean deleteFriends(String personalWxId, List<PersonalNoUser> users);
 
     boolean blackFriends(String personalWxId, PersonalNoUser user);
@@ -39,4 +35,5 @@ public interface PersonalNoFriendsService extends IService<PersonalNoFriends> {
     PersonalNoFriends getOne(String sql);
 
     Long getCount(String sql);
+
 }

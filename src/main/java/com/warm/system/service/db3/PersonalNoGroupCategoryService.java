@@ -24,7 +24,7 @@ public interface PersonalNoGroupCategoryService extends IService<PersonalNoGroup
     Long getCount(String sql);
 
     //获取群类别信息
-    PersonalNoGroupCategory getPersonalNoGroupCategory(String[] split);
+    PersonalNoGroupCategory getPersonalNoGroupCategory(String content);
 
     Integer add(PersonalNoGroupCategory entity);
 

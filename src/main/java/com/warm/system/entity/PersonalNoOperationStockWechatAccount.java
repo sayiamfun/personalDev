@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_operation_stock_wechat_account")
 public class PersonalNoOperationStockWechatAccount extends Model<PersonalNoOperationStockWechatAccount> {
 
@@ -143,294 +146,17 @@ public class PersonalNoOperationStockWechatAccount extends Model<PersonalNoOpera
     @TableField("current_client_wechat_version")
     private String currentClientWechatVersion;
 
+    @TableField(exist = false)
+    private Integer FriendsNum;
 
-    public Integer getId() {
-        return id;
-    }
+    @TableField(exist = false)
+    private Integer WaitingNums;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
+    @TableField(exist = false)
+    private String category;
 
-    public String getAssetId() {
-        return assetId;
-    }
-
-    public void setAssetId(String assetId) {
-        this.assetId = assetId;
-    }
-
-    public Integer getWxBuyId() {
-        return wxBuyId;
-    }
-
-    public void setWxBuyId(Integer wxBuyId) {
-        this.wxBuyId = wxBuyId;
-    }
-
-    public String getWxId() {
-        return wxId;
-    }
-
-    public void setWxId(String wxId) {
-        this.wxId = wxId;
-    }
-
-    public String getWxIdBieMing() {
-        return wxIdBieMing;
-    }
-
-    public void setWxIdBieMing(String wxIdBieMing) {
-        this.wxIdBieMing = wxIdBieMing;
-    }
-
-    public String getAssignPhone() {
-        return assignPhone;
-    }
-
-    public void setAssignPhone(String assignPhone) {
-        this.assignPhone = assignPhone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getIdCard() {
-        return idCard;
-    }
-
-    public void setIdCard(String idCard) {
-        this.idCard = idCard;
-    }
-
-    public String getYinHangKa() {
-        return yinHangKa;
-    }
-
-    public void setYinHangKa(String yinHangKa) {
-        this.yinHangKa = yinHangKa;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public Integer getSex() {
-        return sex;
-    }
-
-    public void setSex(Integer sex) {
-        this.sex = sex;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getArea() {
-        return area;
-    }
-
-    public void setArea(String area) {
-        this.area = area;
-    }
-
-    public String getWhatsUp() {
-        return whatsUp;
-    }
-
-    public void setWhatsUp(String whatsUp) {
-        this.whatsUp = whatsUp;
-    }
-
-    public String getQrCode() {
-        return qrCode;
-    }
-
-    public void setQrCode(String qrCode) {
-        this.qrCode = qrCode;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
-
-    public Integer getIsHaveRealname() {
-        return isHaveRealname;
-    }
-
-    public void setIsHaveRealname(Integer isHaveRealname) {
-        this.isHaveRealname = isHaveRealname;
-    }
-
-    public Integer getIsSlientDownload() {
-        return isSlientDownload;
-    }
-
-    public void setIsSlientDownload(Integer isSlientDownload) {
-        this.isSlientDownload = isSlientDownload;
-    }
-
-    public Integer getOperationProjectInstanceId() {
-        return operationProjectInstanceId;
-    }
-
-    public void setOperationProjectInstanceId(Integer operationProjectInstanceId) {
-        this.operationProjectInstanceId = operationProjectInstanceId;
-    }
-
-    public String getWxClass() {
-        return wxClass;
-    }
-
-    public void setWxClass(String wxClass) {
-        this.wxClass = wxClass;
-    }
-
-    public Integer getPhoneStockId() {
-        return phoneStockId;
-    }
-
-    public void setPhoneStockId(Integer phoneStockId) {
-        this.phoneStockId = phoneStockId;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Date getWxLoginTime() {
-        return wxLoginTime;
-    }
-
-    public void setWxLoginTime(Date wxLoginTime) {
-        this.wxLoginTime = wxLoginTime;
-    }
-
-    public Date getProjectInstanceRegTime() {
-        return projectInstanceRegTime;
-    }
-
-    public void setProjectInstanceRegTime(Date projectInstanceRegTime) {
-        this.projectInstanceRegTime = projectInstanceRegTime;
-    }
-
-    public Date getLastRequestJobTime() {
-        return lastRequestJobTime;
-    }
-
-    public void setLastRequestJobTime(Date lastRequestJobTime) {
-        this.lastRequestJobTime = lastRequestJobTime;
-    }
-
-    public Date getLastFinishedJobTime() {
-        return lastFinishedJobTime;
-    }
-
-    public void setLastFinishedJobTime(Date lastFinishedJobTime) {
-        this.lastFinishedJobTime = lastFinishedJobTime;
-    }
-
-    public Date getLastConnectTime() {
-        return lastConnectTime;
-    }
-
-    public void setLastConnectTime(Date lastConnectTime) {
-        this.lastConnectTime = lastConnectTime;
-    }
-
-    public String getLastUpdateLocalIp() {
-        return lastUpdateLocalIp;
-    }
-
-    public void setLastUpdateLocalIp(String lastUpdateLocalIp) {
-        this.lastUpdateLocalIp = lastUpdateLocalIp;
-    }
-
-    public String getLastConnectInternetIp() {
-        return lastConnectInternetIp;
-    }
-
-    public void setLastConnectInternetIp(String lastConnectInternetIp) {
-        this.lastConnectInternetIp = lastConnectInternetIp;
-    }
-
-    public String getClickId() {
-        return clickId;
-    }
-
-    public void setClickId(String clickId) {
-        this.clickId = clickId;
-    }
-
-    public String getCurrentClientWehookVersion() {
-        return currentClientWehookVersion;
-    }
-
-    public void setCurrentClientWehookVersion(String currentClientWehookVersion) {
-        this.currentClientWehookVersion = currentClientWehookVersion;
-    }
-
-    public String getCurrentClientWechatVersion() {
-        return currentClientWechatVersion;
-    }
-
-    public void setCurrentClientWechatVersion(String currentClientWechatVersion) {
-        this.currentClientWechatVersion = currentClientWechatVersion;
-    }
+    @TableField(exist = false)
+    private String group;
 
     @Override
     protected Serializable pkVal() {

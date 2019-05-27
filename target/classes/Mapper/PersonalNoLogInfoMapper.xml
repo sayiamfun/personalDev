@@ -11,4 +11,30 @@
         <result column="date" property="date" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoLogInfo" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,super_user_id,super_user_name,request_url,date)
+        values
+          (#{entity.id},#{entity.superUserId},#{entity.superUserName},#{entity.requestUrl},#{entity.date})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoLogInfo" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.superUserId!=null">
+                super_user_id = #{entity.superUserId},
+            </if>
+            <if test="entity.superUserName!=null">
+                super_user_name = #{entity.superUserName},
+            </if>
+            <if test="entity.requestUrl!=null">
+                request_url = #{entity.requestUrl},
+            </if>
+            <if test="entity.date!=null">
+                date = #{entity.date},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

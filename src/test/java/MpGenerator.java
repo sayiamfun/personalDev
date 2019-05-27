@@ -76,7 +76,7 @@ public class MpGenerator {
 //                "personal_no_task_channel","personal_no_task_data","personal_no_task_lable","personal_no_task_message_send",
 //                "personal_no_task_message_send_content","personal_no_task_personal","personal_no_task_reply_content",
 //                "personal_no_task_url","personal_no_temp","personal_no_user","personal_no_value_table","personal_no_wx_user"}); // 需要生成的表
-        strategy.setInclude(new String[]{"personal_no_log_info"});
+        strategy.setInclude(new String[]{"personal_no_category_and_group"});
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
         // strategy.setSuperEntityClass("com.baomidou.authentication.TestEntity");

@@ -32,7 +32,7 @@ public class PersonalNoKeywordContentController {
     private static Log log = LogFactory.getLog(PersonalNoKeywordContentController.class);
     @Autowired
     private PersonalNoKeywordContentService keywordContentService;
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_keyword_content);
+    private String DBKeywordContent = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_keyword_content);
 
     @ApiOperation(value = "根据关键词id查询内容")
     @GetMapping("/{keyWordId}/")
@@ -42,7 +42,7 @@ public class PersonalNoKeywordContentController {
     ){
         try {
             log.info("根据关键词id查询关键词内容");
-            String sql = "select * from "+ZCDB+" where personal_no_keyword_id = "+keyWordId;
+            String sql = "select * from "+DBKeywordContent+" where personal_no_keyword_id = "+keyWordId+" and deleted = 0";
             List<PersonalNoKeywordContent> personalNoKeywordContents = keywordContentService.list(sql);
             return R.ok().data(personalNoKeywordContents);
         }catch (Exception e){

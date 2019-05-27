@@ -2,12 +2,14 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
+import com.warm.entity.Sql;
 import com.warm.entity.requre.QueryRoad;
 import com.warm.system.entity.PersonalNoRoad;
-import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.service.db1.PersonalNoRoadService;
 import com.warm.system.service.db1.PersonalNoTaskService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,8 +19,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -39,6 +39,9 @@ public class PersonalNoRoadController {
     @Autowired
     private PersonalNoTaskService noTaskService;
 
+    private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task);
+    private String DBRoad = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_road);
+
     @ApiOperation(value = "添加通道")
     @PostMapping(value = "addRoad")
     public R addRoad(
@@ -50,7 +53,9 @@ public class PersonalNoRoadController {
             if(VerifyUtils.isEmpty(road)){
                 return R.error().message("要添加的参数为空");
             }
-            boolean save = roadService.insert(road);
+            road.setDb(DBRoad);
+            road.setDeleted(0);
+            boolean save = roadService.add(road);
             if(!save){
                 return R.error().message("添加通道失败");
             }
@@ -79,15 +84,19 @@ public class PersonalNoRoadController {
             page = roadService.pageQuery(page, queryRoad);
             //返回数据的集合
             log.info("开始查找对应通道任务数量");
+            String getSql = "";
+            Sql sql = new Sql();
             for (PersonalNoRoad resultRow : page.getRecords()) {
-                List<PersonalNoTask> taskList = noTaskService.listByRoadId(resultRow.getId());
-                resultRow.setTaskNum((null == taskList)?0:taskList.size());
+                getSql =  DaoGetSql.getSql("SELECT count(*) FROM " + DBTask + " where road_id = ? and deleted = 0", resultRow.getId());
+                sql.setSql(getSql);
+                Long count = noTaskService.countBySql(sql);
+                resultRow.setTaskNum(count.intValue());
             }
             log.info("条件分页查找个人号任务完成，返回数据");
             return R.ok().data(page);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 }

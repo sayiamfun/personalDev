@@ -1,8 +1,8 @@
 package com.warm.system.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.entity.robot.common.SunTaskType;
 import com.warm.system.entity.*;
 import com.warm.system.mapper.PersonalNoFriendsMapper;
@@ -42,10 +42,12 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
     @Autowired
     private PersonalNoBlacklistService blacklistService;
 
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends);
-    private String ZCDBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
-    private String ZCDBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group);
-    private String ZCDBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
+    private String DBFriends = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends);
+    private String DBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
+    private String DBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group);
+    private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
+    private String DBUser = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_user);
+    private String DBBlack = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_blacklist);
 
 
     /**
@@ -54,45 +56,45 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
      * @return
      */
     @Override
-    public List<PersonalNoUser> pageQuery(Page<PersonalNoFriends> page, Map<String, String> map) {
+    public Page<PersonalNoUser> pageQuery(Page<PersonalNoFriends> page, Map<String, String> map) {
+        Page<PersonalNoUser> resultPage = new Page<>(page.getOffset(),page.getLimit());
         List<PersonalNoUser>  userList = new ArrayList<>();
         String personalWxId = map.get("personalWxId");
         String nickName = map.get("nickName");
         if(VerifyUtils.isEmpty(personalWxId)){
-            return userList;
+            resultPage.setTotal(0);
+            resultPage.setRecords(userList);
+            return resultPage;
         }
-        String sql = "select * from "+ ZCDB + " where personal_no_wx_id = '"+personalWxId+"' and deleted = 0 limit "+page.getOffset()+","+page.getLimit();
-        List<PersonalNoFriends> personalNoFriends = friendsMapper.list(sql);
-        sql = DaoGetSql.getSql("select count(*) from "+ZCDB);
-        Long count = friendsMapper.getCount(sql);
-        page.setTotal(count.intValue());
-        page.setRecords(personalNoFriends);
+        String getSql = "select * from "+ DBFriends + " where personal_no_wx_id = '"+personalWxId+"' and deleted = 0";
+        Sql sql = new Sql(getSql);
         if(!VerifyUtils.isEmpty(nickName)){
-            for (PersonalNoFriends record : page.getRecords()) {
-                PersonalNoUser byWxId = userService.getByWxId(record.getUserWxId());
+            List<PersonalNoFriends> personalNoFriends = friendsMapper.list(getSql);
+            for (PersonalNoFriends record :personalNoFriends) {
+                getSql = DaoGetSql.getSql("SELECT * FROM "+DBUser+" where wx_id = ? limit 0,1",record.getUserWxId());
+                sql.setSql(getSql);
+                PersonalNoUser byWxId = userService.getBySql(sql);
                 if(!VerifyUtils.isEmpty(byWxId)) {
                     log.info("条件查找存在好友信息的情况");
                     if (!VerifyUtils.isEmpty(byWxId.getNickName()) && byWxId.getNickName().contains(nickName)) {
                         userList.add(byWxId);
                     }
-                }else {
-                    log.info("条件查找不存在好友信息的情况");
-                    if(record.getPersonalNoWxId().equals(nickName)){
-                        PersonalNoUser user = new PersonalNoUser();
-                        user.setWxId(record.getUserWxId());
-                        user.setNickName(record.getPersonalNoWxId());
-                        userList.add(byWxId);
-                    }
                 }
             }
+            resultPage.setTotal(userList.size());
         }else {
-            for (PersonalNoFriends record : page.getRecords()) {
-                PersonalNoUser byWxId = userService.getByWxId(record.getUserWxId());
+            List<PersonalNoFriends> personalNoFriends = friendsMapper.list(getSql);
+            resultPage.setTotal(personalNoFriends.size());
+            personalNoFriends = friendsMapper.list(getSql+" limit "+page.getOffset()+","+page.getLimit());
+            for (PersonalNoFriends record : personalNoFriends) {
+                getSql = DaoGetSql.getSql("SELECT * FROM "+DBUser+" where wx_id = ? limit 0,1",record.getUserWxId());
+                sql.setSql(getSql);
+                PersonalNoUser byWxId = userService.getBySql(sql);
                 if(VerifyUtils.isEmpty(byWxId)){
                     log.info("非条件查找不存在好友信息的情况");
                     PersonalNoUser user = new PersonalNoUser();
                     user.setWxId(record.getUserWxId());
-                    user.setNickName(record.getPersonalNoWxId());
+                    user.setNickName("未知好友");
                     userList.add(user);
                 }else {
                     log.info("非条件查找存在好友信息的情况");
@@ -100,7 +102,8 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
                 }
             }
         }
-        return userList;
+        resultPage.setRecords(userList);
+        return resultPage;
     }
     /**
      * 根据好友微信id列表删除好友
@@ -127,14 +130,14 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
     @Override
     public boolean blackFriends(String personalWxId, PersonalNoUser user) {
         log.info("判断是否在黑名单");
-        String sql = DaoGetSql.getSql("select * from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_blacklist) + " where wx_id = ?", user.getWxId());
+        String sql = DaoGetSql.getSql("select * from " + DBBlack + " where wx_id = ? limit 0,1", user.getWxId());
         PersonalNoBlacklist byWxId = blacklistService.getOne(sql);
         if(VerifyUtils.isEmpty(byWxId)) {
             log.info("将用户添加到黑名单");
             PersonalNoBlacklist blacklist = new PersonalNoBlacklist();
             blacklist.setNickName(user.getNickName());
             blacklist.setWxId(user.getWxId());
-            blacklist.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_blacklist));
+            blacklist.setDb(DBBlack);
             blacklistService.add(blacklist);
         }
         List<PersonalNoUser> users = new ArrayList<>();
@@ -160,9 +163,9 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
         taskGroup.setTname(personalWxId + "删除好友集合");
         taskGroup.setCreateTime(new Date());
         taskGroup.setTaskOrder(0);
-        taskGroup.setDb(ZCDBTaskGroup);
+        taskGroup.setDb(DBTaskGroup);
         int save = taskGroupService.add(taskGroup);
-        if(save!=0){
+        if(save>0){
             for (int i = 0; i < users.size(); i++) {
                 PersonalNoPhoneTask task = new PersonalNoPhoneTask();
                 task.setTaskGroupId(taskGroup.getId());
@@ -172,9 +175,9 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
                 task.setTaskType(SunTaskType.DELETE_FRIEND);
                 task.setStep(i+1);
                 task.setTname(personalWxId + "删除" + users.get(i).getNickName());
-                task.setDb(ZCDBTask);
+                task.setDb(DBTask);
                 int save1 = taskService.add(task);
-                if(save1 == 0){
+                if(save1 < 0){
                     log.error("添加删除好友任务失败");
                     throw new RuntimeException("添加删除好友任务失败");
                 }
@@ -187,15 +190,9 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
      * @param user
      */
     private void deletePeopleAndFriends(String personalWxId, PersonalNoUser user) {
-        String sql = DaoGetSql.getSql("SELECT id FROM "+ZCDBNoPeople+" WHERE personal_no_wx_id = ? and personal_friend_wx_id = ?",personalWxId,user.getWxId());
-        List<String> integers = peopleService.listString(sql);
-        String ids1 = DaoGetSql.getIds(integers);
-        sql = "delete from "+ZCDBNoPeople+" where id in "+ids1;
+        String sql = DaoGetSql.getSql("update "+DBNoPeople+" set deleted = 1 WHERE personal_no_wx_id = ? and personal_friend_wx_id = ?",personalWxId,user.getWxId());
         peopleService.delete(sql);
-        sql = DaoGetSql.getSql("select id from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends) + " where personal_no_wx_id = ? and user_wx_id = ?", personalWxId, user.getWxId());
-        List<String> list = friendsMapper.listString(sql);
-        String ids = DaoGetSql.getIds(list);
-        sql = "delete from "+DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends)+" where id in "+ids;
+        sql = DaoGetSql.getSql("update " + DBFriends + " set deleted = 1 where personal_no_wx_id = ? and user_wx_id = ?", personalWxId, user.getWxId());
         friendsMapper.delete(sql);
     }
 

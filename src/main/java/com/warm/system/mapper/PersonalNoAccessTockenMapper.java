@@ -18,8 +18,6 @@ import java.util.List;
  */
 public interface PersonalNoAccessTockenMapper extends BaseMapper<PersonalNoAccessTocken> {
 
-    List<PersonalNoAccessTocken> listMore(@Param("sql") String sql);
-
     int add(@Param("entity") PersonalNoAccessTocken entity);
 
     List<String> listOne(@Param("sql") String sql);

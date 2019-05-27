@@ -1,5 +1,6 @@
 package com.warm.system.service.impl;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoWxUser;
 import com.warm.system.mapper.PersonalNoWxUserMapper;
 import com.warm.system.service.db1.PersonalNoWxUserService;
@@ -22,8 +23,9 @@ public class PersonalNoWxUserServiceImpl extends ServiceImpl<PersonalNoWxUserMap
 
     @Autowired
     private PersonalNoWxUserMapper wxUserMapper;
+
     @Override
-    public List<String> listByASS(int i) {
-        return wxUserMapper.listByASS(i);
+    public List<String> listBySql(Sql sql) {
+        return wxUserMapper.listBySql(sql);
     }
 }

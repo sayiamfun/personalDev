@@ -1,7 +1,10 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoSuperuesr;
 import com.baomidou.mybatisplus.service.IService;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,5 +18,9 @@ public interface PersonalNoSuperuesrService extends IService<PersonalNoSuperuesr
 
     PersonalNoSuperuesr login(String superName);
 
-    PersonalNoSuperuesr getByOpenIdId(String openid);
+    Integer add(PersonalNoSuperuesr personalNoSuperuesr);
+
+    List<PersonalNoSuperuesr> listBySql(Sql sql);
+
+    PersonalNoSuperuesr getBySql(Sql sql);
 }

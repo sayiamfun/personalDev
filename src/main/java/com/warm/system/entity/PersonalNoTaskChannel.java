@@ -53,6 +53,9 @@ public class PersonalNoTaskChannel extends Model<PersonalNoTaskChannel> {
     @TableField("road_or_task")
     private String roadOrTask;
 
+    @TableField(exist = false)
+    private String db;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

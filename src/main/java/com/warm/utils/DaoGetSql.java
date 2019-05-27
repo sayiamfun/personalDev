@@ -4,6 +4,8 @@ package com.warm.utils;
 import java.util.Collection;
 
 public class DaoGetSql {
+
+
     public static StringBuffer getTempSql(StringBuffer temp, boolean f) {
         if(f){
             temp.append(" and ");
@@ -96,7 +98,7 @@ public class DaoGetSql {
      */
     public static String getIds(Collection<?> list){
         if(VerifyUtils.collectionIsEmpty(list)){
-            return "(-1)";
+            return "('')";
         }
         StringBuffer temp = new StringBuffer();
         temp.append("(");

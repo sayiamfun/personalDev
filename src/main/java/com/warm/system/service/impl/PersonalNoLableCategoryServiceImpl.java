@@ -10,6 +10,7 @@ import com.warm.system.mapper.PersonalNoLableCategoryMapper;
 import com.warm.system.service.db1.PersonalNoLableCategoryService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.warm.system.service.db1.PersonalNoLableService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import net.bytebuddy.asm.Advice;
 import org.apache.commons.logging.Log;
@@ -35,23 +36,23 @@ public class PersonalNoLableCategoryServiceImpl extends ServiceImpl<PersonalNoLa
     private PersonalNoLableService noLableService;
     @Autowired
     private PersonalNoLableCategoryMapper lableCategoryMapper;
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_category);
-    private String ZCDBLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
+    private String DBLableCategory = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_category);
+    private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
     /**
      * 查询个人号类别的标签数量，个人号数量，粉丝数量
      * 根据类别查询标签，根据标签查询个人号数量
      * 根据标签查询粉丝数量
-     * @param personalList
+     * @param noLableCategorieList
      * @return
      */
     @Override
-    public List<PersonalNoLableCategory> getInfo(List<PersonalNoLableCategory> personalList) {
-        if(!VerifyUtils.collectionIsEmpty(personalList)){
+    public List<PersonalNoLableCategory> getInfo(List<PersonalNoLableCategory> noLableCategorieList) {
+        if(!VerifyUtils.collectionIsEmpty(noLableCategorieList)){
             log.info("数据库根据标签类别查询标签集合");
             String sql = null;
-            for (PersonalNoLableCategory noLableCategory : personalList) {
+            for (PersonalNoLableCategory noLableCategory : noLableCategorieList) {
                 //标签数量
-                sql = "select * from "+ZCDBLable+" where lable_category = '"+noLableCategory.getCategoryName()+"'";
+                sql = "select * from "+DBLable+" where lable_category = '"+noLableCategory.getCategoryName()+"'";
                 List<PersonalNoLable> noLables = noLableService.list(sql);
                 //得到所有标签的数据
                 List<LableManager> numData = noLableService.getNumData(noLables);
@@ -73,7 +74,7 @@ public class PersonalNoLableCategoryServiceImpl extends ServiceImpl<PersonalNoLa
             }
         }
         log.info("数据库查询个人号类别的标签数量，个人号数量，粉丝数量结束");
-        return personalList;
+        return noLableCategorieList;
     }
 
     /**
@@ -84,16 +85,20 @@ public class PersonalNoLableCategoryServiceImpl extends ServiceImpl<PersonalNoLa
     @Override
     public Page<PersonalNoLableCategory> pageList(Page<PersonalNoLableCategory> page, String name) {
         log.info("数据库分页查询标签类别列表开始");
-        String sql = "select * from " + ZCDB;
+        StringBuffer temp = new StringBuffer();
         if(!"-1".equals(name)) {
-            sql+= " where category_name like '%"+name+"%'";
+            temp.append(" where category_name like '%"+name+"%'");
         }
-        sql += " order by id desc limit "+page.getOffset()+","+page.getLimit();
-        List<PersonalNoLableCategory> personalNoLableCategories = lableCategoryMapper.list(sql);
-        page.setRecords(personalNoLableCategories);
-        sql = "select count(*) from "+ZCDB;
-        Long count = lableCategoryMapper.getCount(sql);
+        String getSql = DaoGetSql.getSql("select count(*) from " + DBLableCategory+temp.toString());
+        Long count = lableCategoryMapper.getCount(getSql);
         page.setTotal(count.intValue());
+        temp.append(" order by id desc limit "+page.getOffset()+","+page.getLimit());
+        log.info("分页查询标签类别列表");
+        getSql = DaoGetSql.getSql("select * from " + DBLableCategory+temp.toString());
+        List<PersonalNoLableCategory> personalNoLableCategories = lableCategoryMapper.list(getSql);
+        log.info("开始查询标签类别相关信息");
+        List<PersonalNoLableCategory> info = getInfo(personalNoLableCategories);
+        page.setRecords(info);
         log.info("数据库分页查询标签类别列表结束");
         return page;
     }

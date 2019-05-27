@@ -1,6 +1,7 @@
 package com.warm.system.service.db1;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoChannel;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -27,4 +28,5 @@ public interface PersonalNoChannelService extends IService<PersonalNoChannel> {
     PersonalNoChannel getOne(String sql);
 
     Long getCount(String sql);
+
 }

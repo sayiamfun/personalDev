@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -26,5 +27,8 @@ public class QueryPersonal implements Serializable {
 
     @ApiModelProperty(value = "设备状态")
     private String equipmentStatus;
+
+    @ApiModelProperty(value = "标签列表")
+    private List<Integer> lableList;
 
 }

@@ -1,10 +1,13 @@
 package com.warm.system.service.impl;
 
+import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskPersonal;
 import com.warm.system.mapper.PersonalNoTaskPersonalMapper;
 import com.warm.system.service.db1.PersonalNoTaskPersonalService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.utils.DaoGetSql;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,15 +30,8 @@ public class PersonalNoTaskPersonalServiceImpl extends ServiceImpl<PersonalNoTas
     private static Log log = LogFactory.getLog(PersonalNoTaskPersonalServiceImpl.class);
     @Autowired
     private PersonalNoTaskPersonalMapper taskPersonalMapper;
-    /*
-     * 根据任务id查询任务相关个人号信息列表
-     */
-    @Override
-    public List<PersonalNoTaskPersonal> listByTaskId(Integer id) {
-        log.info("根据任务id查询所有任务个人号列表");
-        List<PersonalNoTaskPersonal> personalList = taskPersonalMapper.listByTaskId(id);
-        return personalList;
-    }
+
+    private String DBTaskPersonal = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_personal);
 
     /**
      * 批量添加任务个人号
@@ -45,14 +41,17 @@ public class PersonalNoTaskPersonalServiceImpl extends ServiceImpl<PersonalNoTas
     @Transactional
     @Override
     public boolean batchSave(PersonalNoTask noTask) {
-        taskPersonalMapper.deleteByTaskId(noTask.getId());
-
+        String getSql = DaoGetSql.getSql("UPDATE "+DBTaskPersonal+" set deleted = 1 where personal_no_task_id = ?",noTask.getId());
+        taskPersonalMapper.deleteBySql(new Sql(getSql));
         List<PersonalNoTaskPersonal> noList = noTask.getNoList();
         for (PersonalNoTaskPersonal personalNoTaskPersonal : noList) {
             //插入任务id
+            personalNoTaskPersonal.setId(null);
             personalNoTaskPersonal.setPersonalNoTaskId(noTask.getId());
-            int save = baseMapper.insert(personalNoTaskPersonal);
-            if(save!=1){
+            personalNoTaskPersonal.setDeleted(0);
+            personalNoTaskPersonal.setDb(DBTaskPersonal);
+            int save = taskPersonalMapper.add(personalNoTaskPersonal);
+            if(save<0){
                 log.info("将个人号任务个人号插入到数据库失败");
                 return false;
             }
@@ -61,38 +60,25 @@ public class PersonalNoTaskPersonalServiceImpl extends ServiceImpl<PersonalNoTas
         return true;
     }
 
-    /**
-     * 根据个人号id查询任务个人号列表
-     * @param personalWxId
-     * @return
-     */
     @Override
-    public List<PersonalNoTaskPersonal> listByPersonalId(String personalWxId) {
-        log.info("数据库根据个人号id查询任务个人号列表");
-        List<PersonalNoTaskPersonal> personalList = taskPersonalMapper.listByPersonalId(personalWxId);
-        log.info("数据库根据个人号id查询任务个人号列表结束");
-        return personalList;
+    public boolean deleteBySql(Sql sql) {
+        return taskPersonalMapper.deleteBySql(sql)>0;
     }
 
-    /**
-     * 根据任务id和个人号微信id查询任务个人号
-     * @param integer
-     * @param personalWxId
-     * @return
-     */
     @Override
-    public PersonalNoTaskPersonal getByTaskIdAndPersonalWxId(Integer integer, String personalWxId) {
-        return taskPersonalMapper.getByTaskIdAndPersonalWxId(integer, personalWxId);
+    public List<PersonalNoTaskPersonal> listBySql(Sql sql) {
+        return taskPersonalMapper.listBySql(sql);
     }
 
-    /**
-     * 根据任务id删除任务相关个人号
-     * @param taskId
-     * @return
-     */
     @Override
-    public boolean deleteByTaskId(Integer taskId) {
-        taskPersonalMapper.deleteByTaskId(taskId);
-        return true;
+    public Long countBySql(Sql sql) {
+        return taskPersonalMapper.countBySql(sql);
     }
+
+    @Override
+    public List<String> listStringBySql(Sql sql) {
+        return taskPersonalMapper.listStringBySql(sql);
+    }
+
+
 }

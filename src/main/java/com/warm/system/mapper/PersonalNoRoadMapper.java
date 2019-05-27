@@ -1,7 +1,12 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoRoad;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +18,16 @@ import com.baomidou.mybatisplus.mapper.BaseMapper;
  */
 public interface PersonalNoRoadMapper extends BaseMapper<PersonalNoRoad> {
 
+    @Select("${sql}")
+    List<PersonalNoRoad> listBySql(Sql sql);
+
+    @Select("${sql}")
+    PersonalNoRoad getBySql(Sql sql);
+
+    Integer add(@Param("entity") PersonalNoRoad entity);
+
+    Integer updateOne(@Param("entity") PersonalNoRoad entity);
+
+    @Select("${sql}")
+    Long countBySql(Sql sql);
 }

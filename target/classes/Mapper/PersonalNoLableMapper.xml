@@ -15,7 +15,7 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoLable" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,name,age,super_id,create_time,remarks)
+          (id,lable_name,lable_category,super_id,create_time,remarks)
         values
           (#{entity.id},#{entity.lableName},#{entity.lableCategory},#{entity.superId},#{entity.createTime},#{entity.remarks})
     </insert>

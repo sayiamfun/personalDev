@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskBeginRemind;
 import com.baomidou.mybatisplus.service.IService;
@@ -18,7 +19,9 @@ public interface PersonalNoTaskBeginRemindService extends IService<PersonalNoTas
 
     boolean batchSave(PersonalNoTask noTask);
 
-    List<PersonalNoTaskBeginRemind> getListByTaskId(Integer id);
+    Integer add(PersonalNoTaskBeginRemind personalNoTaskBeginRemind);
 
-    boolean deleteByTaskId(Integer taskId);
+    List<PersonalNoTaskBeginRemind> listBySql(Sql sql);
+
+    boolean deleteBySql(Sql sql);
 }

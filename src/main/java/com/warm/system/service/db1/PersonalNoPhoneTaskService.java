@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoPhoneTask;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -26,4 +27,6 @@ public interface PersonalNoPhoneTaskService extends IService<PersonalNoPhoneTask
     PersonalNoPhoneTask getOne(String sql);
 
     Long getCount(String sql);
+
+    Integer updateBySql(Sql sql);
 }

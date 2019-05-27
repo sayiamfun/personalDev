@@ -17,10 +17,6 @@ import java.util.List;
  */
 public interface PersonalNoLableMessageSendLableNoMapper extends BaseMapper<PersonalNoLableMessageSendLableNo> {
 
-    //找到此个人号没有下发的标签消息id；列表，已下发则被删除
-    @Select("SELECT id,personal_no_lable_message_send_id,lable_id,lable_name,personal_no_id,wx_id,deleted FROM personal_no_lable_message_send_lable_no WHERE wx_id = #{username} and deleted = 0")
-    List<PersonalNoLableMessageSendLableNo> listLableMessageIdByPersonalWxId(String username);
-
     List<PersonalNoLableMessageSendLableNo> list(@Param("sql") String sql);
 
     List<String> listString(@Param("sql") String sql);

@@ -36,6 +36,8 @@ public class PersonalNoDataController {
     @Autowired
     private PersonalNoDataService dataService;
 
+
+
     @ApiOperation(value = "查询总体数据")
     @PostMapping("pagePersonalDate")
     public R pagePersonalDate(
@@ -43,15 +45,30 @@ public class PersonalNoDataController {
             @RequestBody QueryPersonalData queryPersonalData
     ){
         try {
-            log.info("分页条件查询个人号任务数据");
-            List<PersonalNoData> list = dataService.listAll(queryPersonalData);
-            ResultPersonalData resultPersonalData = dataService.getInfoByDateList(list);
+            ResultPersonalData resultPersonalData = dataService.getAllData(queryPersonalData);
             return R.ok().data(resultPersonalData);
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
+
+//    @ApiOperation(value = "查询总体数据")
+//    @PostMapping("pagePersonalDate")
+//    public R pagePersonalDate(
+//            @ApiParam(name = "queryPersonalData", value = "查询参数", required = true)
+//            @RequestBody QueryPersonalData queryPersonalData
+//    ){
+//        try {
+//            log.info("分页条件查询个人号任务数据");
+//            List<PersonalNoData> list = dataService.listAll(queryPersonalData);
+//            ResultPersonalData resultPersonalData = dataService.getInfoByDateList(list);
+//            return R.ok().data(resultPersonalData);
+//        }catch (Exception e){
+//            e.printStackTrace();
+//            return R.error().message("网页走丢了，请刷新。。。");
+//        }
+//    }
 
     @ApiOperation(value = "查询总体数据")
     @PostMapping("pagePersonalDate/{flag}/")

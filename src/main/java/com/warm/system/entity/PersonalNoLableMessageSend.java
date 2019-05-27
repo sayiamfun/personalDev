@@ -69,13 +69,17 @@ public class PersonalNoLableMessageSend extends Model<PersonalNoLableMessageSend
     @TableField(exist = false)
     private List<PersonalNoLableMessageSendContent> personalNoLableMessageSendContentList;
 
-    @ApiModelProperty(value = "标签列表")
+    @ApiModelProperty(value = "标签id列表")
     @TableField(exist = false)
     private List<String> lableList;
 
     @ApiModelProperty(value = "个人号列表")
     @TableField(exist = false)
-    private List<PersonalNo> noList;
+    private List<PersonalNoOperationStockWechatAccount> noList;
+
+    @ApiModelProperty(value = "个人号微信id列表")
+    @TableField(exist = false)
+    private List<String> noWxIdList;
 
     @ApiModelProperty(value = "起始时间")
     @TableField(exist = false)
@@ -85,6 +89,7 @@ public class PersonalNoLableMessageSend extends Model<PersonalNoLableMessageSend
     @TableField(exist = false)
     private Date endTime;
 
+    @ApiModelProperty(value = "群类别名")
     @TableField(exist = false)
     private String groupName;
 

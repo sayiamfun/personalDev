@@ -15,4 +15,43 @@
         <result column="road_url" property="roadUrl" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoRoad" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,road_name,road_background,road_num,road_create_time,click_road_num,less_click_road_num,deleted,road_url)
+        values
+          (#{entity.id},#{entity.roadName},#{entity.roadBackground},#{entity.roadNum},#{entity.roadCreateTime},#{entity.clickRoadNum},#{entity.lessClickRoadNum},#{entity.deleted},#{entity.roadUrl})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoRoad" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.roadName!=null">
+                road_name = #{entity.roadName},
+            </if>
+            <if test="entity.roadBackground!=null">
+                road_background = #{entity.roadBackground},
+            </if>
+            <if test="entity.roadNum!=null">
+                road_num = #{entity.roadNum},
+            </if>
+            <if test="entity.roadCreateTime!=null">
+                road_create_time = #{entity.roadCreateTime},
+            </if>
+            <if test="entity.clickRoadNum!=null">
+                click_road_num = #{entity.clickRoadNum},
+            </if>
+            <if test="entity.lessClickRoadNum!=null">
+                less_click_road_num = #{entity.lessClickRoadNum},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+            <if test="entity.roadUrl!=null">
+                road_url = #{entity.roadUrl},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+
 </mapper>

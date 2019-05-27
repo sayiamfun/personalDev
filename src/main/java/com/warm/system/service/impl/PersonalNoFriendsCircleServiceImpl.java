@@ -3,6 +3,7 @@ package com.warm.system.service.impl;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.entity.query.QueryFriendsCircle;
 import com.warm.entity.robot.common.SunTaskType;
 import com.warm.system.entity.*;
@@ -43,8 +44,11 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
     @Autowired
     private PersonalNoPhoneTaskService taskService;
 
-    private String ZCDBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
-    private String ZCDBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group);
+    private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
+    private String DBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group);
+    private String DBFriendsCircle = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle);
+    private String DBFriendsCirclePersonal = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_personal);
+    private String DBFriendsCirclePhoto = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_photo);
     /*
      *  条件分页查询朋友圈
      */
@@ -58,12 +62,12 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
         Date endTime = searchObj.getEndTime();
         //查询个人号条件
         //根据个人号id得到相关联的所有的朋友圈id列表存入hashSet集合,去重
-        StringBuffer temp = new StringBuffer("select * from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle));
+        StringBuffer temp = new StringBuffer();
         boolean F = false;
         if(!VerifyUtils.isEmpty(personal_no_id)){
             log.info("个人号id不为空,开始查询对应的个人号相关朋友圈id信息");
             //查询朋友圈个人号条件
-            String sql = "select DISTINCT friends_circle_id from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_personal)+" where personal_no_id = "+personal_no_id;
+            String sql = "select DISTINCT friends_circle_id from "+DBFriendsCirclePersonal+" where personal_no_id = "+personal_no_id;
             //根据个人号id查询所有的朋友圈-个人号信息
             List<String> list = noFriendsCirclePersonalService.listString(sql);
             String ids = DaoGetSql.getIds(list);
@@ -94,11 +98,26 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
             temp = DaoGetSql.getTempSql(temp, F);
             temp.append(" create_time < '"+WebConst.getNowDate(sendTime)+"'");
         }
+        String getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBFriendsCircle+temp.toString());
+        Long count = noFriendsCircleMapper.getCount(getSql);
         temp.append(" order by id desc limit "+page.getOffset()+","+page.getLimit());
-        List<PersonalNoFriendsCircle> personalNoFriendsCircles = noFriendsCircleMapper.list(temp.toString());
+        getSql = DaoGetSql.getSql("SELECT * FROM "+DBFriendsCircle+temp.toString());
+        List<PersonalNoFriendsCircle> personalNoFriendsCircles = noFriendsCircleMapper.list(getSql);
+        for (PersonalNoFriendsCircle personalNoFriendsCircle : personalNoFriendsCircles) {
+            getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBTaskGroup+" where task_send_id = -1 and lable_send_id = ?",personalNoFriendsCircle.getId());
+            Long count1 = taskGroupService.getCount(getSql);
+            if(!"已完成".equals(personalNoFriendsCircle.getStatus())) {
+                String[] split = personalNoFriendsCircle.getStatus().split("/");
+                if (split.length > 1) {
+                    if (count1.intValue() >= Integer.parseInt(split[1])) {
+                        personalNoFriendsCircle.setStatus("已完成");
+                    } else {
+                        personalNoFriendsCircle.setStatus("" + count1.intValue() + "/" + split[1]);
+                    }
+                }
+            }
+        }
         page.setRecords(personalNoFriendsCircles);
-        String sql = DaoGetSql.getSql("select count(*) from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal));
-        Long count = noFriendsCircleMapper.getCount(sql);
         page.setTotal(count.intValue());
         log.info("数据库分页查询朋友圈结束");
         return page;
@@ -113,7 +132,8 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
         log.info("数据库开始添加朋友圈消息");
         noFriendsCircle.setStatus("0/"+noFriendsCircle.getPersonalList().size());
         noFriendsCircle.setCreateTime(new Date());
-        noFriendsCircle.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle));
+        noFriendsCircle.setDb(DBFriendsCircle);
+        noFriendsCircle.setDeleted(0);
         int insert = noFriendsCircleMapper.add(noFriendsCircle);
         if(insert == 0){
             log.info("数据库添加朋友圈失败");
@@ -133,44 +153,46 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
             return 0;
         }
         log.info("开始处理朋友圈任务");
-        if(VerifyUtils.isEmpty(noFriendsCircle.getAutoSend())){
-            log.info("直接发送");
-            for (PersonalNoFriendsCirclePersonal noFriendsCirclePersonal : noFriendsCircle.getPersonalList()) {
-                PersonalNoPhoneTaskGroup taskGroup = new PersonalNoPhoneTaskGroup();
-                taskGroup.setStatus("未下发");
-                taskGroup.setCurrentRobotId(noFriendsCirclePersonal.getPersonalNoWxId());
-                taskGroup.setTotalStep(noFriendsCircle.getPhotoList().size());
-                taskGroup.setNextStep(1);
-                taskGroup.setTname(noFriendsCirclePersonal.getPersonalNoWxId() + "发送朋友圈");
-                taskGroup.setTaskOrder(0);
-                taskGroup.setCreateTime(new Date());
-                taskGroup.setTaskSendId(-1);
-                taskGroup.setLableSendId(noFriendsCircle.getId());
-                taskGroup.setDb(ZCDBTaskGroup);
-                int save = taskGroupService.add(taskGroup);
-                if (save == 0) {
-                    log.error("插入朋友圈任务组失败");
-                    throw new RuntimeException("插入朋友圈任务组失败");
-                }
-                PersonalNoPhoneTask task = new PersonalNoPhoneTask();
-                task.setTaskGroupId(taskGroup.getId());
-                task.setCreateTime(new Date());
-                task.setContent(noFriendsCircle.getFriendsCircleOfficial());
-                task.setTaskType(SunTaskType.TIMELINE_NORMAL);
-                task.setTname(noFriendsCirclePersonal.getPersonalNoWxId() + "发送照片朋友圈");
-                List<String> list = new ArrayList<>();
-                for (PersonalNoFriendsCirclePhoto noFriendsCirclePhoto : noFriendsCircle.getPhotoList()) {
-                    list.add(noFriendsCirclePhoto.getPhoto());
-                }
-                task.setTaskJson(JsonObjectUtils.objectToJson(list));
-                task.setStatus("未下发");
-                task.setStep(1);
-                task.setDb(ZCDBTask);
-                int save1 = taskService.add(task);
-                if (save1 == 0) {
-                    log.info("插入朋友圈任务失败");
-                    throw new RuntimeException("插入朋友圈任务失败");
-                }
+        Date date = new Date();
+        if(!VerifyUtils.isEmpty(noFriendsCircle.getAutoSend())){
+            date  = noFriendsCircle.getAutoSend();
+        }
+        log.info("直接发送");
+        for (PersonalNoFriendsCirclePersonal noFriendsCirclePersonal : noFriendsCircle.getPersonalList()) {
+            PersonalNoPhoneTaskGroup taskGroup = new PersonalNoPhoneTaskGroup();
+            taskGroup.setStatus("未下发");
+            taskGroup.setCurrentRobotId(noFriendsCirclePersonal.getPersonalNoWxId());
+            taskGroup.setTotalStep(noFriendsCircle.getPhotoList().size());
+            taskGroup.setNextStep(1);
+            taskGroup.setTname(noFriendsCirclePersonal.getPersonalNoWxId() + "发送朋友圈");
+            taskGroup.setTaskOrder(0);
+            taskGroup.setCreateTime(date);
+            taskGroup.setTaskSendId(-1);
+            taskGroup.setLableSendId(noFriendsCircle.getId());
+            taskGroup.setDb(DBTaskGroup);
+            int save = taskGroupService.add(taskGroup);
+            if (save < 0) {
+                log.error("插入朋友圈任务组失败");
+                throw new RuntimeException("插入朋友圈任务组失败");
+            }
+            PersonalNoPhoneTask task = new PersonalNoPhoneTask();
+            task.setTaskGroupId(taskGroup.getId());
+            task.setCreateTime(new Date());
+            task.setContent(noFriendsCircle.getFriendsCircleOfficial());
+            task.setTaskType(SunTaskType.TIMELINE_NORMAL);
+            task.setTname(noFriendsCirclePersonal.getPersonalNoWxId() + "发送照片朋友圈");
+            List<String> list = new ArrayList<>();
+            for (PersonalNoFriendsCirclePhoto noFriendsCirclePhoto : noFriendsCircle.getPhotoList()) {
+                list.add(noFriendsCirclePhoto.getPhoto());
+            }
+            task.setTaskJson(JsonObjectUtils.objectToJson(list));
+            task.setStatus("未下发");
+            task.setStep(1);
+            task.setDb(DBTask);
+            int save1 = taskService.add(task);
+            if (save1 < 0) {
+                log.info("插入朋友圈任务失败");
+                throw new RuntimeException("插入朋友圈任务失败");
             }
         }
         return 1;
@@ -209,16 +231,16 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
     @Override
     public PersonalNoFriendsCircle getCircleById(Integer id) {
         log.info("数据库根据id查询朋友圈开始");
-        String byId = DaoGetSql.getById(DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle), id);
+        String byId = DaoGetSql.getById(DBFriendsCircle, id);
         PersonalNoFriendsCircle noFriendsCircle = noFriendsCircleMapper.getOne(byId);
         if(!VerifyUtils.isEmpty(noFriendsCircle)){
             log.info("根据朋友圈ID查询朋友圈个人号");
-            String sql = DaoGetSql.getSql("select * from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends_circle_personal) + " where friends_circle_id = ?", noFriendsCircle.getId());
+            String sql = DaoGetSql.getSql("select * from " + DBFriendsCirclePersonal + " where friends_circle_id = ? and deleted = 0", noFriendsCircle.getId());
             List<PersonalNoFriendsCirclePersonal> personalList = noFriendsCirclePersonalService.list(sql);
             noFriendsCircle.setPersonalNum(personalList.size());
             noFriendsCircle.setPersonalList(personalList);
             log.info("根据朋友圈id查询朋友圈照片");
-            sql = DaoGetSql.getSql("select * from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_photo)+" where `friends_circle_id` = ?",id);
+            sql = DaoGetSql.getSql("select * from "+DBFriendsCirclePhoto+" where `friends_circle_id` = ? and deleted = 0",id);
             List<PersonalNoFriendsCirclePhoto> photoList = noFriendsCirclePhotoService.list(sql);
             noFriendsCircle.setPhotoList(photoList);
         }

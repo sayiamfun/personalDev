@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -28,5 +28,5 @@ public class LableManager implements Serializable {
     @ApiModelProperty(value = "标签下个人号数量")
     private Integer personalNoNum = 0;
     @ApiModelProperty(value = "个人号数据集合（个人号名称和粉丝数量）")
-    private Set<LableShow> lableShowList;
+    private List<LableShow> lableShowList;
 }

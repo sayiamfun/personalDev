@@ -1,6 +1,6 @@
 package com.warm.entity.requre;
 
-import com.warm.system.entity.PersonalNo;
+import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -19,9 +19,11 @@ public class PeopleNumReq implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "个人号集合")
-    private List<PersonalNo> noList;
+    private List<String> noWxIdList;
     @ApiModelProperty(value = "标签名称集合")
     private List<String> lableNameList;
+    @ApiModelProperty(value = "标签id集合")
+    private List<String> lableIdList;
     @ApiModelProperty(value = "开始时间")
     private Date startTime;
     @ApiModelProperty(value = "结束时间")

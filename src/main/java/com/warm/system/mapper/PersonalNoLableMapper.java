@@ -15,6 +15,7 @@ import java.util.List;
  * @since 2019-03-29
  */
 public interface PersonalNoLableMapper extends BaseMapper<PersonalNoLable> {
+
     List<PersonalNoLable> list(@Param("sql") String sql);
 
     List<String> listString(@Param("sql") String sql);

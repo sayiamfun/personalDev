@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoValueTable;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -15,9 +16,11 @@ import java.util.List;
  */
 public interface PersonalNoValueTableService extends IService<PersonalNoValueTable> {
 
-    List<String> listWxIdByType(Integer type);
+    PersonalNoValueTable getBySql(Sql sql);
 
-    List<PersonalNoValueTable> listSuperUser(Integer type);
+    List<PersonalNoValueTable> listBySql(Sql sql);
 
-    boolean insert(PersonalNoValueTable valueTable);
+    Integer add(PersonalNoValueTable valueTable);
+
+    Integer delteBySql(Sql sql);
 }

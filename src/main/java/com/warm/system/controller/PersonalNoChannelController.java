@@ -1,7 +1,6 @@
 package com.warm.system.controller;
 
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.entity.DB;
 import com.warm.entity.R;
@@ -17,11 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -41,7 +36,8 @@ public class PersonalNoChannelController {
     @Autowired
     private PersonalNoChannelService personalnoChannelService;
 
-    private String ZCDBChannel = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_channel);
+    private String DBChannel = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_channel);
+
 
     @ApiOperation(value = "分页渠道列表")
     @GetMapping(value = "{pageNum}/{size}/")
@@ -56,9 +52,9 @@ public class PersonalNoChannelController {
             log.info("分页渠道列表开始");
             Page<PersonalNoChannel> page = new Page<>(VerifyUtils.setPageNum(pageNum), VerifyUtils.setSize(size));
             log.info("数据库查找渠道列表");
-            String sql = DaoGetSql.getSql("select * from " + ZCDBChannel + " order by id desc limit ?,?",page.getOffset(),page.getLimit());
+            String sql = DaoGetSql.getSql("select * from " + DBChannel + " where deleted = 0 order by id desc limit ?,?",page.getOffset(),page.getLimit());
             List<PersonalNoChannel> list = personalnoChannelService.list(sql);
-            sql = DaoGetSql.getSql("select count(*) from " + ZCDBChannel);
+            sql = DaoGetSql.getSql("select count(*) from " + DBChannel+" where deleted = 0");
             Long count = personalnoChannelService.getCount(sql);
             page.setTotal(count.intValue());
             page.setRecords(list);
@@ -66,7 +62,7 @@ public class PersonalNoChannelController {
             return R.ok().data(page);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -75,13 +71,13 @@ public class PersonalNoChannelController {
     public R list(){
         try {
             log.info("查询所有渠道列表开始");
-            String sql = DaoGetSql.getSql("select * from " + ZCDBChannel + " order by id desc");
+            String sql = DaoGetSql.getSql("select * from " + DBChannel + " where deleted = 0 order by id desc");
             List<PersonalNoChannel> list = personalnoChannelService.list(sql);
             log.info("查询所有渠道列表成功,返回数据");
             return R.ok().data(list);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -90,13 +86,13 @@ public class PersonalNoChannelController {
     public R taskChannelList(){
         try {
             log.info("个人号任务页面查询所有渠道列表开始");
-            String sql = DaoGetSql.getSql("select channel_name from " + ZCDBChannel + " order by id desc");
+            String sql = DaoGetSql.getSql("select channel_name from " + DBChannel + " where deleted = 0 order by id desc");
             List<String> list = personalnoChannelService.listString(sql);
             log.info("个人号任务页面查询所有渠道列表成功,返回数据");
             return R.ok().data(list);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -104,7 +100,7 @@ public class PersonalNoChannelController {
     @PostMapping("addChannel")
     public R addChannel(
             @ApiParam(name = "personalnoChannel", value = "添加渠道对象", required = true)
-            @RequestBody PersonalNoChannel personalnoChannel
+            @RequestBody @Valid PersonalNoChannel personalnoChannel
     ){
         try {
             log.info("添加渠道开始");
@@ -116,23 +112,24 @@ public class PersonalNoChannelController {
              * 如果存在id则做修改操作
              * 如果不存在id则作
              */
-            personalnoChannel.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_channel));
-            Integer add = personalnoChannelService.add(personalnoChannel);
-            if(add==0){
-                return R.error().message("添加渠道信息到数据库失败");
-            }
+//            personalnoChannel.setDb(DBChannel);
+//            personalnoChannel.setDeleted(0);
+//            Integer add = personalnoChannelService.add(personalnoChannel);
+//            if(add==0){
+//                return R.error().message("添加渠道信息到数据库失败");
+//            }
             log.info("添加渠道到数据库成功");
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
     @ApiOperation(value = "根据id查找渠道")
     @GetMapping("{channelId}")
     public R selectChannelById(
-            @ApiParam(name = "personalnoChannel", value = "添加渠道对象", required = true)
+            @ApiParam(name = "channelId", value = "渠道id", required = true)
             @PathVariable("channelId")Long channelId
     ){
         try {
@@ -141,13 +138,13 @@ public class PersonalNoChannelController {
                 log.info("id为空,查找失败");
                 return R.error().message("查找id为空");
             }
-            String sql = DaoGetSql.getSql("select * from " + ZCDBChannel + " where id = ?",channelId);
+            String sql = DaoGetSql.getSql("select * from " + DBChannel + " where id = ? and deleted = 0",channelId);
             PersonalNoChannel channel = personalnoChannelService.getOne(sql);
             log.info("根据id查找渠道成功返回数据");
             return R.ok().data(channel);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -164,17 +161,13 @@ public class PersonalNoChannelController {
                 log.info("id为空,删除失败");
                 return R.error().message("待删除渠道id为空");
             }
-            String sql = DaoGetSql.getSql("delete from " + ZCDBChannel + " where id = ?", channelId);
-            int b = personalnoChannelService.delete(sql);
-            if(b==0){
-                log.info("数据库根据id删除渠道失败");
-                return R.error().message("删除渠道数据库数据失败");
-            }
+            String sql = DaoGetSql.getSql("delete from " + DBChannel + " where id = ?", channelId);
+            personalnoChannelService.delete(sql);
             log.info("根据id删除渠道成功");
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 

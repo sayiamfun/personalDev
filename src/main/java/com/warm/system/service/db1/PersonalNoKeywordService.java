@@ -22,15 +22,7 @@ public interface PersonalNoKeywordService extends IService<PersonalNoKeyword> {
 
     void deleteById(Integer keyWordId);
 
-    PersonalNoKeyword getByKeyWord(String keyword);
-
-    void onById(Integer keyWordId);
-
-    List<PersonalNoKeyword> getStart();
-
     Integer add(PersonalNoKeyword entity);
-
-    Integer delete(String sql);
 
     List<PersonalNoKeyword> list(String sql);
 

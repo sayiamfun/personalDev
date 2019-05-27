@@ -2,19 +2,21 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
+import com.warm.entity.Sql;
 import com.warm.entity.query.QueryPersonalTask;
 import com.warm.entity.requre.GetNoEntity;
 import com.warm.system.entity.*;
 import com.warm.system.service.db1.PersonalNoRoadService;
-import com.warm.system.service.db1.PersonalNoService;
 import com.warm.system.service.db1.PersonalNoTaskService;
+import com.warm.system.service.db2.PersonalNoOperationStockWechatAccountService;
 import com.warm.system.service.db3.PersonalNoGroupCategoryService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,17 +44,21 @@ public class PersonalNoTaskController {
     @Autowired
     private PersonalNoTaskService noTaskService;
     @Autowired
-    private PersonalNoService noService;
-    @Autowired
     private PersonalNoRoadService roadService;
     @Autowired
     private PersonalNoGroupCategoryService groupCategoryService;
+    @Autowired
+    private PersonalNoOperationStockWechatAccountService wechatAccountService;
+
+    private String DBRoad = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_road);
+    private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task);
 
     @ApiOperation(value = "查询所有任务")
-    @GetMapping
-    public R listAll(){
+    @GetMapping("")
+    public R listTask(){
         try {
-            List<PersonalNoTask> list = noTaskService.selectList(null);
+            String getSql = DaoGetSql.getSql("SELECT * FROM " + DBTask + " where deleted = 0 order by id desc");
+            List<PersonalNoTask> list = noTaskService.listBySql(new Sql(getSql));
             return R.ok().data(list);
         }catch (Exception e){
             e.printStackTrace();
@@ -64,7 +70,8 @@ public class PersonalNoTaskController {
     @GetMapping("listAllTaskName")
     public R listAllTaskName(){
         try {
-            List<String> list = noTaskService.listAllTaskName(null);
+            String getSql = DaoGetSql.getSql("SELECT task_name FROM " + DBTask + " where deleted = 0 order by id desc");
+            List<String> list = noTaskService.listtaskNamesBySql(new Sql(getSql));
             return R.ok().data(list);
         }catch (Exception e){
             e.printStackTrace();
@@ -76,14 +83,15 @@ public class PersonalNoTaskController {
     @GetMapping("getByRoadId/{roadId}/")
     public R list(
             @ApiParam(name = "roadId", value = "通道id", required = true)
-            @PathVariable("roadId")Integer roadId,
-            HttpServletRequest request
+            @PathVariable("roadId")Integer roadId
     ){
         try {
             log.info("根据通道id查询所有的任务");
             Map<String, Object> map = new HashMap<>();
-            PersonalNoRoad road = roadService.selectById(roadId);
-            List<PersonalNoTask> list = noTaskService.listByRoadId(roadId);
+            String getSql = DaoGetSql.getById(DBRoad, roadId);
+            PersonalNoRoad road = roadService.getBySql(new Sql(getSql));
+            getSql = DaoGetSql.getSql("SELECT * FROM "+DBTask+" where road_id = ? and deleted = 0",roadId);
+            List<PersonalNoTask> list = noTaskService.listBySql(new Sql(getSql));
             map.put("road", road);
             map.put("taskList", list);
             log.info("根据通道id查询所有的任务结束");
@@ -124,7 +132,7 @@ public class PersonalNoTaskController {
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -158,7 +166,7 @@ public class PersonalNoTaskController {
             return R.ok().data(page);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -169,7 +177,8 @@ public class PersonalNoTaskController {
             @PathVariable Integer taskId
     ){
         try {
-            boolean b = noTaskService.stopTaskById(taskId);
+            String updateSql = DaoGetSql.getSql("UPDATE " + DBTask + " SET activity_type = 1 where id = ?", taskId);
+            boolean b = noTaskService.updateBySql(new Sql(updateSql));
             if(!b){
                 return R.error().message("停止任务失败");
             }
@@ -214,16 +223,14 @@ public class PersonalNoTaskController {
             List<PersonalNoTaskReplyContent> noTaskReplyContentList = taskById.getNoTaskReplyContentList();
             for (PersonalNoTaskReplyContent personalNoTaskReplyContent : noTaskReplyContentList) {
                 if("邀请入群".equals(personalNoTaskReplyContent.getContentType())){
-                    String[] split = personalNoTaskReplyContent.getContent().split("/");
-                    PersonalNoGroupCategory groupCategory = groupCategoryService.getPersonalNoGroupCategory(split);
+                    PersonalNoGroupCategory groupCategory = groupCategoryService.getPersonalNoGroupCategory(personalNoTaskReplyContent.getContent());
                     taskById.setCategoryName1(groupCategory.getCname());
                 }
             }
             List<PersonalNoTaskBeginRemind> noTaskBeginRemindList = taskById.getNoTaskBeginRemindList();
             for (PersonalNoTaskBeginRemind personalNoTaskBeginRemind : noTaskBeginRemindList) {
                 if("邀请入群".equals(personalNoTaskBeginRemind.getContentType())){
-                    String[] split = personalNoTaskBeginRemind.getContent().split("/");
-                    PersonalNoGroupCategory personalNoGroupCategory = groupCategoryService.getPersonalNoGroupCategory(split);
+                    PersonalNoGroupCategory personalNoGroupCategory = groupCategoryService.getPersonalNoGroupCategory(personalNoTaskBeginRemind.getContent());
                     taskById.setCategoryName2(personalNoGroupCategory==null?"":personalNoGroupCategory.getCname());
                 }
             }
@@ -231,7 +238,7 @@ public class PersonalNoTaskController {
             return R.ok().data(taskById);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -246,7 +253,7 @@ public class PersonalNoTaskController {
             if(VerifyUtils.isEmpty(getNoEntity)){
                 return R.error().message("请求参数为空");
             }
-            Map<String, Object> map = noService.getPersonalByTaskId(getNoEntity);
+            Map<String, Object> map = wechatAccountService.getPersonalByTaskId(getNoEntity);
             return R.ok().data(map);
         }catch (Exception e){
             e.printStackTrace();
@@ -296,6 +303,18 @@ public class PersonalNoTaskController {
         }
         if(VerifyUtils.isEmpty(task.getRoadId())){
             return "任务通道不能为空";
+        }
+        List<PersonalNoTaskReplyContent> noTaskReplyContentList = task.getNoTaskReplyContentList();
+        for (PersonalNoTaskReplyContent personalNoTaskReplyContent : noTaskReplyContentList) {
+            if(VerifyUtils.isEmpty(personalNoTaskReplyContent.getContent())){
+                return "自动回复内容为空";
+            }
+        }
+        List<PersonalNoTaskBeginRemind> noTaskBeginRemindList = task.getNoTaskBeginRemindList();
+        for (PersonalNoTaskBeginRemind personalNoTaskBeginRemind : noTaskBeginRemindList) {
+            if(VerifyUtils.isEmpty(personalNoTaskBeginRemind.getContent())){
+                return "开课提醒内容为空";
+            }
         }
         return "true";
     }

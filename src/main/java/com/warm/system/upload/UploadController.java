@@ -52,7 +52,7 @@ public class UploadController {
             return R.ok().data(s);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -80,7 +80,7 @@ public class UploadController {
             return R.ok().data(s);
         }catch (Exception e){
             e.printStackTrace();
-        	return R.error().message(e.getMessage());
+        	return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 

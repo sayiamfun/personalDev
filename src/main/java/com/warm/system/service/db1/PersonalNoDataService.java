@@ -38,4 +38,6 @@ public interface PersonalNoDataService extends IService<PersonalNoData> {
     List<PersonalNoData> listAllAsc(QueryPersonalData queryPersonalData);
 
     Map<String,List<String>> getDateByDateList(String flag, List<PersonalNoData> list);
+
+    ResultPersonalData getAllData(QueryPersonalData queryPersonalData);
 }

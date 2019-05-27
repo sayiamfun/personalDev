@@ -22,10 +22,10 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoPhoneTaskGroup" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,tname,total_step,next_step,status,current_robot_id,group_pool_id,wx_group_id,create_time,pickup_time,finish_time,task_send_id,lable_send_id,task_order)
+          (id,tname,total_step,next_step,status,current_robot_id,group_pool_id,wx_group_id,create_time,pickup_time,finish_time,task_send_id,lable_send_id,task_order,message_send_id)
         values
           (#{entity.id},#{entity.tname},#{entity.totalStep},#{entity.nextStep},#{entity.status},#{entity.currentRobotId},#{entity.groupPoolId},#{entity.wxGroupId},#{entity.createTime}
-          ,#{entity.pickupTime},#{entity.finishTime},#{entity.taskSendId},#{entity.lableSendId},#{entity.taskOrder})
+          ,#{entity.pickupTime},#{entity.finishTime},#{entity.taskSendId},#{entity.lableSendId},#{entity.taskOrder},#{entity.messageSendId})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoPhoneTaskGroup" useGeneratedKeys="true" keyProperty="entity.id">
@@ -69,6 +69,9 @@
             </if>
             <if test="entity.taskOrder!=null">
                 task_order = #{entity.taskOrder},
+            </if>
+            <if test="entity.messageSendId!=null">
+                message_send_id = #{entity.messageSendId},
             </if>
         </set>
         where id = #{entity.id}

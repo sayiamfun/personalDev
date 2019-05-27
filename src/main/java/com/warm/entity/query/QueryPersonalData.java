@@ -20,7 +20,7 @@ public class QueryPersonalData implements Serializable {
     @ApiModelProperty(value = "个人号任务")
     private List<String> noTaskName;
     @ApiModelProperty(value = "个人号任务渠道")
-    private String personalnoChannelName;
+    private List<Integer> personalnoChannelName;
     @ApiModelProperty(value = "开始时间")
     private Date startTime;
     @ApiModelProperty(value = "结束时间")

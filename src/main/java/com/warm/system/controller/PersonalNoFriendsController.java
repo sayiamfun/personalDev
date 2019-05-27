@@ -55,9 +55,9 @@ public class PersonalNoFriendsController {
             Page<PersonalNoFriends> page = new Page<>(VerifyUtils.setPageNum(pageNum), VerifyUtils.setSize(size));
             Map<String, String> map = new HashMap<>();
             map.put("personalWxId", personalWxId);
-            List<PersonalNoUser> userList = friendsService.pageQuery(page, map);
+            Page<PersonalNoUser> resultPage = friendsService.pageQuery(page, map);
             log.info("查询结束返回数据");
-            return R.ok().data(userList).message("" + page.getTotal());
+            return R.ok().data(resultPage);
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新。。。");
@@ -85,9 +85,9 @@ public class PersonalNoFriendsController {
             map.put("personalWxId", personalWxId);
             map.put("nickName", nickName);
             Page<PersonalNoFriends> page = new Page<>(VerifyUtils.setPageNum(pageNum), VerifyUtils.setSize(size));
-            List<PersonalNoUser> userList = friendsService.pageQuery(page, map);
+            Page<PersonalNoUser> personalNoUserPage = friendsService.pageQuery(page, map);
             log.info("查询结束返回数据");
-            return R.ok().data(userList);
+            return R.ok().data(personalNoUserPage);
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新。。。");

@@ -59,6 +59,9 @@ public class PersonalNoGroupCategory extends Model<PersonalNoGroupCategory> {
     @TableField(exist = false)
     private List<String> assistantList = new ArrayList<>();
 
+    @TableField(exist = false)
+    private Integer groupTotal;
+
 
     @Override
     protected Serializable pkVal() {

@@ -1,7 +1,10 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTaskMessageSendContent;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -16,8 +19,13 @@ import java.util.List;
  */
 public interface PersonalNoTaskMessageSendContentMapper extends BaseMapper<PersonalNoTaskMessageSendContent> {
 
-    @Select("SELECT id,personal_no_task_message_send_id,content_type,content,deleted FROM personal_no_task_message_send_content WHERE personal_no_task_message_send_id = #{id} AND deleted = 0")
-    List<PersonalNoTaskMessageSendContent> listByTaskMessageContentId(Integer id);
-    @Select("UPDATE personal_no_task_message_send_content SET deleted = 1 WHERE personal_no_task_message_send_id = #{id} AND deleted = 0")
-    void deleteByTaskMessageSend(Integer id);
+    Integer add(@Param("entity") PersonalNoTaskMessageSendContent entity);
+
+    Integer updateOne(@Param("entity")PersonalNoTaskMessageSendContent entity);
+
+    @Delete("${sql}")
+    void delBySql(Sql sql);
+
+    @Select("${sql}")
+    List<PersonalNoTaskMessageSendContent> listBySql(Sql sql);
 }

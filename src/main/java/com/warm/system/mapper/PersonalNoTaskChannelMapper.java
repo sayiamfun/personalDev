@@ -1,10 +1,15 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTaskChannel;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import io.swagger.models.auth.In;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import sun.tools.tree.IntExpression;
+
+import java.util.List;
 
 /**
  * <p>
@@ -16,6 +21,20 @@ import sun.tools.tree.IntExpression;
  */
 public interface PersonalNoTaskChannelMapper extends BaseMapper<PersonalNoTaskChannel> {
 
-    @Select("select * from personal_zc_01.personal_no_task_channel where personal_no_task_id = #{param1} and channel_id = #{param2} and road_or_task = #{param3} limit 0,1")
-    PersonalNoTaskChannel selectByTaskIdAndChannelId(String roadId, Integer channelId, Integer roadOrTask);
+    @Select("${sql}")
+    List<Integer> listChannelIdsBySql(Sql sql);
+
+    @Select("${sql}")
+    Integer getIdBySql(Sql sql);
+
+    @Select("${sql}")
+    List<PersonalNoTaskChannel> listBySql(Sql sql);
+
+    @Delete("${sql}")
+    boolean deleteBySql(Sql sql);
+
+    Integer add(@Param("entity") PersonalNoTaskChannel entity);
+
+    Integer updateOne(@Param("entity")PersonalNoTaskChannel entity);
+
 }

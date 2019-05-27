@@ -93,6 +93,9 @@ public class PersonalNoPhoneTaskGroup extends Model<PersonalNoPhoneTaskGroup> {
     @TableField(exist = false)
     private String db;
 
+    @TableField("message_send_id")
+    private Integer messageSendId;
+
 
     @Override
     protected Serializable pkVal() {

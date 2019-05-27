@@ -3,11 +3,13 @@ package com.warm.system.controller;
 
 import com.warm.entity.DB;
 import com.warm.entity.R;
+import com.warm.entity.Sql;
 import com.warm.entity.requre.GetAccessTockenResult;
 import com.warm.entity.robot.G;
 import com.warm.entity.robot.WxResponseInfo2;
 import com.warm.system.entity.PersonalNoAccessTocken;
 import com.warm.system.entity.PersonalNoSuperuesr;
+import com.warm.system.entity.PersonalNoValueTable;
 import com.warm.system.service.db1.PersonalNoAccessTockenService;
 import com.warm.system.service.db1.PersonalNoSuperuesrService;
 import com.warm.system.service.db1.PersonalNoValueTableService;
@@ -17,6 +19,7 @@ import com.warm.utils.ImageUpload.Base64Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.models.auth.In;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +44,7 @@ import java.util.Map;
  * @since 2019-03-29
  */
 @CrossOrigin //跨域
-@Api("超级用户管理")
+@Api(description = "超级用户管理")
 @RestController
 @RequestMapping("/personalNoSuperuesr")
 public class PersonalNoSuperuesrController {
@@ -54,6 +57,11 @@ public class PersonalNoSuperuesrController {
     private PersonalNoAccessTockenService accessTockenService;
     @Autowired
     private PersonalNoValueTableService valueTableService;
+
+    private String DBSuper = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_superuesr);
+    private String DBAccessTocken = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken);
+    private String DBValueTable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_value_table);
+    private String DBSuperUser = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_superuesr);
 
     @ApiOperation(value = "登录方法")
     @PostMapping(value = "login")
@@ -87,7 +95,7 @@ public class PersonalNoSuperuesrController {
             return R.ok().data(result);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -119,8 +127,9 @@ public class PersonalNoSuperuesrController {
             personalNoSuperuesr.setPassword(pwd);
             log.info("默认头像");
             personalNoSuperuesr.setHeadPortrait("http://120.79.207.156:8080/group1/M00/00/00/rBJid1xihWKAeq6rAAAfi2XiEkU661.jpg");
-            boolean save = personalNoSuperuesrService.insert(personalNoSuperuesr);
-            if(!save){
+            personalNoSuperuesr.setDb(DBSuperUser);
+            int save = personalNoSuperuesrService.add(personalNoSuperuesr);
+            if(save<0){
                 log.info("添加用户导数据库失败");
                 return R.error().message("注册失败");
             }
@@ -128,7 +137,7 @@ public class PersonalNoSuperuesrController {
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -144,7 +153,7 @@ public class PersonalNoSuperuesrController {
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -175,18 +184,19 @@ public class PersonalNoSuperuesrController {
             //获取code后，请求以下链接获取access_token：  https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
             log.info("WxResponseInfo2");
             WxResponseInfo2 wxResponseInfo2 = HttpClientUtil.getWxResponseInfo2(p_code);
-            List<PersonalNoSuperuesr> list = personalNoSuperuesrService.selectList(null);
+            String getSql = DaoGetSql.listAll(DBSuper, "asc");
+            List<PersonalNoSuperuesr> list = personalNoSuperuesrService.listBySql(new Sql(getSql));
             boolean flag = true;
             for (PersonalNoSuperuesr personalNoSuperuesr : list) {
                 if(wxResponseInfo2.unionid.equals(personalNoSuperuesr.getOpenid())){
-                    String sql = DaoGetSql.getSql("delete from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken)+" where openid = ?",wxResponseInfo2.openid);
+                    String sql = DaoGetSql.getSql("delete from "+DBAccessTocken+" where openid = ?",wxResponseInfo2.openid);
                     accessTockenService.delete(sql);
-                    String sql1 = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken)+" where id = ? and deleted = 0",p_id);
+                    String sql1 = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DBAccessTocken+" where id = ? and deleted = 0",p_id);
                     PersonalNoAccessTocken personalNoAccessTocken = accessTockenService.getOne(sql1);
                     personalNoAccessTocken.setOpenid(wxResponseInfo2.unionid);
                     personalNoAccessTocken.setFlag(1);
-                    personalNoAccessTocken.setDb("personal_zc_01.personal_no_access_tocken");
-                    accessTockenService.updateOneById(personalNoAccessTocken);
+                    personalNoAccessTocken.setDb(DBAccessTocken);
+                    accessTockenService.add(personalNoAccessTocken);
                     flag = false;
                     response.sendRedirect("/wxOath.html");
                 }
@@ -208,7 +218,7 @@ public class PersonalNoSuperuesrController {
             @PathVariable("id") String id
     ){
         try {
-            String sql = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken)+" where id = ? and deleted = 0", id);
+            String sql = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DBAccessTocken+" where id = ? and deleted = 0", id);
             PersonalNoAccessTocken byId = accessTockenService.getOne(sql);
             return R.ok().data(byId);
         }catch (Exception e){
@@ -228,27 +238,28 @@ public class PersonalNoSuperuesrController {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + G.WX_APPID + "&secret=" + G.WX_SECRET;
             String retStr2 = HttpClientUtil.sendGet(url);
             GetAccessTockenResult getAccessTockenResult = G.ms_om.readValue(retStr2, GetAccessTockenResult.class);
-            String sql = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken)+" where id = ? and deleted = 0", id);
+            String sql = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DBAccessTocken+" where id = ? and deleted = 0", id);
             PersonalNoAccessTocken byId = accessTockenService.getOne(sql);
+            sql = DaoGetSql.getById(DBValueTable,6);
+            PersonalNoValueTable value6 = valueTableService.getBySql(new Sql(sql));
             byId.setAccessToken(getAccessTockenResult.getAccess_token());
-            byId.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken));
+            byId.setDb(DBAccessTocken);
             byId.setDeleted(1);
-            accessTockenService.updateOneById(byId);
-            PersonalNoSuperuesr superuesr = personalNoSuperuesrService.getByOpenIdId(byId.getOpenid());
-            byId.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken));
-            Map<String,String> map1 = new HashMap<>();
-            map1.put("id",superuesr.getId().toString());
-            map1.put("name",superuesr.getSuperName());
-            String s = SymmetricEncoder.AESEncode(WebConst.ASC, JsonObjectUtils.objectToJson(map1));
-            CookieUtil.setCookie(request,response,WebConst.TOCKEN,s,Integer.parseInt(valueTableService.selectById(6).getValue()),false);
-            CookieUtil.setCookie(request,response,WebConst.LOGINFLAG,"0",Integer.parseInt(valueTableService.selectById(6).getValue()),false);
-            SessionUtil.setSession(request,WebConst.SESSIONPRE+superuesr.getId().toString()+WebConst.SESSSUFF,superuesr);
+            accessTockenService.add(byId);
+            sql = DaoGetSql.getSql("SELECT * FROM "+DBSuper+" where openid = ? limit 0,1",byId.getOpenid());
+            PersonalNoSuperuesr superuesr = personalNoSuperuesrService.getBySql(new Sql(sql));
+//            将登录标识放入cookie
+            CookieUtil.setCookie(request,response,WebConst.LOGINFLAG,"0",Integer.parseInt(value6.getValue()),true);
+//            将用户信息存入session
+            SessionUtil.setSession(request,WebConst.SESSIONPRE+superuesr.getId().toString()+WebConst.SESSSUFF,JsonObjectUtils.objectToJson(superuesr));
             Map<String, String> map = new HashMap<>();
             map.put("superId",superuesr.getId().toString());
             map.put("openid",superuesr.getOpenid());
             map.put("headPortrait",superuesr.getHeadPortrait());
             map.put("superName", superuesr.getSuperName());
-            map.put("time",valueTableService.selectById(6).getValue());
+            map.put("time", value6.getValue());
+            map.put(WebConst.TOCKEN,superuesr.getId().toString());
+            map.put(WebConst.LOGINFLAG,"0");
             return R.ok().data(map);
         }catch (Exception e){
             e.printStackTrace();

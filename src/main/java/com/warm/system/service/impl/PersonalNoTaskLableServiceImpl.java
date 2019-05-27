@@ -1,21 +1,23 @@
 package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskLable;
 import com.warm.system.mapper.PersonalNoTaskLableMapper;
 import com.warm.system.service.db1.PersonalNoTaskLableService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -28,39 +30,27 @@ import java.util.Set;
 @Service
 public class PersonalNoTaskLableServiceImpl extends ServiceImpl<PersonalNoTaskLableMapper, PersonalNoTaskLable> implements PersonalNoTaskLableService {
     private static Log log = LogFactory.getLog(PersonalNoTaskLableServiceImpl.class);
+    @Autowired
+    private PersonalNoTaskLableMapper taskLableMapper;
+
+    private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_lable);
     /*
      * 根据任务id查找个人号任务标签列表
      */
     @Override
-    public List<PersonalNoTaskLable> listByTaskId(Integer id) {
-        log.info("数据库开始根据任务id查找标签列表");
-        EntityWrapper<PersonalNoTaskLable> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        if(!VerifyUtils.isEmpty(id)){
-            log.info("根据任务id查询");
-            entityWrapper.eq("personal_no_task_id" , id);
-        }
-        List<PersonalNoTaskLable> lableList = baseMapper.selectList(entityWrapper);
-        log.info("查找完成返回标签数据");
-        return lableList;
+    public List<PersonalNoTaskLable> listBySql(Sql sql) {
+        return taskLableMapper.listBySql(sql);
     }
-    /*
-     * 根据标签id查找所有个人号任务标签列表
-     */
+
+
     @Override
-    public List<PersonalNoTaskLable> listByLableId(Integer lableId) {
-        log.info("数据库根据标签id查询个人号标签列表");
-        List<PersonalNoTaskLable> personalNoTaskLableList = null;
-        if(VerifyUtils.isEmpty(lableId)){
-            log.info("标签id为空");
-            personalNoTaskLableList = baseMapper.selectList(null);
-        }else {
-            log.info("根据标签id查询");
-            personalNoTaskLableList = baseMapper.listByLableId(lableId);
+    public Integer add(PersonalNoTaskLable personalNoTaskLable) {
+        if(VerifyUtils.isEmpty(personalNoTaskLable.getId())){
+            return taskLableMapper.add(personalNoTaskLable);
         }
-        log.info("数据库根据标签id查询个人号标签列表完成");
-        return personalNoTaskLableList;
+        return taskLableMapper.updateOne(personalNoTaskLable);
     }
+
     /**
      * 批量添加任务标签
      * @param noTask
@@ -70,16 +60,18 @@ public class PersonalNoTaskLableServiceImpl extends ServiceImpl<PersonalNoTaskLa
     @Override
     public boolean batchSave(PersonalNoTask noTask) {
         log.info("根据任务id删除任务标签");
-        EntityWrapper<PersonalNoTaskLable> entityWrapper = new EntityWrapper<>();
-        entityWrapper.eq("personal_no_task_id", noTask.getId());
-        baseMapper.delete(entityWrapper);
+        String delSql = DaoGetSql.getSql("DELETE FROM "+DBTaskLable+" where personal_no_task_id = ?",noTask.getId());
+        taskLableMapper.deleteBySql(new Sql(delSql));
         List<PersonalNoTaskLable> noLableList = noTask.getNoLableList();
         if(!VerifyUtils.collectionIsEmpty(noLableList)){
             for (PersonalNoTaskLable personalNoTaskLable : noLableList) {
                 //插入任务id
+                personalNoTaskLable.setId(null);
                 personalNoTaskLable.setPersonalNoTaskId(noTask.getId());
-                int save = baseMapper.insert(personalNoTaskLable);
-                if(save != 1){
+                personalNoTaskLable.setDb(DBTaskLable);
+                personalNoTaskLable.setDeleted(0);
+                int save = taskLableMapper.add(personalNoTaskLable);
+                if(save < 0){
                     log.info("将标签列表保存到数据库失败");
                     return false;
                 }
@@ -95,32 +87,25 @@ public class PersonalNoTaskLableServiceImpl extends ServiceImpl<PersonalNoTaskLa
      * @return
      */
     @Override
-    public Set<Integer> listByLableNameList(List<String> lableNameList) {
+    public List<Integer> listTaskIdsByLableNameList(List<String> lableNameList) {
         log.info("根据标签名称查询所有有此标签的任务id");
-        Set<Integer> taskIdSet = new HashSet<>();
-        if(!VerifyUtils.collectionIsEmpty(lableNameList)){
-            for (String s : lableNameList) {
-                EntityWrapper<PersonalNoTaskLable> entityWrapper = new EntityWrapper<>();
-                entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-                entityWrapper.eq("lable_name", s);
-                List<PersonalNoTaskLable> personalNoTaskLableList = baseMapper.selectList(entityWrapper);
-                if(!VerifyUtils.collectionIsEmpty(personalNoTaskLableList)){
-                    for (PersonalNoTaskLable personalNoTaskLable : personalNoTaskLableList) {
-                        taskIdSet.add(personalNoTaskLable.getPersonalNoTaskId());
-                    }
-                }
-            }
-        }
+        String lableNames = DaoGetSql.getIds(lableNameList);
+        String getSql = DaoGetSql.getSql("SELECT DISTINCT personal_no_task_id from " + DBTaskLable + " where lable_name in " + lableNames);
+        List<Integer> taskIds = taskLableMapper.listTaskIdsBySql(new Sql(getSql));
         log.info("根据标签名称查询所有有此标签的任务id结束");
-        return taskIdSet;
+        return taskIds;
     }
 
     @Override
-    public boolean deleteByTaskId(Integer taskId) {
-        EntityWrapper<PersonalNoTaskLable> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        entityWrapper.eq("personal_no_task_id", taskId);
-        return baseMapper.delete(entityWrapper)>0;
+    public boolean deleteBySql(Sql  sql){
+        taskLableMapper.deleteBySql(sql);
+        return true;
     }
+
+    @Override
+    public List<String> listStringBySql(Sql sql) {
+        return taskLableMapper.listStringBySql(sql);
+    }
+
 
 }

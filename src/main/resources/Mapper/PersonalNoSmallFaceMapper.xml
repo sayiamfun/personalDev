@@ -8,4 +8,21 @@
         <result column="face" property="face" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoSmallFace" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,face)
+        values
+          (#{entity.id},#{entity.face})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoSmallFace" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.face!=null">
+                face = #{entity.face},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

@@ -15,7 +15,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author dgd123
@@ -24,15 +24,15 @@ import java.util.List;
 @Service
 public class PersonalNoGroupCategoryServiceImpl extends ServiceImpl<PersonalNoGroupCategoryMapper, PersonalNoGroupCategory> implements PersonalNoGroupCategoryService {
 
-    private static Log log = LogFactory.getLog(PersonalNoGroupCategoryServiceImpl.class);
     @Autowired
     private PersonalNoGroupCategoryMapper groupCategoryMapper;
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP,DB.group_category);
-    private String QUNLIEBIAN = DB.DBAndTable(DB.QUNLIEBINA_01,DB.group_category);
+
+    private String DBGroupCategory = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP, DB.group_category);
+    private String QUNLIEBIAN = DB.DBAndTable(DB.QUNLIEBINA_01, DB.group_category);
 
     @Override
     public Integer add(PersonalNoGroupCategory entity) {
-        if(VerifyUtils.isEmpty(entity.getId()))
+        if (VerifyUtils.isEmpty(entity.getId()))
             return groupCategoryMapper.add(entity);
         return groupCategoryMapper.updateOne(entity);
     }
@@ -60,19 +60,21 @@ public class PersonalNoGroupCategoryServiceImpl extends ServiceImpl<PersonalNoGr
 
     //获取群类别信息
     @Override
-    public PersonalNoGroupCategory getPersonalNoGroupCategory(String[] split) {
-        String database = ZCDB;
-        if(split.length<2){
+    public PersonalNoGroupCategory getPersonalNoGroupCategory(String content) {
+        String[] split = content.split("/");
+        if (split.length < 2) {
             return null;
         }
-        switch (Integer.parseInt(split[0])){
+        String database = DBGroupCategory;
+        switch (Integer.parseInt(split[0])) {
             case 0:
                 break;
             case 1:
                 database = QUNLIEBIAN;
                 break;
         }
-        String sql = "select * from "+database+" where `id` = "+split[1];
+        String sql = "select * from " + database + " where `id` = " + split[1];
         return getOne(sql);
+
     }
 }

@@ -1,5 +1,6 @@
 package com.warm.system.service.impl;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoPhoneTask;
 import com.warm.system.mapper.PersonalNoPhoneTaskMapper;
 import com.warm.system.service.db1.PersonalNoPhoneTaskService;
@@ -55,4 +56,9 @@ public class PersonalNoPhoneTaskServiceImpl extends ServiceImpl<PersonalNoPhoneT
      public Long getCount(String sql) {
          return taskMapper.getCount(sql);
      }
+
+    @Override
+    public Integer updateBySql(Sql sql) {
+        return taskMapper.updateBySql(sql);
+    }
 }

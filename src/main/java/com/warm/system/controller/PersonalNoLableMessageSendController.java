@@ -2,11 +2,14 @@ package com.warm.system.controller;
 
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.requre.PeopleNumReq;
 import com.warm.system.entity.PersonalNoLableMessageSend;
+import com.warm.system.entity.PersonalNoPeople;
 import com.warm.system.service.db1.PersonalNoLableMessageSendService;
 import com.warm.system.service.db1.PersonalNoPeopleService;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * <p>
@@ -38,28 +43,41 @@ public class PersonalNoLableMessageSendController {
     @Autowired
     private PersonalNoPeopleService noPeopleService;
 
+    //指定唯一锁
+    private Lock lock = new ReentrantLock();    //注意这个地方
+
     @ApiOperation(value = "添加标签消息")
     @PostMapping(value = "lableMessageSend")
     public R lableMessageSend(
             @ApiParam(name = "personalNoLableMessageSend", value = "要插入的标签消息", required = true)
-            @RequestBody PersonalNoLableMessageSend personalNoLableMessageSend){
-        try {
-            log.info("开始添加标签消息");
-            if(VerifyUtils.isEmpty(personalNoLableMessageSend)){
-                log.info("要添加的标签消息为空");
-                return R.error().message("要添加的标签消息为空");
+            @RequestBody PersonalNoLableMessageSend personalNoLableMessageSend
+    ){
+        if(lock.tryLock()) {
+            try {
+                log.info("开始添加标签消息");
+                if(VerifyUtils.collectionIsEmpty(personalNoLableMessageSend.getLableList())){
+                    log.info("要添加的标签消息标签列表为空");
+                    return R.error().message("要添加的标签消息标签列表为空");
+                }
+                if(VerifyUtils.collectionIsEmpty(personalNoLableMessageSend.getNoWxIdList())){
+                    log.info("要添加的标签消息个人号列表为空");
+                    return R.error().message("要添加的标签消息个人号列表为空");
+                }
+                boolean b = personalNoLableMessageSendService.insertLableMessage(personalNoLableMessageSend);
+                if(!b){
+                    log.info("添加标签消息失败");
+                    return R.error().message("添加标签消息失败");
+                }
+                log.info("添加标签消息成功");
+                return R.ok();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return R.error().message("网页走丢了，请返回重试。。。");
+            }finally {
+                lock.unlock();
             }
-
-            boolean b = personalNoLableMessageSendService.insertLableMessage(personalNoLableMessageSend);
-            if(!b){
-                log.info("添加标签消息失败");
-                return R.error().message("添加标签消息失败");
-            }
-            log.info("添加标签消息成功");
-            return R.ok();
-        }catch (Exception e){
-            e.printStackTrace();
-            return R.error().message(e.getMessage());
+        }else {
+            return R.error().message("服务器正忙，请稍等一会再点击添加");
         }
     }
 
@@ -80,7 +98,7 @@ public class PersonalNoLableMessageSendController {
             return R.ok().data(page);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -97,7 +115,7 @@ public class PersonalNoLableMessageSendController {
             return R.ok().data(lableMessageSend);
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -112,8 +130,8 @@ public class PersonalNoLableMessageSendController {
             if(!VerifyUtils.isEmpty(peopleNumReq)){
                 log.info("请求参数为空");
             }
-            List<String> peopleWxIdList = noPeopleService.getByNoListAndLableNameList(peopleNumReq);
-            return R.ok().data(peopleWxIdList.size());
+            List<PersonalNoPeople> peopleList = noPeopleService.listByLableAndPersonal(peopleNumReq);
+            return R.ok().data(peopleList.size());
         }catch (Exception e){
             e.printStackTrace();
             return R.error().message("网页走丢了，请刷新后重试。。。");

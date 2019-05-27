@@ -17,7 +17,5 @@ public interface PersonalNoAccessTockenService extends IService<PersonalNoAccess
 
     void delete(String sql);
 
-    int updateOneById(PersonalNoAccessTocken personalNoAccessTocken);
-
     int add(PersonalNoAccessTocken personalNoAccessTocken);
 }

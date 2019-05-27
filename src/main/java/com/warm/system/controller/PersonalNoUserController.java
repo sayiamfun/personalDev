@@ -2,7 +2,7 @@ package com.warm.system.controller;
 
 
 import com.warm.entity.R;
-import com.warm.system.entity.PersonalNo;
+import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import com.warm.system.service.db1.PersonalNoFriendsService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
@@ -14,10 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import org.springframework.stereotype.Controller;
-
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -40,7 +37,7 @@ public class PersonalNoUserController {
     @PostMapping(value = "getUserByPersonal")
     public R taskMessageSend(
             @ApiParam(name = "name", value = "要查找的标签类别", required = true)
-            @RequestBody List<PersonalNo> list
+            @RequestBody List<PersonalNoOperationStockWechatAccount> list
     ){
         try {
             log.info("根据个人号查询个人号粉丝");
@@ -49,10 +46,10 @@ public class PersonalNoUserController {
                 return R.error().message("个人号列表为空");
             }
             String ids = "(";
-            for (PersonalNo personalNo : list) {
-                ids+=personalNo.getId()+",";
+            for (PersonalNoOperationStockWechatAccount personalNo : list) {
+                ids += personalNo.getId()+",";
             }
-            ids+="0)";
+            ids+=")";
             String sql = DaoGetSql.getSql("SELECT COUNT(*) FROM personal_no_friends WHERE `personal_no_id` IN ?", ids);
             Long count = noFriendsService.getCount(sql);
             return R.ok().data(count);

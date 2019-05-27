@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoMessageContentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoMessageContent">
+        <id column="id" property="id" />
+        <result column="message_id" property="messageId" />
+        <result column="content_type" property="contentType" />
+        <result column="content" property="content" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoMessageContent" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,message_id,content_type,content,deleted)
+        values
+          (#{entity.id},#{entity.messageId},#{entity.contentType},#{entity.content},#{entity.deleted})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoMessageContent" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.messageId!=null">
+                message_id = #{entity.messageId},
+            </if>
+            <if test="entity.contentType!=null">
+                content_type = #{entity.contentType},
+            </if>
+            <if test="entity.content!=null">
+                content = #{entity.content},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+</mapper>

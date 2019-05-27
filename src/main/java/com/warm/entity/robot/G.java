@@ -14,7 +14,7 @@ public class G
 	public static boolean ms_isDeubgVersion;		// = true;
 	public static String ms_baseUrl;		// = "";
 
-	public static int ms_OPERATION_PROJECT_INSTANCE_ID = 0;		//=4;
+	public static int ms_OPERATION_PROJECT_INSTANCE_ID = 8;		//=4;
 	public static int ms_SERVER_PORT;
 	public static String ms_FILE_SERVER_URL;		//="http://www.youyoudk.cn:18888";
 	public static String ms_FILE_SERVER_LOCAL_DIR;		//="C:/Users/Administrator/Desktop/AI/apache-tomcat-8.5.37/webapps/ROOT";

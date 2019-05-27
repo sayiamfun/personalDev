@@ -1,9 +1,14 @@
 package com.warm.system.service.db2;
 
+import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.Sql;
+import com.warm.entity.query.QueryPersonal;
+import com.warm.entity.requre.GetNoEntity;
 import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import com.baomidou.mybatisplus.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,13 +22,11 @@ public interface PersonalNoOperationStockWechatAccountService extends IService<P
 
     Integer add(PersonalNoOperationStockWechatAccount entity);
 
-    Integer delete(String sql);
+    Map<String, Object> getPersonalByTaskId(GetNoEntity getNoEntity);
 
-    List<PersonalNoOperationStockWechatAccount> list(String sql);
+    List<PersonalNoOperationStockWechatAccount> listBySql(Sql sql);
 
-    List<String> listString(String sql);
+    Page<PersonalNoOperationStockWechatAccount> pageQuery(Page<PersonalNoOperationStockWechatAccount> page, QueryPersonal searchObj);
 
-    PersonalNoOperationStockWechatAccount getOne(String sql);
-
-    Long getCount(String sql);
+    PersonalNoOperationStockWechatAccount getBySql(Sql sql);
 }

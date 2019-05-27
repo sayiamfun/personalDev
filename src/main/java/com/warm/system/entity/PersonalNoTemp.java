@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_temp")
 public class PersonalNoTemp extends Model<PersonalNoTemp> {
 
@@ -44,47 +47,6 @@ public class PersonalNoTemp extends Model<PersonalNoTemp> {
      * 回复状态
      */
     private Integer flag;
-
-
-    public Integer getId() {
-        return Id;
-    }
-
-    public void setId(Integer Id) {
-        this.Id = Id;
-    }
-
-    public String getPersonalNoWxId() {
-        return personalNoWxId;
-    }
-
-    public void setPersonalNoWxId(String personalNoWxId) {
-        this.personalNoWxId = personalNoWxId;
-    }
-
-    public String getUserWxId() {
-        return userWxId;
-    }
-
-    public void setUserWxId(String userWxId) {
-        this.userWxId = userWxId;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Integer getFlag() {
-        return flag;
-    }
-
-    public void setFlag(Integer flag) {
-        this.flag = flag;
-    }
 
     @Override
     protected Serializable pkVal() {

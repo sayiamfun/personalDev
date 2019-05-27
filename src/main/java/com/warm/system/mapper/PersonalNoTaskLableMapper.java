@@ -1,7 +1,10 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTaskLable;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -16,6 +19,19 @@ import java.util.List;
  */
 public interface PersonalNoTaskLableMapper extends BaseMapper<PersonalNoTaskLable> {
 
-    @Select("SELECT id,personal_no_task_id,lable_id,lable_name,deleted FROM personal_no_task_lable WHERE lable_id = #{lableId} and deleted=0")
-    List<PersonalNoTaskLable> listByLableId(Integer lableId);
+    Integer add(@Param("entity") PersonalNoTaskLable entity);
+
+    Integer updateOne(@Param("entity")PersonalNoTaskLable entity);
+
+    @Select("${sql}")
+    List<PersonalNoTaskLable> listBySql(Sql sql);
+
+    @Delete("${sql}")
+    void deleteBySql(Sql sql);
+
+    @Select("${sql}")
+    List<Integer> listTaskIdsBySql(Sql sql);
+
+    @Select("${sql}")
+    List<String> listStringBySql(Sql sql);
 }

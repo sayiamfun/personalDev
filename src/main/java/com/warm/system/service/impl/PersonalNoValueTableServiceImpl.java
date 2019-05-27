@@ -1,5 +1,6 @@
 package com.warm.system.service.impl;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoValueTable;
 import com.warm.system.mapper.PersonalNoValueTableMapper;
 import com.warm.system.service.db1.PersonalNoValueTableService;
@@ -22,35 +23,28 @@ import java.util.List;
 public class PersonalNoValueTableServiceImpl extends ServiceImpl<PersonalNoValueTableMapper, PersonalNoValueTable> implements PersonalNoValueTableService {
     @Autowired
     private PersonalNoValueTableMapper valueTableMapper;
-    /**
-     * 取得所有的技术任务人员微信id
-     * @return
-     */
+
+
     @Override
-    public List<String> listWxIdByType(Integer type) {
-        return valueTableMapper.listWxIdByType(type);
+    public PersonalNoValueTable getBySql(Sql sql) {
+        return valueTableMapper.getBySql(sql);
     }
 
-    /**
-     * 取得检测手机请求任务时间的个人号列表
-     * @param type
-     * @return
-     */
     @Override
-    public List<PersonalNoValueTable> listSuperUser(Integer type) {
-        return valueTableMapper.listSuperUser(type);
+    public List<PersonalNoValueTable> listBySql(Sql sql) {
+        return valueTableMapper.listBySql(sql);
     }
 
-    /**
-     * 添加或者修改
-     * @param valueTable
-     * @return
-     */
     @Override
-    public boolean insert(PersonalNoValueTable valueTable) {
-        if(VerifyUtils.isEmpty(valueTable.getId())) {
-            return baseMapper.insert(valueTable) > 0;
+    public Integer add(PersonalNoValueTable valueTable) {
+        if(VerifyUtils.isEmpty(valueTable.getId())){
+            return valueTableMapper.add(valueTable);
         }
-        return baseMapper.updateById(valueTable)>0;
+        return valueTableMapper.updateOne(valueTable);
+    }
+
+    @Override
+    public Integer delteBySql(Sql sql) {
+        return valueTableMapper.deleteBySql(sql);
     }
 }

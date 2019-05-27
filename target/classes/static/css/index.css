@@ -1,0 +1,111 @@
+.personHFive {
+    width: 100%;
+    position: relative;
+    background: #f9dd6f;
+    /*overflow-x: hidden;*/
+    /*overflow-y: auto;*/
+    overflow: hidden;
+}
+.personHFive .perBg {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+.personHFive .qr-details {
+    width: 6rem;
+    background: #fff;
+    height: 8rem;
+    margin: 0 auto;
+    margin-top: 2rem;
+    position: relative;
+    border-radius: 0.2rem;
+}
+.personHFive .avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.personHFive .title {
+    width: 100%;
+    text-align: center;
+    font-size: 0.3rem;
+    margin-top: 0.5rem;
+    height: 1.5rem;
+    overflow: hidden;
+}
+.personHFive .t1 {
+    height: 0.6rem;
+    line-height: 0.6rem;
+    margin-top: 0rem;
+    font-size: 0.25rem;
+    background: #f0feef;
+    color: #64bf56;
+    position: absolute;
+    bottom: 0;
+}
+.personHFive .addQrcode {
+    width: 80%;
+    margin: 0 auto;
+    padding: 0rem 0.5rem;
+    box-sizing: border-box;
+}
+.personHFive .addQrcode span {
+    display: block;
+    text-align: center;
+    /*font-size: 1rem;*/
+}
+.personHFive .showPage {
+    width: 100%;
+    text-align: center;
+    padding: 60px 0px;
+    box-sizing: border-box;
+    color: red;
+    font-weight: 700;
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+}
+.personHFive .showPage span {
+    padding: 10px 0px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.personHFive .addQrcode img {
+    width: 100%;
+}
+.personHFive .bring-title img{
+    width: 0.3rem;
+    height: 0.3rem;
+}
+.personHFive .bring-ul2 li {
+    float: left;
+    font-size: 0.2rem;
+    text-align: center;
+    padding-right: 0.2rem;
+    list-style: none;
+}
+.personHFive .bring-ul2 li:last-child {
+    float: right;
+}
+.personHFive .bring-ul2 li:nth-child(1) {
+    width: 1.5rem;
+    text-align: left;
+}
+.personHFive .bring-ul2 li:nth-child(2) {
+    width: 3rem;
+    text-align: left;
+}
+.personHFive .details img {
+    width: 100%;
+}
+.personHFive .title img {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    position: absolute;
+    top: -0.5rem;
+    left: 50%;
+    margin-left: -0.75rem;
+}

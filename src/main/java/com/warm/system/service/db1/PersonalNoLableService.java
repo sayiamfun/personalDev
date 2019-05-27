@@ -3,12 +3,11 @@ package com.warm.system.service.db1;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.entity.requre.BatchUpdateObject;
 import com.warm.entity.result.LableManager;
-import com.warm.system.entity.PersonalNo;
 import com.warm.system.entity.PersonalNoLable;
 import com.baomidou.mybatisplus.service.IService;
+import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * <p>
@@ -38,5 +37,5 @@ public interface PersonalNoLableService extends IService<PersonalNoLable> {
 
     Long getCount(String sql);
 
-    Set<String> listByPersonal(List<PersonalNo> list);
+    List<String> listByPersonal(List<PersonalNoOperationStockWechatAccount> list);
 }

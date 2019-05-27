@@ -33,7 +33,7 @@ public class PersonalNoGroupCategorySetController {
     private static Log log = LogFactory.getLog(PersonalNoGroupCategorySetController.class);
     @Autowired
     private PersonalNoGroupCategorySetService groupCategorySetService;
-    private String ZCDB = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP,DB.group_category_set);
+    private String DBGroupCategory = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP,DB.group_category_set);
     private String QUNLIEBIAN_01 = DB.DBAndTable(DB.QUNLIEBINA_01,DB.group_category_set);
 
     @ApiOperation(value = "查询所有的群类别集合")
@@ -44,7 +44,7 @@ public class PersonalNoGroupCategorySetController {
     ){
         try {
             log.info("查询所有的类别集合");
-            String database = ZCDB;
+            String database = DBGroupCategory;
             switch (index){
                 case 0:
                     break;

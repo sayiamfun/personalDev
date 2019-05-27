@@ -1,10 +1,12 @@
 package com.warm.system.controller;
 
 
+import com.warm.entity.DB;
 import com.warm.entity.R;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoSmallFace;
 import com.warm.system.service.db1.PersonalNoSmallFaceService;
-import com.warm.utils.SessionUtil;
+import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,11 +35,15 @@ public class PersonalNoSmallFaceController {
     private static Log log = LogFactory.getLog(PersonalNoSmallFaceController.class);
     @Autowired
     private PersonalNoSmallFaceService smallFaceService;
+    private String ZCSmallFace = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_small_face);
+
+
     @ApiOperation("表情列表")
     @GetMapping("listAll")
     public R listAll(HttpServletRequest request){
         try {
-            List<PersonalNoSmallFace> personalNoSmallFaces = smallFaceService.selectList(null);
+            String getSql = DaoGetSql.getSql("select * from " + ZCSmallFace + " order by id desc");
+            List<PersonalNoSmallFace> personalNoSmallFaces = smallFaceService.listBySql(new Sql(getSql));
             return R.ok().data(personalNoSmallFaces);
         }catch (Exception e){
             e.printStackTrace();
@@ -52,11 +58,8 @@ public class PersonalNoSmallFaceController {
             @RequestBody PersonalNoSmallFace personalNoSmallFace
     ){
         try {
-            if(VerifyUtils.isEmpty(personalNoSmallFace.getId())){
-                smallFaceService.insert(personalNoSmallFace);
-            }else {
-                smallFaceService.updateById(personalNoSmallFace);
-            }
+            personalNoSmallFace.setDb(ZCSmallFace);
+            smallFaceService.add(personalNoSmallFace);
             return R.ok().data("");
         }catch (Exception e){
             e.printStackTrace();
@@ -71,7 +74,8 @@ public class PersonalNoSmallFaceController {
             @PathVariable("id") Integer id
     ){
         try {
-            smallFaceService.deleteById(id);
+            String delSql = DaoGetSql.deleteById(ZCSmallFace, id);
+            smallFaceService.deleteBySql(new Sql(delSql));
             return R.ok().data("");
         }catch (Exception e){
             e.printStackTrace();

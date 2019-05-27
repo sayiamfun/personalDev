@@ -12,4 +12,35 @@
         <result column="internet_ip" property="internetIp" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoRobotLogAndroid" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,wx_id,operation_stock_wechat_account_id,content
+          ,add_time,internet_ip)
+        values
+          (#{entity.id},#{entity.wxId},#{entity.operationStockWechatAccountId},#{entity.content}
+          ,#{entity.addTime},#{entity.internetIp})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoRobotLogAndroid" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.wxId!=null">
+                wx_id = #{entity.wxId},
+            </if>
+            <if test="entity.operationStockWechatAccountId!=null">
+                operation_stock_wechat_account_id = #{entity.operationStockWechatAccountId},
+            </if>
+            <if test="entity.content!=null">
+                content = #{entity.content},
+            </if>
+            <if test="entity.addTime!=null">
+                add_time = #{entity.addTime},
+            </if>
+            <if test="entity.internetIp!=null">
+                internet_ip = #{entity.internetIp},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

@@ -57,11 +57,25 @@ public class DB {
     public static String personal_no_user = "personal_no_user";
     public static String personal_no_value_table = "personal_no_value_table";
     public static String personal_no_wx_user = "personal_no_wx_user";
+    public static String personal_no_message = "personal_no_message";
+    public static String personal_no_message_content = "personal_no_message_content";
+    public static String personal_no_send_message = "personal_no_send_message";
+    public static String detail_data_12i = "detail_data_12i";
+    public static String passage_visitor_record = "passage_visitor_record";
+    public static String personal_no_superuesr = "personal_no_superuesr";
+    public static String personal_no_task_and_keyword = "personal_no_task_and_keyword";
+    public static String operation_stock_wechat_account = "operation_stock_wechat_account";
+    public static String personal_no_category_and_group = "personal_no_category_and_group";
+    public static String personal_no_log_info = "personal_no_log_info";
+    public static String short_url = "short_url";
 
 
     public static String group_category = "group_category";
     public static String group_category_set = "group_category_set";
     public static String wx_group = "wx_group";
+    public static String wx_user = "wx_user";
+
+
 
 
 

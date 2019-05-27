@@ -11,4 +11,30 @@
         <result column="deleted" property="deleted" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoTaskMessageSendContent" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,personal_no_task_message_send_id,content_type,content,deleted)
+        values
+          (#{entity.id},#{entity.personalNoTaskMessageSendId},#{entity.contentType},#{entity.content},#{entity.deleted})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoTaskMessageSendContent" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personalNoTaskMessageSendId!=null">
+                personal_no_task_message_send_id = #{entity.personalNoTaskMessageSendId},
+            </if>
+            <if test="entity.contentType!=null">
+                content_type = #{entity.contentType},
+            </if>
+            <if test="entity.content!=null">
+                content = #{entity.content},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoUser;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -15,13 +16,7 @@ import java.util.List;
  */
 public interface PersonalNoUserService extends IService<PersonalNoUser> {
 
-    PersonalNoUser getByWxId(String username);
+    PersonalNoUser getBySql(Sql sql);
 
-    List<PersonalNoUser> getByNickName(String nickname);
-
-    PersonalNoUser getByOpenid(String personalFriendNickName);
-
-    List<PersonalNoUser> listByWxId(String wxId);
-
-    PersonalNoUser getByUnionId(String unionid);
+    Integer add(PersonalNoUser user);
 }

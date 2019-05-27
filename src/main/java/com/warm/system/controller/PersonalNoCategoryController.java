@@ -35,10 +35,12 @@ public class PersonalNoCategoryController {
     @Autowired
     private PersonalNoCategoryService noCategoryService;
 
+    private String DBNoCategory = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category);
+
     @ApiOperation(value = "查询所有个人号类别列表")
     @GetMapping
     public R list(){
-        String sql = DaoGetSql.getSql("select * from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category) + " order by id desc");
+        String sql = DaoGetSql.getSql("select * from " + DBNoCategory + " where deleted = 0");
         List<PersonalNoCategory> personalCategoryList = noCategoryService.list(sql);
         log.info("查找个人号类别完成");
         return R.ok().data(personalCategoryList);
@@ -49,21 +51,25 @@ public class PersonalNoCategoryController {
     public R addCategory(
             @ApiParam(name = "noCategory", value = "添加个人号类别对象", required = true)
             @RequestBody PersonalNoCategory noCategory
-    ) throws Exception {
+    ){
         try {
             log.info("添加个人号类别任务开始");
             if(VerifyUtils.isEmpty(noCategory) || VerifyUtils.isEmpty(noCategory.getPersonalNoCategory())){
                 log.info("传入的插入数据为空,不能插入");
                 return R.error().message("待添加的个人号类别信息为空");
             }
+            if("1".equals(noCategory.getId())){
+                return R.error().message("默认类别不能修改");
+            }
             //如果存在id则修改,id不存在则添加
-            noCategory.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_category));
+            noCategory.setDeleted(0);
+            noCategory.setDb(DBNoCategory);
             noCategoryService.add(noCategory);
             log.info("更新个人号类别到数据库成功");
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
@@ -71,24 +77,24 @@ public class PersonalNoCategoryController {
     @DeleteMapping("{categoryId}")
     public R deleteChannelById(
             @ApiParam(name = "categoryId", value = "待删除类别对象id", required = true)
-            @PathVariable("categoryId")Long categoryId) throws Exception {
+            @PathVariable("categoryId")Long categoryId){
         try {
             log.info("根据id删除类别开始");
             if(VerifyUtils.isEmpty(categoryId)){
                 log.info("传入的id为空,删除失败");
                 return R.error().message("待删除类别id为空");
             }
-            String sql = DaoGetSql.getSql("delete from " + DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category)+" where id = ?", categoryId.intValue());
-            Integer delete = noCategoryService.delete(sql);
-            if(delete>0){
-                log.info("数据库根据id删除类别成功");
-                return R.error().message("删除类别数据库数据失败");
+            if(categoryId == 1){
+                log.info("默认类别不能删除");
+                return R.error().message("默认类别不能删除");
             }
+            String sql = DaoGetSql.getSql("UPDATE " + DBNoCategory +" set deleted = 1 where id = ?", categoryId.intValue());
+            noCategoryService.delete(sql);
             log.info("根据id删除类别成功");
             return R.ok();
         }catch (Exception e){
             e.printStackTrace();
-            return R.error().message(e.getMessage());
+            return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 }
