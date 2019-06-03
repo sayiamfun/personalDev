@@ -1,6 +1,7 @@
 package com.warm.system.service.db1;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.Sql;
 import com.warm.entity.query.QueryFriendsCircle;
 import com.warm.system.entity.PersonalNoFriendsCircle;
 import com.baomidou.mybatisplus.service.IService;
@@ -21,7 +22,7 @@ public interface PersonalNoFriendsCircleService extends IService<PersonalNoFrien
 
     Integer add(PersonalNoFriendsCircle entity);
 
-    Integer delete(String sql);
+    Integer deleteBySql(Sql sql);
 
     List<PersonalNoFriendsCircle> list(String sql);
 

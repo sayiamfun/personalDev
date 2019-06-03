@@ -46,6 +46,7 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
 
     private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
     private String DBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group);
+    private String DBTaskGroupFinish = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group_finish);
     private String DBFriendsCircle = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle);
     private String DBFriendsCirclePersonal = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_personal);
     private String DBFriendsCirclePhoto = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_friends_circle_photo);
@@ -81,10 +82,14 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
             temp.append(" friends_circle_theme like '%"+friendsCircleTheme+"%'");
             F = true;
         }
-        if(!VerifyUtils.isEmpty(status)){
+        if(!VerifyUtils.isEmpty(status) && !"全部".equals(status)){
             log.info("根据朋友圈状态查询朋友根据朋友圈主题模糊查询朋友圈圈");
             temp = DaoGetSql.getTempSql(temp, F);
-            temp.append(" status = '"+status+"'");
+            if("已完成".equals(status)) {
+                temp.append(" status = '" + status + "'");
+            } else{
+                temp.append(" status <> '已完成'");
+            }
             F = true;
         }
         if(!VerifyUtils.isEmpty(sendTime)){
@@ -104,18 +109,24 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
         getSql = DaoGetSql.getSql("SELECT * FROM "+DBFriendsCircle+temp.toString());
         List<PersonalNoFriendsCircle> personalNoFriendsCircles = noFriendsCircleMapper.list(getSql);
         for (PersonalNoFriendsCircle personalNoFriendsCircle : personalNoFriendsCircles) {
-            getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBTaskGroup+" where task_send_id = -1 and lable_send_id = ?",personalNoFriendsCircle.getId());
+            getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBTaskGroupFinish+" where status = '已完成' and task_send_id = -1 and lable_send_id = ?",personalNoFriendsCircle.getId());
             Long count1 = taskGroupService.getCount(getSql);
             if(!"已完成".equals(personalNoFriendsCircle.getStatus())) {
                 String[] split = personalNoFriendsCircle.getStatus().split("/");
                 if (split.length > 1) {
                     if (count1.intValue() >= Integer.parseInt(split[1])) {
                         personalNoFriendsCircle.setStatus("已完成");
+                        personalNoFriendsCircle.setDb(DBFriendsCircle);
+                        noFriendsCircleMapper.updateOne(personalNoFriendsCircle);
                     } else {
                         personalNoFriendsCircle.setStatus("" + count1.intValue() + "/" + split[1]);
                     }
                 }
             }
+            getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBFriendsCirclePersonal+" WHERE `friends_circle_id` = ? AND `deleted` = 0",personalNoFriendsCircle.getId());
+            count1 = noFriendsCirclePersonalService.getCount(getSql);
+            personalNoFriendsCircle.setPersonalNum(count1.intValue());
+
         }
         page.setRecords(personalNoFriendsCircles);
         page.setTotal(count.intValue());
@@ -153,11 +164,12 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
             return 0;
         }
         log.info("开始处理朋友圈任务");
+        log.info("存储发送时间");
         Date date = new Date();
         if(!VerifyUtils.isEmpty(noFriendsCircle.getAutoSend())){
+            log.info("定时发送");
             date  = noFriendsCircle.getAutoSend();
         }
-        log.info("直接发送");
         for (PersonalNoFriendsCirclePersonal noFriendsCirclePersonal : noFriendsCircle.getPersonalList()) {
             PersonalNoPhoneTaskGroup taskGroup = new PersonalNoPhoneTaskGroup();
             taskGroup.setStatus("未下发");
@@ -199,8 +211,8 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
     }
 
     @Override
-    public Integer delete(String sql) {
-        return noFriendsCircleMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return noFriendsCircleMapper.deleteBySql(sql);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.warm.system.service.db1;
 
 import com.baomidou.mybatisplus.service.IService;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoAndKeyword;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,11 +19,13 @@ public interface PersonalNoAndKeywordService extends IService<PersonalNoAndKeywo
 
     int add(PersonalNoAndKeyword entity);
 
-    int delete(String sql);
+    int deleteBySql(Sql sql);
 
     List<PersonalNoAndKeyword> list(String sql);
 
     List<String> listString(String sql);
 
     PersonalNoAndKeyword getOne(String sql);
+
+    Long countBySql(Sql sql);
 }

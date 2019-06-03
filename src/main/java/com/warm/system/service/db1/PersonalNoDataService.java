@@ -1,6 +1,7 @@
 package com.warm.system.service.db1;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.Sql;
 import com.warm.entity.query.QueryPersonalData;
 import com.warm.entity.result.ResultPersonalData;
 import com.warm.system.entity.PersonalNoData;
@@ -21,7 +22,7 @@ public interface PersonalNoDataService extends IService<PersonalNoData> {
 
     Integer add(PersonalNoData entity);
 
-    Integer delete(String sql);
+    Integer deleteBySql(Sql sql);
 
     List<PersonalNoData> list(String sql);
 

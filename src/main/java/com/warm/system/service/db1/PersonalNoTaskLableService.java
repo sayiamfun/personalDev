@@ -28,4 +28,6 @@ public interface PersonalNoTaskLableService extends IService<PersonalNoTaskLable
     boolean deleteBySql(Sql sql);
 
     List<String> listStringBySql(Sql sql);
+
+    void updateBySql(Sql sql);
 }

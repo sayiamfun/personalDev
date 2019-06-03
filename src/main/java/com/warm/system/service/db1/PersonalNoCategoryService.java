@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoCategory;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -17,7 +18,7 @@ public interface PersonalNoCategoryService extends IService<PersonalNoCategory> 
 
     Integer add(PersonalNoCategory entity);
 
-    Integer delete(String sql);
+    Integer deleteBySql(Sql sql);
 
     List<PersonalNoCategory> list(String sql);
 

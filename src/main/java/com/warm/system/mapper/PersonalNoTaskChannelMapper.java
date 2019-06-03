@@ -7,6 +7,7 @@ import io.swagger.models.auth.In;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import sun.tools.tree.IntExpression;
 
 import java.util.List;
@@ -37,4 +38,6 @@ public interface PersonalNoTaskChannelMapper extends BaseMapper<PersonalNoTaskCh
 
     Integer updateOne(@Param("entity")PersonalNoTaskChannel entity);
 
+    @Update("${sql}")
+    void updateBySql(Sql sql);
 }

@@ -1,7 +1,6 @@
 package com.warm.system.upload;
 
 import com.warm.entity.R;
-import com.warm.system.service.db1.UploadService;
 import com.warm.utils.ImageUpload.ImageUtils;
 import com.warm.utils.OSSClientUtil;
 import io.swagger.annotations.Api;
@@ -10,7 +9,6 @@ import io.swagger.annotations.ApiParam;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.csource.common.MyException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,10 +21,6 @@ import java.io.IOException;
 public class UploadController {
 
     public static Log log = LogFactory.getLog(UploadController.class);
-
-    @Autowired
-    private UploadService uploadService;
-
 
     @ApiOperation(value = "上传语音")
     @PostMapping(value = "messageUpload")

@@ -1,8 +1,11 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoFriendsCircle;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import groovy.transform.SourceURI;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -26,7 +29,8 @@ public interface PersonalNoFriendsCircleMapper extends BaseMapper<PersonalNoFrie
 
     Integer updateOne(@Param("entity")PersonalNoFriendsCircle entity);
 
-    Integer delete(@Param("sql") String sql);
+    @Update("${sql}")
+    Integer deleteBySql(Sql sql);
 
     Long getCount(@Param("sql") String sql);
 }

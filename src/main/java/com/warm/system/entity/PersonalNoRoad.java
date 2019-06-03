@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 
@@ -32,6 +33,7 @@ public class PersonalNoRoad extends Model<PersonalNoRoad> {
     /**
      * 通道名称
      */
+    @NotBlank(message = "通道名称不能为空")
     @TableField("road_name")
     private String roadName;
     /**

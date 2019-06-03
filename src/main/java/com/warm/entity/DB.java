@@ -10,6 +10,8 @@ public class DB {
     public static String OA = "oa";
     public static String PERSONAL_ZC_01 = "personal_zc_01";
     public static String PERSONAL_ZC_WX_GROUP = "personal_zc_wx_group";
+//    public static String PERSONAL_ZC_01 = "personal_test";
+//    public static String PERSONAL_ZC_WX_GROUP = "personal_test_wx_group";
     public static String QUNLIEBINA_01 = "qunliebian_01";
 
     //table
@@ -68,6 +70,7 @@ public class DB {
     public static String personal_no_category_and_group = "personal_no_category_and_group";
     public static String personal_no_log_info = "personal_no_log_info";
     public static String short_url = "short_url";
+    public static String personal_no_phone_task_group_finish = "personal_no_phone_task_group_finish";
 
 
     public static String group_category = "group_category";

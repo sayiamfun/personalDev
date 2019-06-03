@@ -1,9 +1,12 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
+import com.warm.entity.result.LableShow;
 import com.warm.system.entity.PersonalNoPeople;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.Date;
 import java.util.List;
@@ -32,4 +35,9 @@ public interface PersonalNoPeopleMapper extends BaseMapper<PersonalNoPeople> {
 
     Long getCount(@Param("sql") String sql);
 
+    @Update("${sql}")
+    void updateBySql(Sql sql);
+
+    @Select("${sql}")
+    List<LableShow> listLableShowBySql(Sql sql);
 }

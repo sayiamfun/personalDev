@@ -2,6 +2,7 @@ package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoFriendsCircle;
 import com.warm.system.entity.PersonalNoFriendsCirclePersonal;
 import com.warm.system.mapper.PersonalNoFriendsCirclePersonalMapper;
@@ -45,7 +46,7 @@ public class PersonalNoFriendsCirclePersonalServiceImpl extends ServiceImpl<Pers
         log.info("数据库添加朋友圈个人号开始");
         log.info("根据朋友圈id删除个人号");
         String sql = DaoGetSql.getSql("update " + DBFriendsCirclePersonal + " set deleted = 1 where friends_circle_id = ?", noFriendsCircle.getId());
-        noFriendsCirclePersonalMapper.delete(sql);
+        noFriendsCirclePersonalMapper.deleteBySql(new Sql(sql));
         List<PersonalNoFriendsCirclePersonal> personalList = noFriendsCircle.getPersonalList();
         if(!VerifyUtils.collectionIsEmpty(personalList)){
             log.info("开始添加朋友圈个人号");
@@ -72,10 +73,9 @@ public class PersonalNoFriendsCirclePersonalServiceImpl extends ServiceImpl<Pers
         return noFriendsCirclePersonalMapper.updateOne(entity);
     }
 
-
     @Override
-    public Integer delete(String sql) {
-        return noFriendsCirclePersonalMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return noFriendsCirclePersonalMapper.deleteBySql(sql);
     }
 
     @Override

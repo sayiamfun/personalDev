@@ -34,4 +34,111 @@
         <result column="get_time" property="getTime" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoPrismRecord" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,beta_type,by_owner,by_qrcode
+          ,chatroom,content,create_time,ext_content
+          ,from_nickname,is_reporter_mentioned,is_robot_mentioned,is_sent
+          ,logic_id,md5,package_id,to_user_type
+          ,to_user_name_list,`type`,unit,we_chatmsg_type
+          ,whatever,from_username,report_logic_id,report_internet_ip
+          ,report_time,get_logic_id,get_internet_ip,get_time)
+        values
+          (#{entity.id},#{entity.betaType},#{entity.byOwner},#{entity.byQrcode}
+          ,#{entity.chatroom},#{entity.content},#{entity.createTime},#{entity.extContent}
+          ,#{entity.fromNickname},#{entity.isReporterMentioned},#{entity.isRobotMentioned},#{entity.isSent}
+          ,#{entity.logicId},#{entity.md5},#{entity.packageId},#{entity.toUserType}
+          ,#{entity.toUserNameList},#{entity.type},#{entity.unit},#{entity.weChatmsgType}
+          ,#{entity.whatever},#{entity.fromUsername},#{entity.reportLogicId},#{entity.reportInternetIp}
+          ,#{entity.reportTime},#{entity.getLogicId},#{entity.getInternetIp},#{entity.getTime})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoPrismRecord" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.betaType!=null">
+                beta_type = #{entity.betaType},
+            </if>
+            <if test="entity.byOwner!=null">
+                by_owner = #{entity.byOwner},
+            </if>
+            <if test="entity.byQrcode!=null">
+                by_qrcode = #{entity.byQrcode},
+            </if>
+            <if test="entity.chatroom!=null">
+                chatroom = #{entity.chatroom},
+            </if>
+            <if test="entity.content!=null">
+                content = #{entity.content},
+            </if>
+            <if test="entity.createTime!=null">
+                create_time = #{entity.createTime},
+            </if>
+            <if test="entity.extContent!=null">
+                ext_content = #{entity.extContent},
+            </if>
+            <if test="entity.fromNickname!=null">
+                from_nicknamev = #{entity.fromNickname},
+            </if>
+            <if test="entity.isReporterMentioned!=null">
+                is_reporter_mentioned = #{entity.isReporterMentioned},
+            </if>
+            <if test="entity.isRobotMentioned!=null">
+                is_robot_mentioned = #{entity.isRobotMentioned},
+            </if>
+            <if test="entity.isSent!=null">
+                is_sent = #{entity.isSent},
+            </if>
+            <if test="entity.logicId!=null">
+                logic_id = #{entity.logicId},
+            </if>
+            <if test="entity.md5!=null">
+                md5 = #{entity.md5},
+            </if>
+            <if test="entity.packageId!=null">
+                package_id = #{entity.packageId},
+            </if>
+            <if test="entity.toUserType!=null">
+                to_user_type = #{entity.toUserType},
+            </if>
+            <if test="entity.toUserNameList!=null">
+                to_user_name_list = #{entity.toUserNameList},
+            </if>
+            <if test="entity.type!=null">
+                `type` = #{entity.type},
+            </if>
+            <if test="entity.unit!=null">
+                `unit` = #{entity.unit},
+            </if>
+            <if test="entity.weChatmsgType!=null">
+                `we_chatmsg_type` = #{entity.weChatmsgType},
+            </if>
+            <if test="entity.whatever!=null">
+                `whatever` = #{entity.whatever},
+            </if>
+            <if test="entity.fromUsername!=null">
+                `from_username` = #{entity.fromUsername},
+            </if>
+            <if test="entity.reportLogicId!=null">
+                `report_logic_id` = #{entity.reportLogicId},
+            </if>
+            <if test="entity.reportInternetIp!=null">
+                `report_internet_ip` = #{entity.reportInternetIp},
+            </if>
+            <if test="entity.reportTime!=null">
+                `report_time` = #{entity.reportTime},
+            </if>
+            <if test="entity.getLogicId!=null">
+                `get_logic_id` = #{entity.getLogicId},
+            </if>
+            <if test="entity.getInternetIp!=null">
+                `get_internet_ip` = #{entity.getInternetIp},
+            </if>
+            <if test="entity.getTime!=null">
+                `get_time` = #{entity.getTime},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 </mapper>

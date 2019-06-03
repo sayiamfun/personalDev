@@ -18,9 +18,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoFriendsCircle" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,friends_circle_theme,auto_send,friends_circle_official,card_url,card_url_cover,status,super_id,create_time)
+          (id,friends_circle_theme,auto_send,friends_circle_official,card_url,card_url_cover,status,super_id,create_time,deleted)
         values
-          (#{entity.id},#{entity.friendsCircleTheme},#{entity.autoSend},#{entity.friendsCircleOfficial},#{entity.cardUrl},#{entity.cardUrlCover},#{entity.status},#{entity.superId},#{entity.createTime})
+          (#{entity.id},#{entity.friendsCircleTheme},#{entity.autoSend},#{entity.friendsCircleOfficial},#{entity.cardUrl},#{entity.cardUrlCover},#{entity.status},#{entity.superId},#{entity.createTime},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoFriendsCircle" useGeneratedKeys="true" keyProperty="entity.id">
@@ -29,7 +29,7 @@
             <if test="entity.friendsCircleTheme!=null">
                 friends_circle_theme = #{entity.friendsCircleTheme},
             </if>
-            <if test="entity.age!=null">
+            <if test="entity.autoSend!=null">
                 auto_send = #{entity.autoSend},
             </if>
             <if test="entity.friendsCircleOfficial!=null">
@@ -49,6 +49,9 @@
             </if>
             <if test="entity.createTime!=null">
                 create_time = #{entity.createTime},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
             </if>
         </set>
         where id = #{entity.id}

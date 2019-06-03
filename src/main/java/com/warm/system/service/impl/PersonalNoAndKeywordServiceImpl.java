@@ -1,6 +1,7 @@
 package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoAndKeyword;
 import com.warm.system.mapper.PersonalNoAndKeywordMapper;
 import com.warm.system.service.db1.PersonalNoAndKeywordService;
@@ -42,6 +43,11 @@ public class PersonalNoAndKeywordServiceImpl extends ServiceImpl<PersonalNoAndKe
         return personalNoAndKeywordMapper.updateOneById(sql);
     }
 
+    @Override
+    public int deleteBySql(Sql sql) {
+        return personalNoAndKeywordMapper.deleteBySql(sql);
+    }
+
 
     @Override
     public PersonalNoAndKeyword getOne(String sql) {
@@ -49,7 +55,8 @@ public class PersonalNoAndKeywordServiceImpl extends ServiceImpl<PersonalNoAndKe
     }
 
     @Override
-    public int delete(String sql) {
-        return personalNoAndKeywordMapper.delete(sql);
+    public Long countBySql(Sql sql) {
+        return personalNoAndKeywordMapper.countBySql(sql);
     }
+
 }

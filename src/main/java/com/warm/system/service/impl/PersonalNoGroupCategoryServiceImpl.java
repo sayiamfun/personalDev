@@ -37,7 +37,6 @@ public class PersonalNoGroupCategoryServiceImpl extends ServiceImpl<PersonalNoGr
         return groupCategoryMapper.updateOne(entity);
     }
 
-
     @Override
     public List<PersonalNoGroupCategory> list(String sql) {
         return groupCategoryMapper.list(sql);

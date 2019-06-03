@@ -3,6 +3,7 @@ package com.warm.utils;
 
 import com.warm.entity.DB;
 import com.warm.entity.Sql;
+import com.warm.entity.robot.common.SunTaskType;
 import com.warm.system.entity.*;
 import com.warm.system.service.db1.*;
 import org.apache.commons.logging.Log;
@@ -10,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TaskUtiles {
@@ -18,6 +20,7 @@ public class TaskUtiles {
     private static String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_phone_task);
     private static String DBRemindFlag = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_remind_flag);
     private static String DBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_phone_task_group);
+    private static String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_lable);
 
 
     //下发任务
@@ -33,7 +36,12 @@ public class TaskUtiles {
 
     //将回复消息转换为任务组
     public static void toTask(Map<String, Object> map, String personalWxId, String userWxId, Integer taskId, Integer time) {
-        insertTaskGroup(personalWxId, userWxId, map, taskId, time);
+//        PersonalNoPhoneTaskGroupService taskGroupService = (PersonalNoPhoneTaskGroupService) map.get("taskGroupService");
+//        String getsql = "SELECT * FROM "+DBTaskGroup+" where tname = '"+personalWxId+"添加好友"+userWxId+"' and create_time > '"+WebConst.getNowDate(new Date(new Date().getTime()-600000))+"' and status = '未下发' order by id desc limit 0,1";
+//        PersonalNoPhoneTaskGroup taskGroup = taskGroupService.getOne(getsql);
+//        if(VerifyUtils.isEmpty(taskGroup)) {
+            insertTaskGroup(personalWxId, userWxId, map, taskId, time);
+//        }
     }
 
     private static void insertTaskGroup(String personalWxId, String userWxId, Map<String, Object> map, Integer taskId, Integer time) {
@@ -160,6 +168,46 @@ public class TaskUtiles {
             remindFlag.setPersonalNoTaskId(personalTaskId);
             remindFlag.setDb(DBRemindFlag);
             remindFlagService.add(remindFlag);
+        }
+    }
+
+    public static void toAddLable(Map<String, Object> map1, String personalNoWxId, String personalFriendWxId,Integer taskId,  int time) {
+        String getSql = DaoGetSql.getSql("SELECT `lable_name` FROM "+DBTaskLable+" WHERE `personal_no_task_id` = ? AND deleted = 0",taskId);
+        Sql sql = new Sql(getSql);
+        PersonalNoTaskLableService taskLableService = (PersonalNoTaskLableService) map1.get("taskLableService");
+        List<String> taskLableList = taskLableService.listStringBySql(sql);
+        if (!VerifyUtils.collectionIsEmpty(taskLableList)) {
+            PersonalNoPhoneTaskGroupService taskGroupService = (PersonalNoPhoneTaskGroupService) map1.get("taskGroupService");
+            PersonalNoPhoneTaskService taskService = (PersonalNoPhoneTaskService) map1.get("TaskService");
+            PersonalNoPhoneTaskGroup taskGroup = new PersonalNoPhoneTaskGroup();
+            taskGroup.setTaskOrder(0);
+            taskGroup.setCreateTime(new Date());
+            taskGroup.setTname(personalNoWxId + "给好友" + personalFriendWxId + "添加标签");
+            taskGroup.setTotalStep(taskLableList.size());
+            taskGroup.setNextStep(1);
+            taskGroup.setCurrentRobotId(personalNoWxId);
+            taskGroup.setStatus("未下发");
+            taskGroup.setDb(DBTaskGroup);
+            boolean save = taskGroupService.add(taskGroup) > 0;
+            if (save) {
+                for (int j = 0; j < taskLableList.size(); j++) {
+                    PersonalNoPhoneTask task = new PersonalNoPhoneTask();
+                    task.setStep(j + 1);
+                    task.setTaskGroupId(taskGroup.getId());
+                    task.setTaskType(SunTaskType.FRIEND_ADD_LABEL);
+                    task.setRobotId(personalFriendWxId);
+                    task.setStatus("未下发");
+                    task.setTname(personalNoWxId + "给好友" + personalFriendWxId + "添加标签" + taskLableList.get(j));
+                    task.setCreateTime(new Date());
+                    task.setContent(taskLableList.get(j));
+                    task.setDb(DBTask);
+                    boolean save1 = taskService.add(task) > 0;
+                    if (!save1) {
+                        log.error("添加粉丝标签任务失败");
+                        throw new RuntimeException("添加粉丝标签任务失败");
+                    }
+                }
+            }
         }
     }
 }

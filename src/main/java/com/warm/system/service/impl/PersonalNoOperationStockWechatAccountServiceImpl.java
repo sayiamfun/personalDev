@@ -20,10 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -66,6 +63,8 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
     private PersonalNoFriendsService noFriendsService;
     @Autowired
     private PersonalNoCategoryAndGroupService categoryAndGroupService;
+    @Autowired
+    private PersonalNoTaskLableService taskLableService;
 
 
     private String DBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_people);
@@ -78,6 +77,7 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
     private String DBUser = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_user);
     private String DBValueTable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_value_table);
     private String DBShortUrl = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.short_url);
+    private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_lable);
 
     @Override
     public Integer add(PersonalNoOperationStockWechatAccount entity) {
@@ -102,7 +102,8 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
         if (VerifyUtils.isEmpty(getNoEntity.getUnionId())) {
             wechatAccount = getWeChat(task);
         } else {
-            getSql = DaoGetSql.getSql("SELECT * FROM " + DBPVR + " where union_id = ? order by id desc limit 0,1", getNoEntity.getUnionId());
+            log.info("获取短链id，标识好友从哪一个链接进来");
+            getSql = DaoGetSql.getSql("SELECT * FROM " + DBPVR + " where union_id = ? order by create_time desc limit 0,1", getNoEntity.getUnionId());
             Sql sql = new Sql(getSql);
             PassageVisitorRecord byUnionId = passageVisitorRecordService.getBySql(sql);
             if (!VerifyUtils.isEmpty(byUnionId)) {
@@ -111,12 +112,23 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
                     sql.setSql(getSql);
                     shortUrlId = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
                 } else if (!VerifyUtils.isEmpty(byUnionId) && !VerifyUtils.isEmpty(byUnionId.getPassageId())) {
-                    getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where task_id = ? and channel_id = ? limit 0,1", byUnionId.getPassageId(), byUnionId.getChannelId());
+                    getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where passage_id = ? and channel_id = ? limit 0,1", byUnionId.getPassageId(), byUnionId.getChannelId());
                     sql.setSql(getSql);
                     shortUrlId = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
                 }
             }
+            log.info("封装发送任务的service集合");
             Map<String, Object> map1 = TaskUtiles.getMap(peopleService, taskGroupService, noTaskService, taskService, keywordService);
+            map1.put("taskLableService",taskLableService);
+            log.info("获取任务的标签，给好友贴标签");
+            getSql = DaoGetSql.getSql("SELECT `lable_name` FROM "+DBTaskLable+" WHERE `personal_no_task_id` = ? AND deleted = 0",getNoEntity.getTaskId());
+            sql.setSql(getSql);
+            List<String> lableList = taskLableService.listStringBySql(sql);
+            String lableNames = "";
+            if(!VerifyUtils.collectionIsEmpty(lableList)){
+                 lableNames = WebConst.getLableNames(lableList);
+            }
+            log.info("判断用户是否已经扫过任务");
             String getPeopleSql = DaoGetSql.getSql("SELECT * FROM " + DBNoPeople + " WHERE personal_task_id = ? and personal_friend_nick_name = ? and deleted = 0 order by be_friend_time desc LIMIT 0,1", getNoEntity.getTaskId(), getNoEntity.getUnionId());
             PersonalNoPeople people = peopleService.getOne(getPeopleSql);
             if (!VerifyUtils.isEmpty(people) && !VerifyUtils.isEmpty(people.getPersonalFriendWxId())) {
@@ -135,16 +147,34 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
                         people.setId(null);
                         people.setPersonalNoWxId(wechatAccount.getWxId());
                         people.setDeleted(0);
+                        people.setBeFriendTime(new Date());
+                        people.setLable(lableNames);
                         log.info("判断是否是好友，是的话直接发送消息");
                         people = getPeople(map1, people);
                         people.setDb(DBNoPeople);
                         peopleService.add(people);
                     }
                 } else {
-                    people.setFlag(2);
-                    people.setDb(DBNoPeople);
-                    peopleService.add(people);
-                    TaskUtiles.toTask(map1, people.getPersonalNoWxId(), people.getPersonalFriendWxId(), getNoEntity.getTaskId(), Integer.parseInt(valueTableService.selectById(1).getValue()) * 1000);
+                    getSql = DaoGetSql.getById(DBValueTable,8);
+                    sql.setSql(getSql);
+                    PersonalNoValueTable valueTable8 = valueTableService.getBySql(sql);
+                    if(!VerifyUtils.isEmpty(valueTable8.getValue())){
+                        List<String> split = Arrays.asList(valueTable8.getValue().split(","));
+                        if(split.contains(getNoEntity.getTaskId().toString())){
+                            people.setLable(lableNames);
+                            people = getPeople(map1, people);
+                            people.setDb(DBNoPeople);
+                            peopleService.add(people);
+                        }else {
+                            if(people.getFlag()!=2) {
+                                people.setLable(lableNames);
+                                people = getPeople(map1, people);
+                                people.setDb(DBNoPeople);
+                                peopleService.add(people);
+                            }
+                        }
+                    }
+//                    TaskUtiles.toTask(map1, people.getPersonalNoWxId(), people.getPersonalFriendWxId(), getNoEntity.getTaskId(), Integer.parseInt(valueTableService.selectById(1).getValue()) * 1000);
                 }
             } else {
                 log.info("不是任务好友，");
@@ -164,8 +194,8 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
                         if (!VerifyUtils.isEmpty(user) && !VerifyUtils.isEmpty(user.getWxId())) {
                             people.setPersonalFriendWxId(user.getWxId());
                         }
+                        people.setLable(lableNames);
                         people = getPeople(map1, people);
-                        people.setPersonalTaskId(task.getId());
                         people.setDeleted(0);
                         people.setDb(DBNoPeople);
                         peopleService.add(people);
@@ -173,7 +203,6 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
                 } else {
                     log.info("以前扫过二维码。但是没有更新用户微信id");
                     people.setBeFriendTime(new Date());
-                    people.setDeleted(0);
                     people.setChannelId(shortUrlId);
                     log.info("判断个人号是否被封禁");
                     getSql = DaoGetSql.getSql("SELECT * from " + DBWeChat + " where wx_id = ?", people.getPersonalNoWxId());
@@ -186,14 +215,17 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
                         peopleService.add(people);
                         wechatAccount = getWeChat(task);
                         people.setId(null);
+
                     }
                     if (!VerifyUtils.isEmpty(user) && !VerifyUtils.isEmpty(user.getWxId())) {
                         log.info("有用户信息并且有微信id");
                         people.setPersonalFriendWxId(user.getWxId());
                     }
                     if (!VerifyUtils.isEmpty(wechatAccount)) {
+                        people.setDeleted(0);
                         people.setPersonalNoWxId(wechatAccount.getWxId());
                         log.info("判断是否是好友");
+                        people.setLable(lableNames);
                         people = getPeople(map1, people);
                         people.setDb(DBNoPeople);
                         peopleService.add(people);
@@ -240,6 +272,7 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
         log.info("个人号集合查询成功,开始计算好友数量");
         String getSql = "";
         for (PersonalNoOperationStockWechatAccount no : personalNoOperationStockWechatAccounts) {
+            no.setNickName(no.getNickName()+"("+no.getStatus()+")");
             getSql = DaoGetSql.getSql("SELECT count(*) FROM " + DBFriends + " where personal_no_wx_id = ? and deleted = 0", no.getWxId());
             no.setFriendsNum(noFriendsService.getCount(getSql).intValue());
             no.setWaitingNums(0);
@@ -281,6 +314,8 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
             log.info("修改通道好友表的用户微信id");
             undatePVRUserWxId(people);
             TaskUtiles.toTask(map1, people.getPersonalNoWxId(), people.getPersonalFriendWxId(), people.getPersonalTaskId(), time);
+            log.info("下发添加标签任务");
+            TaskUtiles.toAddLable(map1,people.getPersonalNoWxId(), people.getPersonalFriendWxId(),people.getPersonalTaskId(), time);
         } else {
             people.setFlag(0);
         }

@@ -11,7 +11,9 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -31,14 +33,20 @@ public class PersonalNoGroupCategory extends Model<PersonalNoGroupCategory> {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    @NotNull(message = "群类别集合不能为空")
     @TableField("group_category_set_id")
     private Integer groupCategorySetId;
+    @NotBlank(message = "群类别名称不能为空")
     private String cname;
     @TableField("up_limit")
     private Integer upLimit;
+    @NotBlank(message = "群名前缀不能为空")
     private String prefix;
+    @NotBlank(message = "群名后缀不能为空")
     private String postfix;
+    @NotNull(message = "群名不能为空")
     @TableField("begin_index")
+
     private Integer beginIndex;
     @TableField("current_index")
     private Integer currentIndex;

@@ -5,6 +5,8 @@ import com.warm.system.entity.PersonalNoCategoryAndGroup;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -27,4 +29,10 @@ public interface PersonalNoCategoryAndGroupMapper extends BaseMapper<PersonalNoC
 
     @Select("${sql}")
     List<String> listStringBySql(Sql sql);
+
+    @Update("${sql}")
+    void updateBySql(Sql sql);
+
+    @Select("${sql}")
+    Long countBySql(Sql sql);
 }

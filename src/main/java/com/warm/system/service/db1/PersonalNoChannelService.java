@@ -19,7 +19,7 @@ public interface PersonalNoChannelService extends IService<PersonalNoChannel> {
 
     Integer add(PersonalNoChannel entity);
 
-    Integer delete(String sql);
+    Integer deleteBySql(Sql sql);
 
     List<PersonalNoChannel> list(String sql);
 

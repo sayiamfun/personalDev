@@ -22,4 +22,6 @@ public interface PersonalNoSendMessageService extends IService<PersonalNoSendMes
     void deleteOne(Sql sql);
 
     Integer add(PersonalNoSendMessage sendMessage);
+
+    PersonalNoSendMessage getBySql(Sql sql);
 }

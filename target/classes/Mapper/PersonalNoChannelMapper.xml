@@ -15,9 +15,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoChannel" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,channel_name,super_id,super_name,create_time,remarks)
+          (id,channel_name,super_id,super_name,create_time,remarks,deleted)
         values
-          (#{entity.id},#{entity.channelName},#{entity.superId},#{entity.superName},#{entity.createTime},#{entity.remarks})
+          (#{entity.id},#{entity.channelName},#{entity.superId},#{entity.superName},#{entity.createTime},#{entity.remarks},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoChannel" useGeneratedKeys="true" keyProperty="entity.id">
@@ -37,6 +37,9 @@
             </if>
             <if test="entity.remarks!=null">
                 remarks = #{entity.remarks},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
             </if>
         </set>
         where id = #{entity.id}

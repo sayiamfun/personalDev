@@ -1,11 +1,9 @@
 package com.warm.system.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoAndKeyword;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -29,5 +27,9 @@ public interface PersonalNoAndKeywordMapper extends BaseMapper<PersonalNoAndKeyw
 
     int updateOneById(@Param("entity")PersonalNoAndKeyword user);
 
-    int delete(@Param("sql") String sql);
+    @Update("${sql}")
+    int deleteBySql(Sql sql);
+
+    @Select("${sql}")
+    Long countBySql(Sql sql);
 }

@@ -1,10 +1,16 @@
 package com.warm.entity.robot;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.warm.system.entity.PersonalNoRequestException;
+import com.warm.system.service.db1.PersonalNoRequestExceptionService;
+import com.warm.utils.JsonObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,7 +21,7 @@ public class G
 	public static String ms_baseUrl;		// = "";
 
 	public static int ms_OPERATION_PROJECT_INSTANCE_ID = 8;		//=4;
-	public static int ms_SERVER_PORT;
+	public static String ms_SERVER_PORT = "http://www.jiazhang111.xyz";
 	public static String ms_FILE_SERVER_URL;		//="http://www.youyoudk.cn:18888";
 	public static String ms_FILE_SERVER_LOCAL_DIR;		//="C:/Users/Administrator/Desktop/AI/apache-tomcat-8.5.37/webapps/ROOT";
 
@@ -24,9 +30,9 @@ public class G
 	public static List<String> ms_phoneList;		// = Arrays.asList("17319402380", "17310011324", "18513668642", "17073549676");
 
 	// 微信公众号配置
-	public static String WX_APPID = "wx8e17aa77af6c4ae3";		// = "wx8e17aa77af6c4ae3";
-	public static String WX_SECRET = "702c3bfc75d8bed0bfe105679513c7d0";   // = "702c3bfc75d8bed0bfe105679513c7d0";
-	public static String WX_GRANT_TYPE = "authorization_code";		// = "authorization_code";
+	public static String WX_APPID = "wx8e17aa77af6c4ae3";
+	public static String WX_SECRET = "702c3bfc75d8bed0bfe105679513c7d0";
+	public static String WX_GRANT_TYPE = "authorization_code";
 
 
 	// 日志控制——机器人
@@ -66,45 +72,33 @@ public class G
 		System.out.println("捕捉到异常！" + e.getMessage());
 		e.printStackTrace();
 	}
-	//取request中body的数据
-	public static String ReadAsChars(HttpServletRequest request)
-	{
-
-		BufferedReader br = null;
-		StringBuilder sb = new StringBuilder("");
-		try
-		{
-			br = request.getReader();
-			String str;
-			while ((str = br.readLine()) != null)
-			{
-				sb.append(str);
-			}
-			br.close();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		finally
-		{
-			if (null != br)
-			{
-				try
-				{
-					br.close();
-				}
-				catch (IOException e)
-				{
-					e.printStackTrace();
-				}
-			}
-		}
-		return sb.toString();
-	}
-
 
 	public static void i(int logicId, String s, String s1) {
 		System.err.println(logicId + ":" + s + ":" + s1);
+	}
+
+	public static void requestException(String dbRequestException, PersonalNoRequestExceptionService requestExceptionService, HttpServletRequest request, String requestBody, String remarks, String responseBody, Integer code,Exception e) {
+		PersonalNoRequestException exception = new PersonalNoRequestException();
+		exception.setMethod(request.getMethod());
+		exception.setCreateTime(new Date());
+		exception.setUrl(request.getRequestURI());
+		exception.setStatusCode(code);
+		exception.setRequestBody(requestBody);
+		exception.setResponseBody(responseBody);
+		exception.setRemarks(remarks);
+		exception.setException(getErrorInfoFromException(e));
+		exception.setDb(dbRequestException);
+		requestExceptionService.add(exception);
+	}
+
+	private static String getErrorInfoFromException(Exception e) {
+		try {
+			StringWriter sw = new StringWriter();
+			PrintWriter pw = new PrintWriter(sw);
+			e.printStackTrace(pw);
+			return "\r\n" + sw.toString() + "\r\n";
+		} catch (Exception e2) {
+			return "bad getErrorInfoFromException";
+		}
 	}
 }

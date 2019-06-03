@@ -2,6 +2,7 @@ package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoChannel;
 import com.warm.system.mapper.PersonalNoChannelMapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -29,14 +30,15 @@ public class PersonalNoChannelServiceImpl extends ServiceImpl<PersonalNoChannelM
 
     @Override
     public Integer add(PersonalNoChannel entity) {
-        if(VerifyUtils.isEmpty(entity.getId()))
+        if(VerifyUtils.isEmpty(entity.getId())) {
             return personalNoChannelMapper.add(entity);
+        }
         return personalNoChannelMapper.updateOne(entity);
     }
 
     @Override
-    public Integer delete(String sql) {
-        return personalNoChannelMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return personalNoChannelMapper.deleteBySql(sql);
     }
 
     @Override

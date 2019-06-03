@@ -1,5 +1,6 @@
 package com.warm.config.authInterceptor;
 
+import com.warm.entity.DB;
 import com.warm.system.entity.PersonalNoLogInfo;
 import com.warm.system.entity.PersonalNoSuperuesr;
 import com.warm.utils.*;
@@ -22,7 +23,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
 //        try {
 //            log.info("*********************************************");
 //            StringBuffer requestURL = request.getRequestURL();
@@ -40,7 +40,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 //                    logInfo.setRequestUrl(requestURL.toString());
 //                    logInfo.setSuperUserId(Integer.parseInt(cookieValue));
 //                    logInfo.setSuperUserName(personalNoSuperuesr.getSuperName());
-//                    logInfo.setDb("personal_zc_01.personal_no_log_info");
+//                    logInfo.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_log_info));
 //                    String s1 = HttpClientUtil.sendPost(WebConst.ADDLOGADDRESS, JsonObjectUtils.objectToJson(logInfo));
 //                    request.setAttribute(WebConst.SUPERUSERID,personalNoSuperuesr.getId());
 //                    return true;

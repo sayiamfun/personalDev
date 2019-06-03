@@ -23,4 +23,6 @@ public interface PersonalNoTaskAndKeywordService extends IService<PersonalNoTask
     Integer add(PersonalNoKeyword keyword);
 
     Integer deleteBySql(Sql sql);
+
+    Long countBySql(Sql sql);
 }

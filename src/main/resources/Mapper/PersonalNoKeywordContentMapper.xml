@@ -13,9 +13,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoKeywordContent" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_no_keyword_id,content_type,content)
+          (id,personal_no_keyword_id,content_type,content,deleted)
         values
-          (#{entity.id},#{entity.personalNoKeywordId},#{entity.contentType},#{entity.content})
+          (#{entity.id},#{entity.personalNoKeywordId},#{entity.contentType},#{entity.content},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoKeywordContent" useGeneratedKeys="true" keyProperty="entity.id">
@@ -29,6 +29,9 @@
             </if>
             <if test="entity.content!=null">
                 content = #{entity.content},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
             </if>
         </set>
         where id = #{entity.id}

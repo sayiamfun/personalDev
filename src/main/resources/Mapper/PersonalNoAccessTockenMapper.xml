@@ -26,9 +26,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoAccessTocken" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,flag,access_token,openid,refreshtoken)
+          (id,flag,access_token,openid,refreshtoken,deleted)
         values
-          (#{entity.id},#{entity.flag},#{entity.accessToken},#{entity.openid},#{entity.refreshtoken})
+          (#{entity.id},#{entity.flag},#{entity.accessToken},#{entity.openid},#{entity.refreshtoken},#{entity.deleted})
     </insert>
 
     <update id="updateOneById" parameterType="com.warm.system.entity.PersonalNoAccessTocken" useGeneratedKeys="true" keyProperty="entity.id">

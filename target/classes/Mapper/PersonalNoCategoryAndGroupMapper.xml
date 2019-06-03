@@ -7,6 +7,7 @@
         <id column="id" property="id" />
         <result column="personal_no_wx_id" property="personalNoWxId" />
         <result column="nick_name" property="nickName" />
+        <result column="category_id" property="categoryId" />
         <result column="category" property="category" />
         <result column="group" property="group" />
         <result column="deleted" property="deleted" />
@@ -14,9 +15,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoCategoryAndGroup" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_no_wx_id,nick_name,category,`group`,deleted)
+          (id,personal_no_wx_id,nick_name,category_id,category,`group`,deleted)
         values
-          (#{entity.id},#{entity.personalNoWxId},#{entity.nickName},#{entity.category},#{entity.group},#{entity.deleted})
+          (#{entity.id},#{entity.personalNoWxId},#{entity.nickName},#{entity.categoryId},#{entity.category},#{entity.group},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoCategoryAndGroup" useGeneratedKeys="true" keyProperty="entity.id">
@@ -27,6 +28,9 @@
             </if>
             <if test="entity.nickName!=null">
                 nick_name = #{entity.nickName},
+            </if>
+            <if test="entity.categoryId!=null">
+                category_id = #{entity.categoryId},
             </if>
             <if test="entity.category!=null">
                 category = #{entity.category},

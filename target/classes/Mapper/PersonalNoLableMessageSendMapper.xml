@@ -16,9 +16,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoLableMessageSend" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_no_lable_message_lable_list,personal_no_lable_message_content_show,persona_nol_lable_message_status,super_id,send_time,send_num)
+          (id,personal_no_lable_message_lable_list,personal_no_lable_message_content_show,persona_nol_lable_message_status,super_id,send_time,send_num,deleted)
         values
-          (#{entity.id},#{entity.personalNoLableMessageLableList},#{entity.personalNoLableMessageContentShow},#{entity.personaNolLableMessageStatus},#{entity.superId},#{entity.sendTime},#{entity.sendNum})
+          (#{entity.id},#{entity.personalNoLableMessageLableList},#{entity.personalNoLableMessageContentShow},#{entity.personaNolLableMessageStatus},#{entity.superId},#{entity.sendTime},#{entity.sendNum},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoLableMessageSend" useGeneratedKeys="true" keyProperty="entity.id">
@@ -42,7 +42,7 @@
             <if test="entity.sendNum!=null">
                 send_num = #{entity.age},
             </if>
-            <if test="entity.deleted!=deleted">
+            <if test="entity.deleted!=null">
                 deleted = #{entity.deleted},
             </if>
         </set>

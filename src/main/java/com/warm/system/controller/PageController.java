@@ -7,6 +7,7 @@ import com.warm.entity.requre.GetNoEntity;
 import com.warm.entity.robot.G;
 import com.warm.entity.robot.WxResponseInfo2;
 import com.warm.entity.robot.WxResponseInfo3;
+import com.warm.entity.robot.responseInfo.SunApiResponse;
 import com.warm.system.entity.*;
 import com.warm.system.service.db1.*;
 import com.warm.system.service.db2.PersonalNoOperationStockWechatAccountService;
@@ -15,7 +16,6 @@ import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.stereotype.Controller;
@@ -43,8 +43,7 @@ public class PageController extends SpringBootServletInitializer {
     }
 
     public static Log log = LogFactory.getLog(PageController.class);
-    @Value("${fileServer.ms_SERVER_ROOT_URL}")
-    String ms_SERVER_ROOT_URL;
+
     @Autowired
     private PersonalNoUserService userService;
     @Autowired
@@ -57,17 +56,20 @@ public class PageController extends SpringBootServletInitializer {
     private PersonalNoOperationStockWechatAccountService wechatAccountService;
     @Autowired
     private PersonalNoTaskService noTaskService;
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
 
     private String ZCDBPVR = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.passage_visitor_record);
     private String ZCDBAccessTocken = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken);
     private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task);
     private String DBShortUrl = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.short_url);
     private String DBUser = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_user);
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_request_exception);
 
 
     @ResponseBody
     @GetMapping("getAccId")
-    public R getId(){
+    public R getId(HttpServletRequest request){
         try {
             PersonalNoAccessTocken personalNoAccessTocken = new PersonalNoAccessTocken();
             personalNoAccessTocken.setFlag(0);
@@ -76,7 +78,7 @@ public class PageController extends SpringBootServletInitializer {
             accessTockenService.add(personalNoAccessTocken);
             return R.ok().data(personalNoAccessTocken.getId().toString());
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "获取登录id失败", "网页走丢了，请刷新。。。", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
@@ -106,14 +108,14 @@ public class PageController extends SpringBootServletInitializer {
             map.put("url",shortUrl);
             return R.ok().data(map);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "roadId:"+request.getParameter("roadId")+" flag:"+request.getParameter("flag")+" id"+request.getParameter("id"), "获取短链失败", "网页走丢了，请刷新。。。", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
     //根据条件生成不同的短链请求
     private String getTaskShortUrl(String id,String taskId){
         String redirect_uri_encode = "";
-        String targetUrl = ms_SERVER_ROOT_URL + "/taskCallback?param="+"taskId="+taskId+"=channelId="+id;
+        String targetUrl = G.ms_SERVER_PORT + "/taskCallback?param="+"taskId="+taskId+"=channelId="+id;
         String getSql = DaoGetSql.getSql("SELECT * from "+DBShortUrl+" where org_url = ? limit 0,1",targetUrl);
         ShortUrl shortUrl = shortUrlService.getBySql(new Sql(getSql));
         String s = null;
@@ -126,7 +128,7 @@ public class PageController extends SpringBootServletInitializer {
     }
     private String getRoadShortUrl(String id,String taskId){
         String redirect_uri_encode = "";
-        String targetUrl = ms_SERVER_ROOT_URL + "/callback?param="+"taskId="+taskId+"=channelId="+id;
+        String targetUrl = G.ms_SERVER_PORT + "/callback?param="+"taskId="+taskId+"=channelId="+id;
         String getSql = DaoGetSql.getSql("SELECT * from "+DBShortUrl+" where org_url = ? limit 0,1",targetUrl);
         ShortUrl shortUrl = shortUrlService.getBySql(new Sql(getSql));
         String s = null;
@@ -185,12 +187,12 @@ public class PageController extends SpringBootServletInitializer {
             map.put("roadId", split[1]);
             CookieUtil.setCookie(request,response, WebConst.TASKINFOKEY, JsonObjectUtils.objectToJson(map), 60,true);
         } catch (Exception e) {
-           e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "param:"+ request.getParameter("param"), "通道回调异常", "", 1,e);
         }
         try {
             response.sendRedirect("task.html");
         } catch (IOException e) {
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "param:"+ request.getParameter("param"), "通道回调跳转页面异常", "", 1,e);
         }
     }
 
@@ -199,16 +201,22 @@ public class PageController extends SpringBootServletInitializer {
         try {
             System.err.println("personal.jsp");
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
         mv.setViewName("personal");
         return mv;
     }
 
     @ResponseBody
-    @GetMapping("error")
-    public R getError(){
-        return R.error().message("给你个报错");
+    @GetMapping("testError")
+    public R getError(HttpServletRequest request){
+        try {
+            int i = 2/0;
+            return R.error().message("给你个报错");
+        }catch (Exception e){
+            G.requestException(DBRequestException, requestExceptionService, request, "", "测试异常", "", 1,e);
+            return R.error().message("网页走丢了。。。请返回重试");
+        }
     }
 
     @GetMapping("taskCallback")
@@ -252,7 +260,7 @@ public class PageController extends SpringBootServletInitializer {
             }
         } catch (Exception e) {
             mv.addObject("flag","1");
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "param:"+ request.getParameter("param"), "任务回调异常", "", 1,e);
         }
         mv.setViewName("personal");
         return mv;

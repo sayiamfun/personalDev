@@ -37,4 +37,8 @@ public interface PersonalNoPeopleService extends IService<PersonalNoPeople> {
     List<PersonalNoPeople> listByLableAndPersonal(PeopleNumReq peopleNumReq);
 
     Map<String, List<String>> MapByPeopleList(List<PersonalNoPeople> peopleList);
+
+    void updateBySql(Sql sql);
+
+    List<LableShow> listLableShowBySql(Sql sql);
 }

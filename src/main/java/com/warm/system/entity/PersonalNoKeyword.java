@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.List;
@@ -31,6 +32,7 @@ public class PersonalNoKeyword extends Model<PersonalNoKeyword> {
     /**
      * 关键词
      */
+    @NotBlank(message = "关键词不能为空")
     private String keyword;
     /**
      * 逻辑删除

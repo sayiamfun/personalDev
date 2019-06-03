@@ -14,13 +14,14 @@
         <result column="remarks" property="remarks" />
         <result column="deleted" property="deleted" />
         <result column="flag" property="flag" />
+        <result column="lable" property="lable" />
     </resultMap>
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoPeople" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_friend_wx_id,personal_friend_nick_name,personal_no_wx_id,personal_task_id,channel_id,be_friend_time,remarks,flag)
+          (id,personal_friend_wx_id,personal_friend_nick_name,personal_no_wx_id,personal_task_id,channel_id,be_friend_time,remarks,flag,deleted,lable)
         values
-          (#{entity.id},#{entity.personalFriendWxId},#{entity.personalFriendNickName},#{entity.personalNoWxId},#{entity.personalTaskId},#{entity.channelId},#{entity.beFriendTime},#{entity.remarks},#{entity.flag})
+          (#{entity.id},#{entity.personalFriendWxId},#{entity.personalFriendNickName},#{entity.personalNoWxId},#{entity.personalTaskId},#{entity.channelId},#{entity.beFriendTime},#{entity.remarks},#{entity.flag},#{entity.deleted},#{entity.lable})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoPeople" useGeneratedKeys="true" keyProperty="entity.id">
@@ -52,6 +53,9 @@
             </if>
             <if test="entity.deleted!=null">
                 deleted = #{entity.deleted},
+            </if>
+            <if test="entity.lable!=null">
+                lable = #{entity.lable},
             </if>
         </set>
         where id = #{entity.id}

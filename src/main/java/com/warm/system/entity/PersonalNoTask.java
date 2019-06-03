@@ -11,7 +11,10 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import com.warm.entity.requre.RecommendedReasons;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 
@@ -34,11 +37,13 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     /**
      * 任务名称
      */
+    @NotBlank(message = "任务名称不能为空")
     @TableField("task_name")
     private String taskName;
     /**
      * 任务主题
      */
+    @NotBlank(message = "任务主题不能为空")
     @TableField("task_theme")
     private String taskTheme;
     /**
@@ -79,6 +84,7 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     /**
      * 任务截止时间
      */
+    @NotNull(message = "任务结束时间不能为空")
     @TableField("task_end_time")
     private Date taskEndTime;
     /**
@@ -109,6 +115,7 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     /**
      * 超级用户id
      */
+    @NotNull(message = "登录已过期，请退出重新登录")
     @TableField("super_id")
     private Integer superId;
     /**
@@ -127,6 +134,7 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     /**
      * 开课时间
      */
+    @NotNull(message = "任务开课时间不能为空")
     @TableField("task_start_time")
     private Date taskStartTime;
     /**
@@ -137,6 +145,7 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     /**
      * 任务通道id
      */
+    @NotNull(message = "任务通道不能为空")
     @TableField("road_id")
     private Integer roadId;
     /**

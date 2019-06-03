@@ -3,9 +3,12 @@ package com.warm.system.controller;
 
 import com.warm.entity.DB;
 import com.warm.entity.R;
+import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoGroupCategorySet;
+import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.system.service.db3.PersonalNoGroupCategorySetService;
 import com.warm.utils.DaoGetSql;
+import com.warm.utils.JsonObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -14,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -33,6 +37,10 @@ public class PersonalNoGroupCategorySetController {
     private static Log log = LogFactory.getLog(PersonalNoGroupCategorySetController.class);
     @Autowired
     private PersonalNoGroupCategorySetService groupCategorySetService;
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
+
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBGroupCategory = DB.DBAndTable(DB.PERSONAL_ZC_WX_GROUP,DB.group_category_set);
     private String QUNLIEBIAN_01 = DB.DBAndTable(DB.QUNLIEBINA_01,DB.group_category_set);
 
@@ -40,8 +48,8 @@ public class PersonalNoGroupCategorySetController {
     @GetMapping("{index}")
     public R listAll(
             @ApiParam(name = "index", value = "查询表示（几号后台的库)",required = true)
-            @PathVariable("index") Integer index
-    ){
+            @PathVariable("index") Integer index, HttpServletRequest request
+            ){
         try {
             log.info("查询所有的类别集合");
             String database = DBGroupCategory;
@@ -57,7 +65,7 @@ public class PersonalNoGroupCategorySetController {
             List<PersonalNoGroupCategorySet> list = groupCategorySetService.list(sql);
             return R.ok().data(list);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(index), "查询所有的群类别集合异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }

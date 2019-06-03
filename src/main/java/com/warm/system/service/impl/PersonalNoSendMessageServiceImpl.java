@@ -58,4 +58,9 @@ public class PersonalNoSendMessageServiceImpl extends ServiceImpl<PersonalNoSend
         return sendMessageMapper.updateOne(sendMessage);
     }
 
+    @Override
+    public PersonalNoSendMessage getBySql(Sql sql) {
+        return sendMessageMapper.getBySql(sql);
+    }
+
 }

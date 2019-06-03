@@ -60,7 +60,7 @@ public class PersonalNoTaskLableServiceImpl extends ServiceImpl<PersonalNoTaskLa
     @Override
     public boolean batchSave(PersonalNoTask noTask) {
         log.info("根据任务id删除任务标签");
-        String delSql = DaoGetSql.getSql("DELETE FROM "+DBTaskLable+" where personal_no_task_id = ?",noTask.getId());
+        String delSql = DaoGetSql.getSql("update "+DBTaskLable+" set deleted = 1 where personal_no_task_id = ?",noTask.getId());
         taskLableMapper.deleteBySql(new Sql(delSql));
         List<PersonalNoTaskLable> noLableList = noTask.getNoLableList();
         if(!VerifyUtils.collectionIsEmpty(noLableList)){
@@ -90,7 +90,7 @@ public class PersonalNoTaskLableServiceImpl extends ServiceImpl<PersonalNoTaskLa
     public List<Integer> listTaskIdsByLableNameList(List<String> lableNameList) {
         log.info("根据标签名称查询所有有此标签的任务id");
         String lableNames = DaoGetSql.getIds(lableNameList);
-        String getSql = DaoGetSql.getSql("SELECT DISTINCT personal_no_task_id from " + DBTaskLable + " where lable_name in " + lableNames);
+        String getSql = DaoGetSql.getSql("SELECT DISTINCT personal_no_task_id from " + DBTaskLable + " where lable_name in " + lableNames + " and deleted = 0");
         List<Integer> taskIds = taskLableMapper.listTaskIdsBySql(new Sql(getSql));
         log.info("根据标签名称查询所有有此标签的任务id结束");
         return taskIds;
@@ -105,6 +105,11 @@ public class PersonalNoTaskLableServiceImpl extends ServiceImpl<PersonalNoTaskLa
     @Override
     public List<String> listStringBySql(Sql sql) {
         return taskLableMapper.listStringBySql(sql);
+    }
+
+    @Override
+    public void updateBySql(Sql sql) {
+        taskLableMapper.updateBySql(sql);
     }
 
 

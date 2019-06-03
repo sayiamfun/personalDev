@@ -96,4 +96,9 @@ public class PersonalNoTaskAndKeywordServiceImpl extends ServiceImpl<PersonalNoT
     public Integer deleteBySql(Sql sql) {
         return taskAndKeywordMapper.deleteBySql(sql);
     }
+
+    @Override
+    public Long countBySql(Sql sql) {
+        return taskAndKeywordMapper.countBySql(sql);
+    }
 }

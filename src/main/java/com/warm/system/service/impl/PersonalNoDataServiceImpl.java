@@ -62,8 +62,8 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
     }
 
     @Override
-    public Integer delete(String sql) {
-        return dataMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return dataMapper.deleteBySql(sql);
     }
 
     @Override
@@ -419,7 +419,7 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
                 personNoEnterGroupQueryRequestInfo.setStart_time(queryPersonalData.getStartTime());
             }
             if (!VerifyUtils.isEmpty(queryPersonalData.getEndTime())) {
-                personNoEnterGroupQueryRequestInfo.setStart_time(queryPersonalData.getEndTime());
+                personNoEnterGroupQueryRequestInfo.setEnd_time(queryPersonalData.getEndTime());
             }
             List<PersonNoEnterGroupQueryRequestInfo>  personNoEnterGroupQueryRequestInfoList = new ArrayList<>();
             personNoEnterGroupQueryRequestInfoList.add(personNoEnterGroupQueryRequestInfo);

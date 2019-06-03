@@ -193,7 +193,7 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
         String sql = DaoGetSql.getSql("update "+DBNoPeople+" set deleted = 1 WHERE personal_no_wx_id = ? and personal_friend_wx_id = ?",personalWxId,user.getWxId());
         peopleService.delete(sql);
         sql = DaoGetSql.getSql("update " + DBFriends + " set deleted = 1 where personal_no_wx_id = ? and user_wx_id = ?", personalWxId, user.getWxId());
-        friendsMapper.delete(sql);
+        friendsMapper.deleteBySql(new Sql(sql));
     }
 
     @Override
@@ -204,8 +204,8 @@ public class PersonalNoFriendsServiceImpl extends ServiceImpl<PersonalNoFriendsM
     }
 
     @Override
-    public Integer delete(String sql) {
-        return friendsMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return friendsMapper.deleteBySql(sql);
     }
 
     @Override

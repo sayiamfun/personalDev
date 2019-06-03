@@ -86,6 +86,9 @@ public class PersonalNoTaskMessageSend extends Model<PersonalNoTaskMessageSend> 
     @TableField(exist = false)
     private String groupName;
 
+    @TableField(exist = false)
+    private String db;
+
     @Override
     protected Serializable pkVal() {
         return this.id;

@@ -21,4 +21,8 @@ public interface PersonalNoCategoryAndGroupService extends IService<PersonalNoCa
     PersonalNoCategoryAndGroup getBySql(Sql sql);
 
     List<String> listStringBySql(Sql sql);
+
+    void updateBySql(Sql sql);
+
+    Long countBySql(Sql sql);
 }

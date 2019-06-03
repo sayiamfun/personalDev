@@ -49,7 +49,7 @@ public class PersonalNoTaskMessageSendContentServiceImpl extends ServiceImpl<Per
             log.info("内容不为空，开始插入数据库");
             for (PersonalNoTaskMessageSendContent personalNoTaskMessageSendContent : personalNoTaskMessageSendContentList) {
                 personalNoTaskMessageSendContent.setPersonalNoTaskMessageSendId(personalNoTaskMessageSend.getId());
-                personalNoTaskMessageSendContent.setId(0);
+                personalNoTaskMessageSendContent.setDeleted(0);
                 int save = baseMapper.insert(personalNoTaskMessageSendContent);
                 if(save!=1){
                     log.info("数据库添加任务消息内容到数据库失败");

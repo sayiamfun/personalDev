@@ -1,5 +1,6 @@
 package com.warm.system.service.impl;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoAccessTocken;
 import com.warm.system.mapper.PersonalNoAccessTockenMapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -29,14 +30,6 @@ public class PersonalNoAccessTockenServiceImpl extends ServiceImpl<PersonalNoAcc
         return accessTockenMapper.getOne(sql);
     }
 
-    /**
-     * 删除数据
-     * @param sql
-     */
-    @Override
-    public void delete(String sql) {
-        accessTockenMapper.delete(sql);
-    }
 
     @Override
     public int add(PersonalNoAccessTocken personalNoAccessTocken) {
@@ -45,5 +38,11 @@ public class PersonalNoAccessTockenServiceImpl extends ServiceImpl<PersonalNoAcc
         }
         return accessTockenMapper.updateOneById(personalNoAccessTocken);
     }
+
+    @Override
+    public Integer deleteBySql(Sql sql) {
+        return accessTockenMapper.deleteBySql(sql);
+    }
+
 
 }

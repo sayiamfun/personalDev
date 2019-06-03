@@ -1,6 +1,7 @@
 package com.warm.system.service.db1;
 
 import com.baomidou.mybatisplus.plugins.Page;
+import com.warm.entity.Sql;
 import com.warm.entity.requre.BatchUpdateObject;
 import com.warm.entity.result.LableManager;
 import com.warm.system.entity.PersonalNoLable;
@@ -38,4 +39,6 @@ public interface PersonalNoLableService extends IService<PersonalNoLable> {
     Long getCount(String sql);
 
     List<String> listByPersonal(List<PersonalNoOperationStockWechatAccount> list);
+
+    void updateBySql(Sql sql);
 }

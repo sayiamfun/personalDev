@@ -2,11 +2,15 @@ package com.warm.system.controller;
 
 
 
+import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.query.QueryPersonalData;
 import com.warm.entity.result.ResultPersonalData;
+import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoData;
 import com.warm.system.service.db1.PersonalNoDataService;
+import com.warm.system.service.db1.PersonalNoRequestExceptionService;
+import com.warm.utils.JsonObjectUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -15,6 +19,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -35,20 +40,23 @@ public class PersonalNoDataController {
     public static Log log = LogFactory.getLog(PersonalNoDataController.class);
     @Autowired
     private PersonalNoDataService dataService;
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
 
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
 
 
     @ApiOperation(value = "查询总体数据")
     @PostMapping("pagePersonalDate")
     public R pagePersonalDate(
             @ApiParam(name = "queryPersonalData", value = "查询参数", required = true)
-            @RequestBody QueryPersonalData queryPersonalData
-    ){
+            @RequestBody QueryPersonalData queryPersonalData, HttpServletRequest request
+            ){
         try {
             ResultPersonalData resultPersonalData = dataService.getAllData(queryPersonalData);
             return R.ok().data(resultPersonalData);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(queryPersonalData), "查询总体数据异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
@@ -77,7 +85,7 @@ public class PersonalNoDataController {
             @PathVariable String flag,
 
             @ApiParam(name = "queryPersonalData", value = "查询参数", required = true)
-            @RequestBody QueryPersonalData queryPersonalData
+            @RequestBody QueryPersonalData queryPersonalData,HttpServletRequest request
     ){
         try {
             log.info("分页条件查询个人号任务数据");
@@ -85,7 +93,7 @@ public class PersonalNoDataController {
             Map<String,List<String>> dateList = dataService.getDateByDateList(flag, list);
             return R.ok().data(dateList);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(queryPersonalData), "查询总体数据2异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }

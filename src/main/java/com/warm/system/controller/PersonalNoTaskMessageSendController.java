@@ -11,10 +11,12 @@ import com.warm.system.entity.PersonalNoPeople;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskMessageSend;
 import com.warm.system.service.db1.PersonalNoPeopleService;
+import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.system.service.db1.PersonalNoTaskMessageSendService;
 import com.warm.system.service.db1.PersonalNoTaskService;
 import com.warm.system.service.db2.PersonalNoOperationStockWechatAccountService;
 import com.warm.utils.DaoGetSql;
+import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
 import com.warm.utils.WebConst;
 import io.swagger.annotations.Api;
@@ -25,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -55,7 +58,10 @@ public class PersonalNoTaskMessageSendController {
     private PersonalNoOperationStockWechatAccountService wechatAccountService;
     //指定唯一锁
     private Lock lock = new ReentrantLock();    //注意这个地方
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
 
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task);
     private String DBPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
     private String DBWeChat = DB.DBAndTable(DB.OA,DB.operation_stock_wechat_account);
@@ -64,8 +70,8 @@ public class PersonalNoTaskMessageSendController {
     @PostMapping(value = "taskMessageSend")
     public R taskMessageSend(
             @ApiParam(name = "personalNoTaskMessageSend", value = "要插入的任务消息", required = true)
-            @RequestBody PersonalNoTaskMessageSend personalNoTaskMessageSend
-    ){
+            @RequestBody PersonalNoTaskMessageSend personalNoTaskMessageSend, HttpServletRequest request
+            ){
         if(lock.tryLock()) {
             try {
                 log.info("开始添加任务消息");
@@ -84,10 +90,10 @@ public class PersonalNoTaskMessageSendController {
                 List<PersonalNoPeople> list = peopleService.list(getSql);
                 List<PersonalNoPeople> peopleList = new ArrayList<>();
                 for (PersonalNoPeople people : list) {
-                    getSql = DaoGetSql.getSql("SELECT * from "+DBWeChat+" where wx_id = ? and  operation_project_instance_id = ? limit 0,1",people.getPersonalFriendWxId(), G.ms_OPERATION_PROJECT_INSTANCE_ID);
+                    getSql = DaoGetSql.getSql("SELECT * from "+DBWeChat+" where wx_id = ? and  operation_project_instance_id = ? limit 0,1",people.getPersonalNoWxId(), G.ms_OPERATION_PROJECT_INSTANCE_ID);
                     sql.setSql(getSql);
                     PersonalNoOperationStockWechatAccount wechatAccount = wechatAccountService.getBySql(sql);
-                    if(!VerifyUtils.isEmpty(wechatAccount) && !WebConst.WECHATSTATUS.equals(wechatAccount.getStatus())){
+                    if(VerifyUtils.isEmpty(wechatAccount) || WebConst.WECHATSTATUS.equals(wechatAccount.getStatus())){
                         continue;
                     }
                     peopleList.add(people);
@@ -104,7 +110,7 @@ public class PersonalNoTaskMessageSendController {
                 log.info("添加任务消息成功");
                 return R.ok();
             } catch (Exception e) {
-                e.printStackTrace();
+                G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(personalNoTaskMessageSend), "查询所有任务异常", "", 1,e);
                 return R.error().message("网页走丢了，请返回重试。。。");
             }finally {
                 lock.unlock();
@@ -121,7 +127,8 @@ public class PersonalNoTaskMessageSendController {
             @PathVariable Long pageNum,
 
             @ApiParam(name = "size", value = "每页记录数", required = true)
-            @PathVariable Long size
+            @PathVariable Long size,
+            HttpServletRequest request
     ){
         try {
             log.info("开始分页查找任务消息");
@@ -130,7 +137,7 @@ public class PersonalNoTaskMessageSendController {
             log.info("分页查找任务消息结束");
             return R.ok().data(page);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(pageNum)+" "+size, "分页查找任务消息异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -139,7 +146,7 @@ public class PersonalNoTaskMessageSendController {
     @PostMapping(value = "/{id}/")
     public R getTaskMessageById(
             @ApiParam(name = "id", value = "任务消息id", required = true)
-            @PathVariable Long id
+            @PathVariable Long id,HttpServletRequest request
     ){
         try {
             log.info("根据id查询任务消息");
@@ -147,7 +154,7 @@ public class PersonalNoTaskMessageSendController {
             log.info("根据id查询任务消息结束");
             return R.ok().data(taskMessage);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(id), "根据ID查询任务消息异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }

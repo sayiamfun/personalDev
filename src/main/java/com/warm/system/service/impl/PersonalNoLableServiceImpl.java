@@ -7,13 +7,11 @@ import com.warm.entity.Sql;
 import com.warm.entity.requre.BatchUpdateObject;
 import com.warm.entity.result.LableManager;
 import com.warm.entity.result.LableShow;
-import com.warm.system.entity.PersonalNoLable;
-import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
-import com.warm.system.entity.PersonalNoTaskLable;
-import com.warm.system.entity.PersonalNoTaskPersonal;
+import com.warm.system.entity.*;
 import com.warm.system.mapper.PersonalNoLableMapper;
 import com.warm.system.service.db1.*;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.warm.system.service.db2.PersonalNoOperationStockWechatAccountService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
 import org.apache.commons.logging.Log;
@@ -43,12 +41,17 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
     private PersonalNoTaskLableService taskLableService;
     @Autowired
     private PersonalNoPeopleService noPeopleService;
+    @Autowired
+    private PersonalNoOperationStockWechatAccountService wechatAccountService;
+    @Autowired
+    private PersonalNoLableCategoryService lableCategoryService;
 
     private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_lable);
     private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_lable);
     private String DBTaskPersonal = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_personal);
     private String DBPeople = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_people);
-
+    private String DBWeChat = DB.DBAndTable(DB.OA, DB.operation_stock_wechat_account);
+    private String DBLableCategory = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_lable_category);
 
     /*
      * 分页查询标签
@@ -57,9 +60,13 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
     public Page<PersonalNoLable> pageQuery(Page<PersonalNoLable> page, String lableName) {
         log.info("根据名称模糊查询标签列表");
         StringBuffer temp = new StringBuffer();
+        boolean F = false;
         if (!"-1".equals(lableName)) {
             temp.append(" where lable_name like '%"+lableName+"%'");
+            F = true;
         }
+        temp = DaoGetSql.getTempSql(temp,F);
+        temp.append(" deleted = 0");
         String getSql = DaoGetSql.getSql("select count(*) from "+DBLable+temp.toString());
         Long count = personalNoLableMapper.getCount(getSql);
         temp.append(" order by id desc limit "+page.getOffset()+","+page.getLimit());
@@ -87,50 +94,24 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
                 lableManager.setLableId(row.getId());
                 lableManager.setLableName(row.getLableName());
                 lableManager.setLableCategory(row.getLableCategory());
-                /**
-                 * 根据标签查找个人号任务列表
-                 * 根据任务id查找任务粉丝数量
-                 * 根据任务id查找个人号数量
-                 */
-                //存放标签下的个人号列表（个人号id，个人号名称，粉丝数量）
-                log.info("获取标签对应的所有任务id");
-                getSql = DaoGetSql.getSql("select DISTINCT personal_no_task_id from " + DBTaskLable + " where lable_id = ?", lableManager.getLableId());
-                sql.setSql(getSql);
-                List<String> taskIdList = taskLableService.listStringBySql(sql);
-                log.info("获取任务下的所有个人号");
-                String ids = DaoGetSql.getIds(taskIdList);
-                getSql = "SELECT *  FROM " + DBTaskPersonal + " where deleted = 0 and personal_no_task_id in "+ids;
-                sql.setSql(getSql);
-                List<PersonalNoTaskPersonal> personalNoTaskPersonalList = taskPersonalService.listBySql(sql);
-                log.info("存放个人号微信id，去重用");
-                Set<String> noWxIdSet = new HashSet<>();
                 log.info("存放好友人数");
                 Integer peopleNum = 0;
-                log.info("获取该个人号下的任务好友");
-                List<LableShow> lableShowList  = new ArrayList<>();
-                Map<String,LableShow> lableShowMap = new HashMap<>();
-                for (PersonalNoTaskPersonal personalNoTaskPersonal : personalNoTaskPersonalList) {
-                    noWxIdSet.add(personalNoTaskPersonal.getPersonalNoWxId());
-                    getSql = DaoGetSql.getSql("SELECT count(*) FROM " + DBPeople + " where personal_no_wx_id = ? and personal_task_id = ? and deleted = 0 and flag = 2", personalNoTaskPersonal.getPersonalNoWxId(), personalNoTaskPersonal.getPersonalNoTaskId());
-                    Long count = noPeopleService.getCount(getSql);
-                    peopleNum += count.intValue();
-                    if(lableShowMap.containsKey(personalNoTaskPersonal.getPersonalNoWxId())){
-                        lableShowMap.get(personalNoTaskPersonal.getPersonalNoWxId()).setPeopleNum(count.intValue()+lableShowMap.get(personalNoTaskPersonal.getPersonalNoWxId()).getPeopleNum());
-                    }else {
-                        LableShow lableShow = new LableShow();
-                        lableShow.setPersonalWxId(personalNoTaskPersonal.getPersonalNoWxId());
-                        lableShow.setPersonalName(personalNoTaskPersonal.getPersonalNoName());
-                        lableShow.setPeopleNum(count.intValue());
-                        lableShowMap.put(personalNoTaskPersonal.getPersonalNoWxId(),lableShow);
-                    }
+                log.info("获取该标签下的好友");
+                getSql = DaoGetSql.getSql("SELECT `personal_no_wx_id` AS personal_wx_id ,COUNT(*) AS people_num FROM "+DBPeople+" WHERE deleted = 0 AND `personal_friend_wx_id` IS NOT NULL  AND lable LIKE ? GROUP BY `personal_no_wx_id` ","%"+lableManager.getLableName()+"%");
+                sql.setSql(getSql);
+                List<LableShow> lableShowList = noPeopleService.listLableShowBySql(sql);
+                for (LableShow lableShow : lableShowList) {
+                    peopleNum += lableShow.getPeopleNum();
+                    getSql = DaoGetSql.getSql("SELECT * FROM "+DBWeChat+" WHERE wx_id = ?",lableShow.getPersonalWxId());
+                    sql.setSql(getSql);
+                    PersonalNoOperationStockWechatAccount wechatAccount = wechatAccountService.getBySql(sql);
+                    lableShow.setPersonalName(wechatAccount.getNickName());
                 }
-                lableShowList.addAll(lableShowMap.values());
                 lableManager.setLableShowList(lableShowList);
                 lableManager.setPeopleNum(peopleNum);
-                lableManager.setPersonalNoNum(noWxIdSet.size());
+                lableManager.setPersonalNoNum(lableShowList.size());
                 resultList.add(lableManager);
             }
-            log.info("标签列表不为空，开始统计数据 粉丝数量，个人号数量");
         }
         log.info("数据库统计标签数据成功");
         return resultList;
@@ -150,6 +131,11 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
         List<PersonalNoLable> lableList = batchUpdateObject.getLableList();
         for (PersonalNoLable noLable : lableList) {
             noLable.setLableCategory(batchUpdateObject.getObject());
+            String getSql = DaoGetSql.getSql("SELECT * FROM "+DBLableCategory+" WHERE `category_name` = ? AND deleted = 0 LIMIT 0,1",noLable.getLableCategory());
+            PersonalNoLableCategory one1 = lableCategoryService.getOne(getSql);
+            noLable.setLableCategoryId(VerifyUtils.isEmpty(one1)?-1:one1.getId());
+            noLable.setDb(DBLable);
+            noLable.setDeleted(0);
             int i = personalNoLableMapper.add(noLable);
             if (i < 0) {
                 log.info("数据库批量修改标签失败");
@@ -169,13 +155,6 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
      */
     @Override
     public List<String> listByPersonal(List<PersonalNoOperationStockWechatAccount> list) {
-        List<PersonalNoTaskLable> taskLableList = null;
-        /**
-         * 开始的任务个人号集合是为了存储前端传过来的个人号id集合
-         * 根据个人号id查询任务所有的任务个人号
-         * 根据任务id查询任务标签
-         * 将任务标签集合  转化为  任务标签名集合
-         */
         log.info("数据库根据个人号wxid查询任务个人号集合");
         String getSql = "";
         Sql sql = new Sql();
@@ -188,11 +167,16 @@ public class PersonalNoLableServiceImpl extends ServiceImpl<PersonalNoLableMappe
         sql.setSql(getSql);
         List<String> taskIdList = taskPersonalService.listStringBySql(sql);
         String taskIds = DaoGetSql.getIds(taskIdList);
-        getSql = "SELECT DISTINCT lable_name FROM "+DBTaskLable+" where personal_no_task_id in "+taskIds;
+        getSql = "SELECT DISTINCT lable_name FROM "+DBTaskLable+" where personal_no_task_id in "+taskIds+" and deleted = 0";
         sql.setSql(getSql);
         List<String> strings = taskLableService.listStringBySql(sql);
         log.info("数据库根据个人号集合查询标签集合结束");
         return strings;
+    }
+
+    @Override
+    public void updateBySql(Sql sql) {
+        personalNoLableMapper.updateBySql(sql);
     }
 
     @Override

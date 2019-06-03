@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -31,16 +33,22 @@ public class PersonalNoLable extends Model<PersonalNoLable> {
     /**
      * 标签名称
      */
+    @NotBlank(message = "标签名称不能为空")
     @TableField("lable_name")
     private String lableName;
     /**
      * 标签类别
      */
+    @TableField("lable_category_id")
+    private Integer lableCategoryId;
+
+    @NotBlank(message = "标签类别不能为空")
     @TableField("lable_category")
     private String lableCategory;
     /**
      * 超级用户id
      */
+    @NotNull(message = "登录已过期，请退出重新登录")
     @TableField("super_id")
     private Integer superId;
     /**

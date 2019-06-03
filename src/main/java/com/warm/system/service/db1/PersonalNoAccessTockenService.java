@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoAccessTocken;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -15,7 +16,7 @@ public interface PersonalNoAccessTockenService extends IService<PersonalNoAccess
 
     PersonalNoAccessTocken getOne(String sql);
 
-    void delete(String sql);
-
     int add(PersonalNoAccessTocken personalNoAccessTocken);
+
+    Integer deleteBySql(Sql sql);
 }

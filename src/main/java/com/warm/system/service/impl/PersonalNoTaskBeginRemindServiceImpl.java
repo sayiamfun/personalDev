@@ -41,11 +41,12 @@ public class PersonalNoTaskBeginRemindServiceImpl extends ServiceImpl<PersonalNo
     @Override
     public boolean batchSave(PersonalNoTask noTask) {
         log.info("根据任务id删除任务开课提醒数据");
-        String delSql = DaoGetSql.getSql("DELETE FROM " + ZCDBBeginRemind + " where personal_no_task_id = ?", noTask.getId());
+        String delSql = DaoGetSql.getSql("update " + ZCDBBeginRemind + " set deleted = 1 where personal_no_task_id = ?", noTask.getId());
         personalNoTaskBeginRemindMapper.deleteBySql(new Sql(delSql));
         log.info("将开课提醒消息保存到数据库");
         List<PersonalNoTaskBeginRemind> noTaskBeginRemindList = noTask.getNoTaskBeginRemindList();
         for (PersonalNoTaskBeginRemind noTaskBeginRemind : noTaskBeginRemindList) {
+            noTaskBeginRemind.setId(null);
             noTaskBeginRemind.setPersonalNoTaskId(noTask.getId());
             noTaskBeginRemind.setDb(ZCDBBeginRemind);
             noTaskBeginRemind.setDeleted(0);

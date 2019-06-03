@@ -8,6 +8,8 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
@@ -18,6 +20,7 @@ import java.io.Serializable;
  * @author dgd123
  * @since 2019-03-29
  */
+@Data
 @TableName("personal_no_request_exception")
 public class PersonalNoRequestException extends Model<PersonalNoRequestException> {
 
@@ -35,63 +38,12 @@ public class PersonalNoRequestException extends Model<PersonalNoRequestException
     private Integer statusCode;
     @TableField("create_time")
     private Date createTime;
-
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public void setMethod(String method) {
-        this.method = method;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getRequestBody() {
-        return requestBody;
-    }
-
-    public void setRequestBody(String requestBody) {
-        this.requestBody = requestBody;
-    }
-
-    public String getResponseBody() {
-        return responseBody;
-    }
-
-    public void setResponseBody(String responseBody) {
-        this.responseBody = responseBody;
-    }
-
-    public Integer getStatusCode() {
-        return statusCode;
-    }
-
-    public void setStatusCode(Integer statusCode) {
-        this.statusCode = statusCode;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+    @TableField("remarks")
+    private String remarks;
+    @TableField("exception")
+    private String exception;
+    @TableField(exist = false)
+    private String db;
 
     @Override
     protected Serializable pkVal() {

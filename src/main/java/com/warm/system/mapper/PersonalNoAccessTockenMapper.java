@@ -1,5 +1,6 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoAccessTocken;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
@@ -26,5 +27,6 @@ public interface PersonalNoAccessTockenMapper extends BaseMapper<PersonalNoAcces
 
     int updateOneById(@Param("entity")PersonalNoAccessTocken entity);
 
-    int delete(@Param("sql") String sql);
+    @Update("${sql}")
+    int deleteBySql(Sql sql);
 }

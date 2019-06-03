@@ -11,22 +11,19 @@ import com.warm.system.entity.PersonalNoAccessTocken;
 import com.warm.system.entity.PersonalNoSuperuesr;
 import com.warm.system.entity.PersonalNoValueTable;
 import com.warm.system.service.db1.PersonalNoAccessTockenService;
+import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.system.service.db1.PersonalNoSuperuesrService;
 import com.warm.system.service.db1.PersonalNoValueTableService;
-import com.warm.system.service.db1.UploadService;
 import com.warm.utils.*;
-import com.warm.utils.ImageUpload.Base64Util;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import io.swagger.models.auth.In;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.apache.commons.codec.digest.DigestUtils;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,15 +46,17 @@ import java.util.Map;
 @RequestMapping("/personalNoSuperuesr")
 public class PersonalNoSuperuesrController {
     private static Log log = LogFactory.getLog(PersonalNoSuperuesrController.class);
-    @Value("${fileServer.ms_SERVER_ROOT_URL}")
-    String ms_SERVER_ROOT_URL;
+
     @Autowired
     private PersonalNoSuperuesrService personalNoSuperuesrService;
     @Autowired
     private PersonalNoAccessTockenService accessTockenService;
     @Autowired
     private PersonalNoValueTableService valueTableService;
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
 
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBSuper = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_superuesr);
     private String DBAccessTocken = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_access_tocken);
     private String DBValueTable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_value_table);
@@ -94,7 +93,7 @@ public class PersonalNoSuperuesrController {
             log.info("登录成功");
             return R.ok().data(result);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(personalNoSuperuesr), "登录方法异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -103,7 +102,7 @@ public class PersonalNoSuperuesrController {
     @PostMapping(value = "register")
     public R register(
             @ApiParam(name = "personalNoSuperuesr", value = "注册账户信息", required = true)
-            @RequestBody PersonalNoSuperuesr personalNoSuperuesr
+            @RequestBody PersonalNoSuperuesr personalNoSuperuesr,HttpServletRequest request
     ){
         try {
             log.info("开始注册任务");
@@ -136,7 +135,7 @@ public class PersonalNoSuperuesrController {
             log.info("注册成功");
             return R.ok();
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(personalNoSuperuesr), "注册方法异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -152,7 +151,7 @@ public class PersonalNoSuperuesrController {
             log.info("退出登录");
             return R.ok();
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "注销方法异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -162,7 +161,7 @@ public class PersonalNoSuperuesrController {
     public void loginInWX(HttpServletRequest request, HttpServletResponse response){
         try {
             String id = request.getParameter("id");
-            String targetUrl = ms_SERVER_ROOT_URL + "/personalNoSuperuesr/LoginCallback?id="+id;
+            String targetUrl = G.ms_SERVER_PORT + "/personalNoSuperuesr/LoginCallback?id="+id;
             String redirectUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + G.WX_APPID + "&redirect_uri=" + targetUrl + "&response_type=code&scope=snsapi_userinfo&state=0&connect_redirect=1#wechat_redirect";
             try {
                 response.sendRedirect(redirectUrl);
@@ -171,7 +170,7 @@ public class PersonalNoSuperuesrController {
                 e.printStackTrace();
             }
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "微信扫码登录方法异常", "", 1,e);
         }
     }
 
@@ -190,7 +189,7 @@ public class PersonalNoSuperuesrController {
             for (PersonalNoSuperuesr personalNoSuperuesr : list) {
                 if(wxResponseInfo2.unionid.equals(personalNoSuperuesr.getOpenid())){
                     String sql = DaoGetSql.getSql("delete from "+DBAccessTocken+" where openid = ?",wxResponseInfo2.openid);
-                    accessTockenService.delete(sql);
+                    accessTockenService.deleteBySql(new Sql(sql));
                     String sql1 = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DBAccessTocken+" where id = ? and deleted = 0",p_id);
                     PersonalNoAccessTocken personalNoAccessTocken = accessTockenService.getOne(sql1);
                     personalNoAccessTocken.setOpenid(wxResponseInfo2.unionid);
@@ -206,7 +205,7 @@ public class PersonalNoSuperuesrController {
             }
 
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "微信扫码登录回调方法异常", "", 1,e);
         }
     }
 
@@ -215,14 +214,14 @@ public class PersonalNoSuperuesrController {
     @GetMapping("veryById/{id}")
     public R veryById(
             @ApiParam(name = "id", value = "唯一id", required = true)
-            @PathVariable("id") String id
+            @PathVariable("id") String id,HttpServletRequest request
     ){
         try {
             String sql = DaoGetSql.getSql("select id,flag,access_token,openid,refreshtoken,deleted from "+DBAccessTocken+" where id = ? and deleted = 0", id);
             PersonalNoAccessTocken byId = accessTockenService.getOne(sql);
             return R.ok().data(byId);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "验证用户是否扫码异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
@@ -262,7 +261,7 @@ public class PersonalNoSuperuesrController {
             map.put(WebConst.LOGINFLAG,"0");
             return R.ok().data(map);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "根据id取得登录用户信息异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }

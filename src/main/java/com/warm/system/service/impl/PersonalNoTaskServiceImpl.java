@@ -84,12 +84,13 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
         int insert = 0;
         noTask.setDeleted(0);
         noTask.setCreateTime(new Date());
+        noTask.setActivityType(0);
+        noTask.setDb(DBTask);
         boolean b = false;
         log.info("只有添加才可以插入任务个人号，任务渠道，任务标签");
         if(VerifyUtils.isEmpty(noTask.getId())){
             log.info("添加个人号任务到数据库");
             noTask.setAddFriendIndex(0);
-            noTask.setDb(DBTask);
             insert = noTaskMapper.add(noTask);
             log.info("将个人号列表插入到数据库");
             b = personalNoTaskPersonalService.batchSave(noTask);
@@ -103,19 +104,18 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
                 log.info("将渠道列表插入到数据库失败");
                 return false;
             }
-            log.info("将标签列表保存到数据库");
-            b = personalNoTaskLableService.batchSave(noTask);
-            if(!b){
-                log.info("将标签列表保存到数据库失败");
-                return false;
-            }
         }else {
             log.info("修改个人号任务到数据库");
-            noTask.setDb(DBTask);
             insert = noTaskMapper.updateOne(noTask);
         }
         if(insert < 0){
             log.info("数据库添加任务信息失败");
+            return false;
+        }
+        log.info("将标签列表保存到数据库");
+        b = personalNoTaskLableService.batchSave(noTask);
+        if(!b){
+            log.info("将标签列表保存到数据库失败");
             return false;
         }
         log.info("将回复消息插入到数据库");

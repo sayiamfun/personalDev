@@ -52,7 +52,7 @@ public class PersonalNoMessageServiceImpl extends ServiceImpl<PersonalNoMessageM
         String getSql = DaoGetSql.getById(DBMessage,messageId);
         PersonalNoMessage message = messageMapper.getOne(getSql);
         if(!VerifyUtils.isEmpty(message)){
-            getSql = DaoGetSql.getSql("SELECT * FROM " + DBMessageContent + " where message_id = ?", messageId);
+            getSql = DaoGetSql.getSql("SELECT * FROM " + DBMessageContent + " where message_id = ? and deleted = 0", messageId);
             List<PersonalNoMessageContent> messageContentList = messageContentService.listBySql(new Sql(getSql));
             message.setMessageContentList(messageContentList);
             for (PersonalNoMessageContent messageContent : messageContentList) {
@@ -75,9 +75,13 @@ public class PersonalNoMessageServiceImpl extends ServiceImpl<PersonalNoMessageM
     public Page<PersonalNoMessage> pageQuery(Page<PersonalNoMessage> page, String message) {
         List<PersonalNoMessage> list = new ArrayList<>();
         StringBuffer temp = new StringBuffer();
+        boolean F = false;
         if(!"-1".equals(message)){
             temp.append(" where keyword like '%"+message+"%'");
+            F = true;
         }
+        temp = DaoGetSql.getTempSql(temp,F);
+        temp.append(" deleted = 0 ");
         Long count = messageMapper.getCount("select count(*) from " + DBMessage + temp.toString());
         page.setTotal(count.intValue());
         temp.append(" order by id desc limit "+page.getOffset()+","+page.getLimit());
@@ -101,7 +105,7 @@ public class PersonalNoMessageServiceImpl extends ServiceImpl<PersonalNoMessageM
          }else {
              messageMapper.add(entity);
          }
-         String getSql = DaoGetSql.getSql("DELETE FROM " + DBMessageContent + " where message_id = ?", entity.getId());
+         String getSql = DaoGetSql.getSql("update " + DBMessageContent + " set deleted = 1 where message_id = ?", entity.getId());
          messageContentService.deleteBySql(new Sql(getSql));
          for (PersonalNoMessageContent messageContent : entity.getMessageContentList()) {
              messageContent.setMessageId(entity.getId());
@@ -124,8 +128,10 @@ public class PersonalNoMessageServiceImpl extends ServiceImpl<PersonalNoMessageM
 
     @Override
     public PersonalNoMessage getInfoById(PersonalNoMessage PersonalNoMessage) {
-        String getSql = DaoGetSql.getSql("SELECT * from " + DBMessageContent + " where message_id = ?", PersonalNoMessage.getId());
+        String getSql = DaoGetSql.getSql("SELECT * from " + DBMessageContent + " where message_id = ? and deleted = 0", PersonalNoMessage.getId());
         List<PersonalNoMessageContent> messageContentList = messageContentService.listBySql(new Sql(getSql));
+        String contentShow = WebConst.getMessageContentShow(messageContentList);
+        PersonalNoMessage.setContentShow(contentShow);
         for (PersonalNoMessageContent personalNoKeywordContent : messageContentList) {
             if("邀请入群".equals(personalNoKeywordContent.getContentType())){
                 PersonalNoGroupCategory personalNoGroupCategory = groupCategoryService.getPersonalNoGroupCategory(personalNoKeywordContent.getContent());
@@ -165,7 +171,7 @@ public class PersonalNoMessageServiceImpl extends ServiceImpl<PersonalNoMessageM
     public List<PersonalNoMessage> listByMessage(String message) {
         StringBuffer temp = new StringBuffer("select * from "+DBMessage);
         if(!"-1".equals(message)){
-            temp.append(" where keyword like '%"+message+"%'");
+            temp.append(" where keyword like '%"+message+"%' and deleted = 0");
         }
         temp.append(" order by id desc");
         return messageMapper.list(temp.toString());

@@ -57,6 +57,7 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
     private String DBLableMessage = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable_message_send);
     private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task);
     private String DBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group);
+    private String DBTaskGroupFinish = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_phone_task_group_finish);
     private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
 
     private Date taskDate = new Date();
@@ -88,6 +89,7 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
         if(VerifyUtils.isEmpty(sendTime)){
             personalNoLableMessageSend.setSendTime(new Date());
         }
+        personalNoLableMessageSend.setDeleted(0);
         lableMessageSendMapper.add(personalNoLableMessageSend);
         log.info("添加标签消息内容");
         personalNoLableMessageSendContentService.batchSave(personalNoLableMessageSend);
@@ -168,10 +170,13 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
         for (PersonalNoLableMessageSend personalNoLableMessageSend : personalNoLableMessageSends) {
             log.info("查询发送数量");
             if(!"已完成".equals(personalNoLableMessageSend.getPersonaNolLableMessageStatus())){
-                count = taskGroupService.getCount("SELECT COUNT(*) FROM " + DBTaskGroup + " where `status` = '已完成' and lable_send_id = " + personalNoLableMessageSend.getId());
+                count = taskGroupService.getCount("SELECT COUNT(*) FROM " + DBTaskGroupFinish + " where `status` = '已完成' and lable_send_id = " + personalNoLableMessageSend.getId());
                 String[] split = personalNoLableMessageSend.getPersonaNolLableMessageStatus().split("/");
                 if(count.intValue()>=Integer.parseInt(split[1])){
                     personalNoLableMessageSend.setPersonaNolLableMessageStatus("已完成");
+                    personalNoLableMessageSend.setDb(DBLableMessage);
+                    personalNoLableMessageSend.setDeleted(0);
+                    lableMessageSendMapper.updateOne(personalNoLableMessageSend);
                 }else {
                     personalNoLableMessageSend.setPersonaNolLableMessageStatus("" + count.intValue() + "/" + split[1]);
                 }

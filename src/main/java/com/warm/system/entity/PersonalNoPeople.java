@@ -71,6 +71,9 @@ public class PersonalNoPeople extends Model<PersonalNoPeople> {
      */
     private Integer flag;
 
+    @TableField("lable")
+    private String lable;
+
     @TableField(exist = false)
     private String db;
 

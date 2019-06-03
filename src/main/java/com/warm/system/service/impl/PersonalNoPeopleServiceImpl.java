@@ -3,11 +3,13 @@ package com.warm.system.service.impl;
 import com.warm.entity.DB;
 import com.warm.entity.Sql;
 import com.warm.entity.requre.PeopleNumReq;
+import com.warm.entity.result.LableShow;
 import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
 import com.warm.system.entity.PersonalNoPeople;
 import com.warm.system.entity.PersonalNoTaskLable;
 import com.warm.system.mapper.PersonalNoPeopleMapper;
+import com.warm.system.service.db1.PersonalNoLableService;
 import com.warm.system.service.db1.PersonalNoPeopleService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.warm.system.service.db1.PersonalNoTaskLableService;
@@ -40,8 +42,11 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
     private PersonalNoPeopleService peopleService;
     @Autowired
     private PersonalNoOperationStockWechatAccountService wechatAccountService;
+    @Autowired
+    private PersonalNoLableService lableService;
 
     private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_lable);
+    private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
     private String DBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
     private String DBWeChat = DB.DBAndTable(DB.OA,DB.operation_stock_wechat_account);
 
@@ -80,11 +85,23 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
     @Override
     public List<PersonalNoPeople> listByLableAndPersonal(PeopleNumReq peopleNumReq) {
         String lableIds = DaoGetSql.getIds(peopleNumReq.getLableIdList());
-        String getSql = "SELECT DISTINCT personal_no_task_id FROM "+DBTaskLable+" where lable_id in "+lableIds;
-        Sql sql = new Sql(getSql);
-        List<String> taskIdList = taskLableService.listStringBySql(sql);
-        String taskIds = DaoGetSql.getIds(taskIdList);
+        String getSql = "SELECT DISTINCT `lable_name` FROM "+DBLable+" WHERE id IN "+lableIds+" and deleted = 0";
+        List<String> lableNameList = lableService.listString(getSql);
+        String lableQuery = "";
+        if(!VerifyUtils.collectionIsEmpty(lableNameList)){
+            StringBuffer temp = new StringBuffer();
+            for (int i =0;i<lableNameList.size() ; i++) {
+                if(i==0){
+                    temp.append(" and ( `lable` LIKE '%|"+lableNameList.get(i)+"|%'");
+                }else {
+                    temp.append(" or `lable` LIKE '%|"+lableNameList.get(i)+"|%'");
+                }
+            }
+            temp.append(" )");
+            lableQuery = temp.toString();
+        }
         List<PersonalNoPeople> peopleList = new ArrayList<>();
+        Sql sql = new Sql(getSql);
         for (String personalNoWxId : peopleNumReq.getNoWxIdList()) {
             getSql = DaoGetSql.getSql("SELECT * from "+DBWeChat+" where wx_id = ? and  operation_project_instance_id = ? limit 0,1",personalNoWxId, G.ms_OPERATION_PROJECT_INSTANCE_ID);
             sql.setSql(getSql);
@@ -93,11 +110,10 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
                 continue;
             }
             if(VerifyUtils.isEmpty(peopleNumReq.getStartTime())){
-                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' and personal_task_id in "+taskIds+" and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
+                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' "+lableQuery+" and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
             }else {
-                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' and personal_task_id in "+taskIds+" and be_friend_time  BETWEEN '"+WebConst.getNowDate(peopleNumReq.getStartTime())+"' and '"+WebConst.getNowDate(peopleNumReq.getEndTime())+"'  and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
+                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' "+lableQuery+" and be_friend_time  BETWEEN '"+WebConst.getNowDate(peopleNumReq.getStartTime())+"' and '"+WebConst.getNowDate(peopleNumReq.getEndTime())+"'  and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
             }
-
             peopleList = peopleService.list(getSql);
         }
         return peopleList;
@@ -116,6 +132,16 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
             }
         }
         return map;
+    }
+
+    @Override
+    public void updateBySql(Sql sql) {
+        taskPeopleMapper.updateBySql(sql);
+    }
+
+    @Override
+    public List<LableShow> listLableShowBySql(Sql sql) {
+        return taskPeopleMapper.listLableShowBySql(sql);
     }
 
 }

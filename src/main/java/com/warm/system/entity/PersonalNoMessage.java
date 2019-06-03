@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
 import java.io.Serializable;
 import java.util.List;
@@ -32,6 +33,7 @@ public class PersonalNoMessage extends Model<PersonalNoMessage> {
     /**
      * 关键词
      */
+    @NotBlank(message = "消息介绍不能为空")
     private String keyword;
     /**
      * 逻辑删除
@@ -46,6 +48,9 @@ public class PersonalNoMessage extends Model<PersonalNoMessage> {
 
     @TableField(exist = false)
     private String groupName;
+
+    @TableField(exist = false)
+    private String contentShow;
 
     @Override
     protected Serializable pkVal() {

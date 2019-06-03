@@ -15,6 +15,46 @@
         <result column="friend_send" property="friendSend" />
     </resultMap>
 
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoTaskMessageSend" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,persona_no_task_id,personal_no_task_message_name,personal_no_task_message_content_show
+          ,persona_nol_task_message_status,super_id,send_time,deleted,friend_send)
+        values
+          (#{entity.id},#{entity.personaNoTaskId},#{entity.personalNoTaskMessageName},#{entity.personalNoTaskMessageContentShow}
+          ,#{entity.personaNolTaskMessageStatus},#{entity.superId},#{entity.sendTime},#{entity.deleted},#{entity.friendSend})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoTaskMessageSend" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personaNoTaskId!=null">
+                persona_no_task_id = #{entity.personaNoTaskId},
+            </if>
+            <if test="entity.personalNoTaskMessageName!=null">
+                personal_no_task_message_name = #{entity.personalNoTaskMessageName},
+            </if>
+            <if test="entity.personalNoTaskMessageContentShow!=null">
+                personal_no_task_message_content_show = #{entity.personalNoTaskMessageContentShow},
+            </if>
+            <if test="entity.personaNolTaskMessageStatus!=null">
+                persona_nol_task_message_status = #{entity.personaNolTaskMessageStatus},
+            </if>
+            <if test="entity.superId!=null">
+                super_id = #{entity.superId},
+            </if>
+            <if test="entity.sendTime!=null">
+                send_time = #{entity.sendTime},
+            </if>
+            <if test="entity.sendTime!=null">
+                deleted = #{entity.deleted},
+            </if>
+            <if test="entity.friendSend!=null">
+                friend_send = #{entity.friendSend},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
 
 
 </mapper>

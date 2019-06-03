@@ -1,5 +1,6 @@
 package com.warm.system.service.impl;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoBlacklist;
 import com.warm.system.mapper.PersonalNoBlacklistMapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -34,9 +35,10 @@ public class PersonalNoBlacklistServiceImpl extends ServiceImpl<PersonalNoBlackl
     }
 
     @Override
-    public Integer delete(String sql) {
-        return blacklistMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return blacklistMapper.deleteBySql(sql);
     }
+
 
     @Override
     public List<PersonalNoBlacklist> list(String sql) {

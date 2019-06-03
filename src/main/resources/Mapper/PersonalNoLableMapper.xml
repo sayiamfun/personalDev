@@ -6,6 +6,7 @@
     <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoLable">
         <id column="id" property="id" />
         <result column="lable_name" property="lableName" />
+        <result column="lable_category_id" property="lableCategoryId" />
         <result column="lable_category" property="lableCategory" />
         <result column="super_id" property="superId" />
         <result column="create_time" property="createTime" />
@@ -15,9 +16,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoLable" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,lable_name,lable_category,super_id,create_time,remarks)
+          (id,lable_name,lable_category_id,lable_category,super_id,create_time,remarks,deleted)
         values
-          (#{entity.id},#{entity.lableName},#{entity.lableCategory},#{entity.superId},#{entity.createTime},#{entity.remarks})
+          (#{entity.id},#{entity.lableName},#{entity.lableCategoryId},#{entity.lableCategory},#{entity.superId},#{entity.createTime},#{entity.remarks},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoLable" useGeneratedKeys="true" keyProperty="entity.id">
@@ -25,6 +26,9 @@
         <set>
             <if test="entity.lableName!=null">
                 lable_name = #{entity.lableName},
+            </if>
+            <if test="entity.lableCategoryId!=null">
+                lable_category_id = #{entity.lableCategoryId},
             </if>
             <if test="entity.lableCategory!=null">
                 lable_category = #{entity.lableCategory},

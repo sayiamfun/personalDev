@@ -4,9 +4,12 @@ package com.warm.system.controller;
 import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.Sql;
+import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoValueTable;
+import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.system.service.db1.PersonalNoValueTableService;
 import com.warm.utils.DaoGetSql;
+import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -34,41 +39,44 @@ public class PersonalNoValueTableController {
     private static Log log = LogFactory.getLog(PersonalNoValueTableController.class);
     @Autowired
     private PersonalNoValueTableService valueTableService;
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
 
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBValueTable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_value_table);
 
     @ApiOperation(value = "查询所有的技术人员信息列表")
     @GetMapping("listSuperUser")
-    public R listSuperUser(){
+    public R listSuperUser(HttpServletRequest request){
         try {
             String getSql = DaoGetSql.getSql("select * from "+DBValueTable+" where type = ?",0);
             return R.ok().data(valueTableService.listBySql(new Sql(getSql)));
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "查询所有的技术人员信息列表异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
 
     @ApiOperation(value = "查询检测手机是否请求任务的个人号列表")
     @GetMapping("listUser")
-    public R listUser(){
+    public R listUser(HttpServletRequest request){
         try {
             String getSql = DaoGetSql.getSql("select * from "+DBValueTable+" where type = ?",2);
             return R.ok().data(valueTableService.listBySql(new Sql(getSql)));
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "查询检测手机是否请求任务的个人号列表异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
 
     @ApiOperation(value = "查询检测手机是否请求任务的个人号列表")
     @GetMapping("listValue")
-    public R listValue(){
+    public R listValue(HttpServletRequest request){
         try {
             String getSql = DaoGetSql.getSql("select * from "+DBValueTable+" where type = ?",1);
             return R.ok().data(valueTableService.listBySql(new Sql(getSql)));
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "查询检测手机是否请求任务的个人号列表异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }

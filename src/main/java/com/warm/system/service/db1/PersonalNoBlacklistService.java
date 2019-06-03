@@ -1,5 +1,6 @@
 package com.warm.system.service.db1;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoBlacklist;
 import com.baomidou.mybatisplus.service.IService;
 
@@ -17,7 +18,7 @@ public interface PersonalNoBlacklistService extends IService<PersonalNoBlacklist
 
     Integer add(PersonalNoBlacklist entity);
 
-    Integer delete(String sql);
+    Integer deleteBySql(Sql sql);
 
     List<PersonalNoBlacklist> list(String sql);
 

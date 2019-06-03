@@ -1,9 +1,6 @@
 package com.warm.utils;
 
-import com.warm.system.entity.PersonalNoKeywordContent;
-import com.warm.system.entity.PersonalNoLableMessageSendContent;
-import com.warm.system.entity.PersonalNoRequestException;
-import com.warm.system.entity.PersonalNoTaskMessageSendContent;
+import com.warm.system.entity.*;
 import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,7 +19,6 @@ import java.util.List;
  */
 public class WebConst {
 
-    public static final int COOKIE_MAXAGE = 24 * 3600;
 
     public static final String LOGINFLAG = "LOGINFLG";
     //注册邀请码
@@ -30,12 +26,12 @@ public class WebConst {
     //session存放超级用户的key
     public static final String SUPERUSER = "superUser";
     public static final String TASKINFOKEY = "PersonalNoUserInfoSuff";
-    public static final String ASC = "SSwRiGtYA76Vd2OAwyFGRzR3w2IHnunK";
     public static final String TOCKEN = "PersonalNoCookieUserInfoSuff";
     public static final String SESSIONPRE = "PersonalNoSession";
     public static final String SESSSUFF = "InfoSuff";
     public static final String SUPERUSERID = "superUserId";
     public static final String WECHATSTATUS = "封禁";
+    public static final String ADDLOGADDRESS = "http://www.jiazhang111.xyz/personalNoLogInfo/addLog";
 
     private static int textNum = 0; //文字
     private static int photoNum = 0; //图片
@@ -55,7 +51,7 @@ public class WebConst {
         smallProgramNum = 0; //小程序
         voiceMessage = 0;
     }
-
+//    获取任务消息显示
     public static String getTaskContentShow(List<PersonalNoTaskMessageSendContent> personalNoTaskMessageSendContents) {
 
         StringBuffer temp = new StringBuffer();
@@ -91,11 +87,11 @@ public class WebConst {
                 temp.append(textNum + "条文字");
                 flag = true;
             }
-            if (urlNum > 0) {
+            if (photoNum > 0) {
                 if (flag) {
                     temp.append(",");
                 }
-                temp.append(urlNum + "条链接");
+                temp.append(photoNum + "条图片");
                 flag = true;
             }
             if (intoGroup > 0) {
@@ -105,11 +101,11 @@ public class WebConst {
                 temp.append(intoGroup + "条入群邀请");
                 flag = true;
             }
-            if (cardNum > 0) {
+            if (urlNum > 0) {
                 if (flag) {
                     temp.append(",");
                 }
-                temp.append(cardNum + "条名片");
+                temp.append(urlNum + "条链接");
                 flag = true;
             }
             if (smallProgramNum > 0) {
@@ -119,11 +115,11 @@ public class WebConst {
                 temp.append(smallProgramNum + "条小程序");
                 flag = true;
             }
-            if (photoNum > 0) {
+            if (cardNum > 0) {
                 if (flag) {
                     temp.append(",");
                 }
-                temp.append(photoNum + "条图片");
+                temp.append(cardNum + "条名片");
                 flag = true;
             }
             if (voiceMessage > 0) {
@@ -138,6 +134,7 @@ public class WebConst {
     }
 
     //做判断，生成格式：2（1条文字，1条邀请入群）
+//    获取标签消息发送显示
     public static String getLableContentShow(List<PersonalNoLableMessageSendContent> personalNoLableMessageSendContentList) {
 
         StringBuffer temp = new StringBuffer();
@@ -174,13 +171,6 @@ public class WebConst {
                 temp.append(textNum + "条文字");
                 flag = true;
             }
-            if (cardNum > 0) {
-                if (flag) {
-                    temp.append(",");
-                }
-                temp.append(cardNum + "条名片");
-                flag = true;
-            }
             if (photoNum > 0) {
                 if (flag) {
                     temp.append(",");
@@ -195,6 +185,13 @@ public class WebConst {
                 temp.append(intoGroup + "条入群邀请");
                 flag = true;
             }
+            if (urlNum > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(urlNum + "条链接");
+                flag = true;
+            }
             if (smallProgramNum > 0) {
                 if (flag) {
                     temp.append(",");
@@ -202,18 +199,18 @@ public class WebConst {
                 temp.append(smallProgramNum + "条小程序");
                 flag = true;
             }
+            if (cardNum > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(cardNum + "条名片");
+                flag = true;
+            }
             if (voiceMessage > 0) {
                 if (flag) {
                     temp.append(",");
                 }
                 temp.append(voiceMessage + "条语音消息");
-                flag = true;
-            }
-            if (urlNum > 0) {
-                if (flag) {
-                    temp.append(",");
-                }
-                temp.append(urlNum + "条链接");
             }
         }
         temp.append(")");
@@ -221,6 +218,7 @@ public class WebConst {
     }
 
     //做判断，生成格式：2（1条文字，1条邀请入群）
+//    获取关键词消息显示
     public static String getKeyWordContentShow(List<PersonalNoKeywordContent> personalNoKeywordContentList) {
 
         StringBuffer temp = new StringBuffer();
@@ -263,11 +261,25 @@ public class WebConst {
                 temp.append(photoNum + "条图片");
                 flag = true;
             }
-            if (voiceMessage > 0) {
+            if (intoGroup > 0) {
                 if (flag) {
                     temp.append(",");
                 }
-                temp.append(voiceMessage + "条语音消息");
+                temp.append(intoGroup + "条入群邀请");
+                flag = true;
+            }
+            if (urlNum > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(urlNum + "条链接");
+                flag = true;
+            }
+            if (smallProgramNum > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(smallProgramNum + "条小程序");
                 flag = true;
             }
             if (cardNum > 0) {
@@ -275,6 +287,58 @@ public class WebConst {
                     temp.append(",");
                 }
                 temp.append(cardNum + "条名片");
+                flag = true;
+            }
+            if (voiceMessage > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(voiceMessage + "条语音消息");
+            }
+        }
+        temp.append(")");
+        return temp.toString();
+    }
+
+    public static String getMessageContentShow(List<PersonalNoMessageContent> messageContentList) {
+        StringBuffer temp = new StringBuffer();
+        temp.append("(");
+        if (!VerifyUtils.collectionIsEmpty(messageContentList)) {
+            initNum();
+            for (PersonalNoMessageContent personalNoLableMessageSendContent : messageContentList) {
+                if ("小程序".equals(personalNoLableMessageSendContent.getContentType())) {
+                    smallProgramNum += 1;
+                    continue;
+                } else if ("名片".equals(personalNoLableMessageSendContent.getContentType())) {
+                    cardNum += 1;
+                    continue;
+                } if ("文字".equals(personalNoLableMessageSendContent.getContentType())) {
+                    textNum += 1;
+                    continue;
+                }else if ("语音消息".equals(personalNoLableMessageSendContent.getContentType())) {
+                    voiceMessage += 1;
+                    continue;
+                }else if ("链接".equals(personalNoLableMessageSendContent.getContentType())) {
+                    urlNum += 1;
+                    continue;
+                }else if ("图片".equals(personalNoLableMessageSendContent.getContentType())) {
+                    photoNum += 1;
+                    continue;
+                } else if ("邀请入群".equals(personalNoLableMessageSendContent.getContentType())) {
+                    intoGroup += 1;
+                    continue;
+                }
+            }
+            boolean flag = false;
+            if (textNum > 0) {
+                temp.append(textNum + "条文字");
+                flag = true;
+            }
+            if (photoNum > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(photoNum + "条图片");
                 flag = true;
             }
             if (intoGroup > 0) {
@@ -296,12 +360,25 @@ public class WebConst {
                     temp.append(",");
                 }
                 temp.append(smallProgramNum + "条小程序");
+                flag = true;
+            }
+            if (cardNum > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(cardNum + "条名片");
+                flag = true;
+            }
+            if (voiceMessage > 0) {
+                if (flag) {
+                    temp.append(",");
+                }
+                temp.append(voiceMessage + "条语音消息");
             }
         }
         temp.append(")");
         return temp.toString();
     }
-
     /**
      * 将错误信息插入到数据库
      *
@@ -392,4 +469,24 @@ public class WebConst {
         }
         return temp.toString();
     }
+
+    public static String getLableNames(Collection<?> list) {
+        StringBuffer temp = new StringBuffer();
+        boolean b = false;
+        temp.append("|");
+        for (Object integer : list) {
+            if(b){
+                temp.append("|");
+            }
+            if(integer instanceof String){
+                temp.append(""+integer+"");
+            }else {
+                temp.append(integer);
+            }
+            b = true;
+        }
+        temp.append("|");
+        return temp.toString();
+    }
+
 }

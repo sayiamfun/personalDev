@@ -42,4 +42,14 @@ public class PersonalNoCategoryAndGroupServiceImpl extends ServiceImpl<PersonalN
     public List<String> listStringBySql(Sql sql) {
         return categoryAndGroupMapper.listStringBySql(sql);
     }
+
+    @Override
+    public void updateBySql(Sql sql) {
+        categoryAndGroupMapper.updateBySql(sql);
+    }
+
+    @Override
+    public Long countBySql(Sql sql) {
+        return categoryAndGroupMapper.countBySql(sql);
+    }
 }

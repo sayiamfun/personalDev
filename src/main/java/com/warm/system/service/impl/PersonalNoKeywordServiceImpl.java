@@ -140,6 +140,7 @@ public class PersonalNoKeywordServiceImpl extends ServiceImpl<PersonalNoKeywordM
     @Transactional
     public Integer add(PersonalNoKeyword keyword) {
         keyword.setDb(DBKeyWord);
+        keyword.setDeleted(0);
         if(VerifyUtils.isEmpty(keyword.getId())){
             keywordMapper.add(keyword);
         }else {
@@ -153,11 +154,12 @@ public class PersonalNoKeywordServiceImpl extends ServiceImpl<PersonalNoKeywordM
             personalNoKeywordContent.setId(null);
             personalNoKeywordContent.setPersonalNoKeywordId(keyword.getId());
             personalNoKeywordContent.setDb(DBKeyWordContent);
+            personalNoKeywordContent.setDeleted(0);
             keywordContentService.add(personalNoKeywordContent);
         }
         log.info("删除原有关键词的个人号对应关系");
         sql = "delete from " + DBNoAndKeyword + " where keyword_id = " + keyword.getId();
-        personalNoAndKeywordService.delete(sql);
+        personalNoAndKeywordService.deleteBySql(new Sql(sql));
         if(!VerifyUtils.collectionIsEmpty(keyword.getPersonalIdList())) {
             String ids = DaoGetSql.getIds(keyword.getPersonalIdList());
             String getSql = DaoGetSql.getSql("select * from " + DBWeChat + " where id in " + ids);

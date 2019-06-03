@@ -43,7 +43,7 @@ public class PersonalNoTaskReplyContentServiceImpl extends ServiceImpl<PersonalN
     @Override
     public boolean batchSave(PersonalNoTask noTask) {
         log.info("根据任务id删除回复消息");
-        String getSql = DaoGetSql.getSql("DELETE FROM "+DBTaskReply+" where personal_no_task_id = ?",noTask.getId());
+        String getSql = DaoGetSql.getSql("update "+DBTaskReply+" set deleted = 1 where personal_no_task_id = ?",noTask.getId());
         Sql sql = new Sql(getSql);
         replyContentMapper.deleteBySql(sql);
         List<PersonalNoTaskReplyContent> noTaskReplyContentList = noTask.getNoTaskReplyContentList();

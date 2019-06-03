@@ -14,9 +14,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoFriendsCirclePersonal" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,friends_circle_id,personal_no_id,personal_no_wx_id,personal_no_name)
+          (id,friends_circle_id,personal_no_id,personal_no_wx_id,personal_no_name,deleted)
         values
-          (#{entity.id},#{entity.friendsCircleId},#{entity.personalNoId},#{entity.personalNoWxId},#{entity.personalNoName})
+          (#{entity.id},#{entity.friendsCircleId},#{entity.personalNoId},#{entity.personalNoWxId},#{entity.personalNoName},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoFriendsCirclePersonal" useGeneratedKeys="true" keyProperty="entity.id">
@@ -33,6 +33,9 @@
             </if>
             <if test="entity.personalNoName!=null">
                 personal_no_name = #{entity.personalNoName},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
             </if>
         </set>
         where id = #{entity.id}

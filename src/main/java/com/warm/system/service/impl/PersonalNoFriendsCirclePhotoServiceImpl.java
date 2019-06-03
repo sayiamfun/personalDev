@@ -2,6 +2,7 @@ package com.warm.system.service.impl;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.warm.entity.DB;
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoFriendsCircle;
 import com.warm.system.entity.PersonalNoFriendsCirclePhoto;
 import com.warm.system.mapper.PersonalNoFriendsCirclePhotoMapper;
@@ -44,7 +45,7 @@ public class PersonalNoFriendsCirclePhotoServiceImpl extends ServiceImpl<Persona
         log.info("数据库开始批量添加朋友圈相关照片数据");
         log.info("先根据朋友圈id删除照片数据");
         String sql = DaoGetSql.getSql("update  " +DBFriendsCirclePhoto+ " set deleted = 1 where `friends_circle_id` = ?", noFriendsCircle.getId());
-        friendsCirclePhotoMapper.delete(sql);
+        friendsCirclePhotoMapper.deleteBySql(new Sql(sql));
         List<PersonalNoFriendsCirclePhoto> photoList = noFriendsCircle.getPhotoList();
         if(!VerifyUtils.collectionIsEmpty(photoList)){
             log.info("数据库开始插入朋友圈照片数据");
@@ -72,8 +73,8 @@ public class PersonalNoFriendsCirclePhotoServiceImpl extends ServiceImpl<Persona
     }
 
     @Override
-    public Integer delete(String sql) {
-        return friendsCirclePhotoMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return friendsCirclePhotoMapper.deleteBySql(sql);
     }
 
     @Override

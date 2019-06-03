@@ -46,14 +46,14 @@ public class PersonalNoTaskChannelServiceImpl extends ServiceImpl<PersonalNoTask
     @Transactional
     @Override
     public boolean batchSave(PersonalNoTask noTask) {
-        String delSql = DaoGetSql.getSql("DELETE FROM " + DBTaskChannel + " where personal_no_task_id = ?", noTask.getId());
+        String delSql = DaoGetSql.getSql("update " + DBTaskChannel + " set deleted = 1 where personal_no_task_id = ?", noTask.getId());
         Sql sql = new Sql(delSql);
         taskChannelMapper.deleteBySql(sql);
         if(VerifyUtils.collectionIsEmpty(noTask.getChannelNameList())){
             return true;
         }
         String channelNames = DaoGetSql.getIds(noTask.getChannelNameList());
-        String getSql = DaoGetSql.getSql("select * from " + DBChannel + " where channel_name in "+channelNames);
+        String getSql = DaoGetSql.getSql("select * from " + DBChannel + " where channel_name in "+channelNames + " and deleted = 0");
         List<PersonalNoChannel> channelList = channelService.list(getSql);
         PersonalNoTaskChannel taskChannel = null;
         for (PersonalNoChannel channel : channelList) {
@@ -92,5 +92,10 @@ public class PersonalNoTaskChannelServiceImpl extends ServiceImpl<PersonalNoTask
     @Override
     public boolean deleteBySql(Sql sql) {
         return taskChannelMapper.deleteBySql(sql);
+    }
+
+    @Override
+    public void updateBySql(Sql sql) {
+        taskChannelMapper.updateBySql(sql);
     }
 }

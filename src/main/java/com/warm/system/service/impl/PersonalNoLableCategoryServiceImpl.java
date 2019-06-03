@@ -52,7 +52,7 @@ public class PersonalNoLableCategoryServiceImpl extends ServiceImpl<PersonalNoLa
             String sql = null;
             for (PersonalNoLableCategory noLableCategory : noLableCategorieList) {
                 //标签数量
-                sql = "select * from "+DBLable+" where lable_category = '"+noLableCategory.getCategoryName()+"'";
+                sql = "select * from "+DBLable+" where lable_category_id = '"+noLableCategory.getId()+"' and deleted = 0";
                 List<PersonalNoLable> noLables = noLableService.list(sql);
                 //得到所有标签的数据
                 List<LableManager> numData = noLableService.getNumData(noLables);
@@ -86,9 +86,13 @@ public class PersonalNoLableCategoryServiceImpl extends ServiceImpl<PersonalNoLa
     public Page<PersonalNoLableCategory> pageList(Page<PersonalNoLableCategory> page, String name) {
         log.info("数据库分页查询标签类别列表开始");
         StringBuffer temp = new StringBuffer();
+        boolean F = false;
         if(!"-1".equals(name)) {
             temp.append(" where category_name like '%"+name+"%'");
+            F = true;
         }
+        temp = DaoGetSql.getTempSql(temp,F);
+        temp.append(" deleted = 0 ");
         String getSql = DaoGetSql.getSql("select count(*) from " + DBLableCategory+temp.toString());
         Long count = lableCategoryMapper.getCount(getSql);
         page.setTotal(count.intValue());

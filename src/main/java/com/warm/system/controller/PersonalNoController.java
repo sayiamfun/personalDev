@@ -13,6 +13,7 @@ import com.warm.system.entity.*;
 import com.warm.system.service.db1.*;
 import com.warm.system.service.db2.PersonalNoOperationStockWechatAccountService;
 import com.warm.utils.DaoGetSql;
+import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,10 +21,11 @@ import io.swagger.annotations.ApiParam;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
-import javax.xml.crypto.Data;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -57,24 +59,31 @@ public class PersonalNoController {
     private PersonalNoTaskLableService taskLableService;
     @Autowired
     private PersonalNoTaskPersonalService taskPersonalService;
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
+    @Autowired
+    private PersonalNoCategoryService noCategoryService;
 
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBWeChat = DB.DBAndTable(DB.OA, DB.operation_stock_wechat_account);
     private String DBFriends = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends);
     private String DBCategoryAndGroup = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category_and_group);
     private String DBUser = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_user);
     private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_lable);
     private String DBTaskPersonal = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_personal);
+    private String DBNoCategory = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category);
 
 
     @ApiOperation(value = "查询所有个人号列表")
     @GetMapping
-    public R list(){
+    public R list(HttpServletRequest request){
         try {
             log.info("开始查询所有个人号");
             String getSql = DaoGetSql.getSql("SELECT * FROM "+DBWeChat+" where operation_project_instance_id = ? order by id desc", G.ms_OPERATION_PROJECT_INSTANCE_ID);
             Sql sql = new Sql(getSql);
             List<PersonalNoOperationStockWechatAccount> list = wechatAccountService.listBySql(sql);
             for (PersonalNoOperationStockWechatAccount wechatAccount : list) {
+                wechatAccount.setNickName(wechatAccount.getNickName()+"("+wechatAccount.getStatus()+")");
                 getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBFriends+" where personal_no_wx_id = ? and deleted = 0",wechatAccount.getWxId());
                 Long count = friendsService.getCount(getSql);
                 wechatAccount.setFriendsNum(count.intValue());
@@ -82,35 +91,41 @@ public class PersonalNoController {
             log.info("查询成功返回数据列表");
             return R.ok().data(list);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "查询所有个人号列表异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
     @ApiOperation(value = "根据昵称查询所有个人号列表")
     @GetMapping("getByNickName/{nickName}/")
-    public R listByBickName(@PathVariable("nickName") String nickName){
+    public R listByBickName(@PathVariable("nickName") String nickName,HttpServletRequest request){
         try {
             log.info("开始查询所有个人号");
             String getSql = DaoGetSql.getSql("SELECT * FROM "+DBWeChat+" where nick_name like ? operation_project_instance_id = ? order by id desc", "%"+nickName+"%", G.ms_OPERATION_PROJECT_INSTANCE_ID);
             List<PersonalNoOperationStockWechatAccount> list = wechatAccountService.listBySql(new Sql(getSql));
+            for (PersonalNoOperationStockWechatAccount wechatAccount : list) {
+                wechatAccount.setNickName(wechatAccount.getNickName()+"("+wechatAccount.getStatus()+")");
+            }
             log.info("查询成功返回数据列表");
             return R.ok().data(list);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(nickName), "根据昵称查询所有个人号列表异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
     @ApiOperation(value = "根据类别查询所有个人号列表")
     @GetMapping("getByCategory/{category}/")
-    public R listByCategory(@PathVariable("category") String category){
+    public R listByCategory(@PathVariable("category") String category,HttpServletRequest request){
         try {
             List<PersonalNoOperationStockWechatAccount> list = getByCategory(category);
+            for (PersonalNoOperationStockWechatAccount wechatAccount : list) {
+                wechatAccount.setNickName(wechatAccount.getNickName()+"("+wechatAccount.getStatus()+")");
+            }
             log.info("查询成功返回数据列表");
             return R.ok().data(list);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(category), "根据类别查询所有个人号列表异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -146,7 +161,8 @@ public class PersonalNoController {
             @PathVariable("type") String type,
 
             @ApiParam(name = "category", value = "查询类别", required = true)
-            @PathVariable("category") String category
+            @PathVariable("category") String category,
+            HttpServletRequest request
     ){
         try {
             List<PersonalNoOperationStockWechatAccount> personalList = new ArrayList<>();
@@ -167,7 +183,7 @@ public class PersonalNoController {
                     for (PersonalNoOperationStockWechatAccount no : personalList) {
                         PersonalNoTaskPersonal personalNoTaskPersonal = new PersonalNoTaskPersonal();
                         personalNoTaskPersonal.setPersonalNoWxId(no.getWxId());
-                        personalNoTaskPersonal.setPersonalNoName(no.getNickName());
+                        personalNoTaskPersonal.setPersonalNoName(no.getNickName()+"("+no.getStatus()+")");
                         personalNoTaskPersonal.setPersonalNoWxId(no.getWxId());
                         personalListResult.add(personalNoTaskPersonal);
                     }
@@ -179,7 +195,7 @@ public class PersonalNoController {
                     for (PersonalNoOperationStockWechatAccount no : personalList) {
                         PersonalNoFriendsCirclePersonal circlePersonal = new PersonalNoFriendsCirclePersonal();
                         circlePersonal.setPersonalNoId(no.getId());
-                        circlePersonal.setPersonalNoName(no.getNickName());
+                        circlePersonal.setPersonalNoName(no.getNickName()+"("+no.getStatus()+")");
                         circlePersonal.setPersonalNoWxId(no.getWxId());
                         personalListResult.add(circlePersonal);
                     }
@@ -192,7 +208,7 @@ public class PersonalNoController {
                 return R.ok();
             }
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(flag)+" "+type+" "+category, "根据条件查询所有个人号列表异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -207,7 +223,8 @@ public class PersonalNoController {
             @PathVariable Long size,
 
             @ApiParam(name = "searchObj", value = "查询条件", required = true)
-            @RequestBody QueryPersonal searchObj
+            @RequestBody QueryPersonal searchObj,
+            HttpServletRequest request
     ){
         try {
             log.info("开始条件查询个人号");
@@ -216,19 +233,21 @@ public class PersonalNoController {
             log.info("分页条件查找个人号成功,返回数据");
             return R.ok().data(page);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(searchObj)+" "+pageNum+" "+size, "分页个人号列表异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
     @ApiOperation(value = "根据id编辑个人号")
     @PutMapping(value = "updatePersonal/{personalId}/")
+    @Transactional
     public R updatePersonal(
             @ApiParam(name = "personalId", value = "要修改的个人号id", required = true)
             @PathVariable("personalId") Integer personalId,
 
             @ApiParam(name = "no", value = "要修改的个人号信息", required = true)
-            @RequestBody PersonalNoOperationStockWechatAccount no
+            @RequestBody PersonalNoOperationStockWechatAccount no,
+            HttpServletRequest request
     ){
         try {
             log.info("开始根据id修改个人号信息");
@@ -250,8 +269,11 @@ public class PersonalNoController {
                 if(VerifyUtils.isEmpty(personalNoCategoryAndGroup)){
                     personalNoCategoryAndGroup = new PersonalNoCategoryAndGroup();
                 }
+                getSql = DaoGetSql.getSql("SELECT * FROM "+DBNoCategory+" WHERE `personal_no_category` = ? LIMIT 0,1",no.getCategory());
+                PersonalNoCategory one = noCategoryService.getOne(getSql);
                 personalNoCategoryAndGroup.setPersonalNoWxId(byId.getWxId());
                 personalNoCategoryAndGroup.setNickName(byId.getNickName());
+                personalNoCategoryAndGroup.setCategoryId(VerifyUtils.isEmpty(one)?-1:one.getId());
                 personalNoCategoryAndGroup.setCategory(no.getCategory());
                 personalNoCategoryAndGroup.setGroup(no.getGroup());
                 personalNoCategoryAndGroup.setDeleted(0);
@@ -265,14 +287,14 @@ public class PersonalNoController {
             log.info("根据id修改个人号信息成功");
             return R.ok();
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(no)+" "+personalId, "根据id编辑个人号异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 //
     @ApiOperation(value = "查询首页三个总数数据")
     @GetMapping(value = "Num")
-    public R Num(){
+    public R Num(HttpServletRequest request){
         try {
             log.info("开始查询首页显示的三个总数据");
             Num num = new Num();
@@ -299,16 +321,16 @@ public class PersonalNoController {
             log.info("开始查询首页显示的三个总数据结束");
             return R.ok().data(num);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, "", "查询首页三个总数数据异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
 
-    @ApiOperation(value = "根据个人号id查询个人号下的所有好友数量")
+    @ApiOperation(value = "根据个人号id查询个人号下的所有好友")
     @PostMapping(value = "getUserBuPersonal/{personalWxId}/")
     public R getUserByPersonal(
             @ApiParam(name = "personalWxId", value = "个人号WxId", required = true)
-            @PathVariable("personalWxId") Integer personalWxId
+            @PathVariable("personalWxId") Integer personalWxId,HttpServletRequest request
     ){
         try {
             log.info("查询此个人号下的所有好友列表");
@@ -329,16 +351,17 @@ public class PersonalNoController {
             log.info("查询结束");
             return R.ok().data(userSet);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(personalWxId), "根据个人号id查询个人号下的所有好友异常", "", 1,e);
             return R.error().message("网页走丢了，请刷新。。。");
         }
     }
 //
     @ApiOperation(value = "批量修改个人号类别或者个人号组")
     @PutMapping(value = "batchUpdatePersonalCategory")
+    @Transactional
     public R batchUpdatePersonalCategory(
             @ApiParam(name = "batchUpdateObject", value = "批量修改个人号类别参数", required = true)
-            @RequestBody BatchUpdateObject batchUpdateObject
+            @RequestBody BatchUpdateObject batchUpdateObject,HttpServletRequest request
     ){
         try {
             if(VerifyUtils.isEmpty(batchUpdateObject.getObject()) || VerifyUtils.collectionIsEmpty(batchUpdateObject.getPersonalList()) || VerifyUtils.isEmpty(batchUpdateObject.getFlag())){
@@ -348,20 +371,23 @@ public class PersonalNoController {
             String getSql = "";
             Sql sql = new Sql();
             for (PersonalNoOperationStockWechatAccount wechatAccount : batchUpdateObject.getPersonalList()) {
-                getSql = DaoGetSql.getSql("SELECT * FROM "+DBCategoryAndGroup+" where personal_no_wx_id = ?",wechatAccount.getWxId());
+                getSql = DaoGetSql.getSql("SELECT * FROM "+DBCategoryAndGroup+" where personal_no_wx_id = ? limit 0,1",wechatAccount.getWxId());
                 sql.setSql(getSql);
                 PersonalNoCategoryAndGroup bySql = categoryAndGroupService.getBySql(sql);
                 if(VerifyUtils.isEmpty(bySql)){
                     bySql = new PersonalNoCategoryAndGroup();
                 }
                 if("0".equals(batchUpdateObject.getFlag())){
+                    getSql = DaoGetSql.getSql("SELECT * FROM "+DBNoCategory+" WHERE `personal_no_category` = ? LIMIT 0,1",batchUpdateObject.getObject());
+                    PersonalNoCategory one = noCategoryService.getOne(getSql);
+                    bySql.setCategoryId(VerifyUtils.isEmpty(one)?-1:one.getId());
                     bySql.setCategory(batchUpdateObject.getObject());
                 }else {
                     bySql.setGroup(batchUpdateObject.getObject());
                 }
                 bySql.setDb(DBCategoryAndGroup);
                 Integer add = categoryAndGroupService.add(bySql);
-                if(add<=0){
+                if(add<0){
                     log.info("批量修改个人号类别失败");
                     return R.error().message("批量修改个人号类别失败");
                 }
@@ -369,7 +395,7 @@ public class PersonalNoController {
             log.info("批量修改个人号数量成功");
             return R.ok();
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(batchUpdateObject), "批量修改个人号类别或者个人号组异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -378,7 +404,7 @@ public class PersonalNoController {
     @PostMapping(value = "listByLable")
     public R listByLable(
             @ApiParam(name = "batchUpdateObject", value = "批量修改个人号类别参数", required = true)
-            @RequestBody QueryPersonal queryPersonal
+            @RequestBody QueryPersonal queryPersonal,HttpServletRequest request
     ){
         try {
             if(VerifyUtils.collectionIsEmpty(queryPersonal.getLableList())){
@@ -399,8 +425,12 @@ public class PersonalNoController {
             getSql = "SELECT * FROM "+DBWeChat+" where wx_id in "+wxIds;
             sql.setSql(getSql);
             List<PersonalNoOperationStockWechatAccount> list = wechatAccountService.listBySql(sql);
+            for (PersonalNoOperationStockWechatAccount wechatAccount : list) {
+                wechatAccount.setNickName(wechatAccount.getNickName()+"("+wechatAccount.getStatus()+")");
+            }
             return R.ok().data(list);
         }catch (Exception e){
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(queryPersonal), "根据标签列表查询所有的个人号异常", "", 1,e);
             return R.error().message("网页走丢了。。。请返回重试");
         }
     }

@@ -12,7 +12,9 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class PersonalNoFriendsCircle extends Model<PersonalNoFriendsCircle> {
     /**
      * 朋友圈主题
      */
+    @NotBlank(message = "朋友圈主题不能为空")
     @TableField("friends_circle_theme")
     private String friendsCircleTheme;
     /**
@@ -45,6 +48,7 @@ public class PersonalNoFriendsCircle extends Model<PersonalNoFriendsCircle> {
     /**
      * 朋友圈文案
      */
+    @NotBlank(message = "朋友圈文案不能为空")
     @TableField("friends_circle_official")
     private String friendsCircleOfficial;
     /**
@@ -64,6 +68,7 @@ public class PersonalNoFriendsCircle extends Model<PersonalNoFriendsCircle> {
     /**
      * 超级用户id
      */
+    @NotNull(message = "登录已过期，请重新登录")
     @TableField("super_id")
     private Integer superId;
     /**

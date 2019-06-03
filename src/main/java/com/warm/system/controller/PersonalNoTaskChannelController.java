@@ -5,13 +5,16 @@ import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.Sql;
 import com.warm.entity.query.QueryPersonalData;
+import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoChannel;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskChannel;
 import com.warm.system.service.db1.PersonalNoChannelService;
+import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.system.service.db1.PersonalNoTaskChannelService;
 import com.warm.system.service.db1.PersonalNoTaskService;
 import com.warm.utils.DaoGetSql;
+import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +51,10 @@ public class PersonalNoTaskChannelController {
     private PersonalNoTaskService noTaskService;
     @Autowired
     private PersonalNoChannelService channelService;
+    @Autowired
+    private PersonalNoRequestExceptionService requestExceptionService;
 
+    private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBTaskChannel = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_channel);
     private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task);
     private String DBChannel = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_channel);
@@ -56,16 +63,14 @@ public class PersonalNoTaskChannelController {
     @GetMapping("listByTaskId/{taskId}/")
     public R listByTaskId(
             @ApiParam(name = "taskId", value = "根据任务查询渠道", required = true)
-            @PathVariable("taskId")Long taskId
+            @PathVariable("taskId")Long taskId,HttpServletRequest request
     ){
         try {
-            log.info("根据id删除渠道开始");
-            String getSql = DaoGetSql.getSql("select * from " + DBTaskChannel + " where personal_no_task_id = ?", taskId.intValue());
+            String getSql = DaoGetSql.getSql("select * from " + DBTaskChannel + " where personal_no_task_id = ? and deleted = 0", taskId.intValue());
             List<PersonalNoTaskChannel> listByTaskId = taskChannelService.listBySql(new Sql(getSql));
-            log.info("根据id删除渠道成功");
             return R.ok().data(listByTaskId);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(taskId), "根据任务查询渠道异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -74,17 +79,17 @@ public class PersonalNoTaskChannelController {
     @GetMapping("listByRoadId/{roadId}/")
     public R listByRoadId(
             @ApiParam(name = "roadId", value = "根据任务查询渠道", required = true)
-            @PathVariable("roadId")Long roadId
-    ){
+            @PathVariable("roadId")Long roadId, HttpServletRequest request
+            ){
         try {
             log.info("根据任务id查询渠道开始");
             Set<String> channelIdList = new HashSet<>();
             List<PersonalNoTaskChannel> personalNoTaskChannelList = new ArrayList<>();
-            String getSql = DaoGetSql.getSql("SELECT * FROM " + DBTask + " where road_id = ?", roadId);
+            String getSql = DaoGetSql.getSql("SELECT * FROM " + DBTask + " where road_id = ? and deleted = 0", roadId);
             Sql sql = new Sql(getSql);
             List<PersonalNoTask> personalNoTasks = noTaskService.listBySql(sql);
             for (PersonalNoTask personalNoTask : personalNoTasks) {
-                getSql = DaoGetSql.getSql("SELECT * FROM "+DBTaskChannel+" where personal_no_task_id = ? and road_or_task <> 1",personalNoTask.getId());
+                getSql = DaoGetSql.getSql("SELECT * FROM "+DBTaskChannel+" where personal_no_task_id = ? and deleted = 0 and (road_or_task IS NULL OR road_or_task = 0) GROUP BY `channel_id` ",personalNoTask.getId());
                 sql.setSql(getSql);
                 List<PersonalNoTaskChannel> listByTaskId = taskChannelService.listBySql(sql);
                 for (PersonalNoTaskChannel personalNoTaskChannel : listByTaskId) {
@@ -97,7 +102,7 @@ public class PersonalNoTaskChannelController {
             log.info("根据任务id查询渠道渠道成功");
             return R.ok().data(personalNoTaskChannelList);
         }catch (Exception e){
-            e.printStackTrace();
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(roadId), "根据通道查询渠道异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
@@ -106,7 +111,7 @@ public class PersonalNoTaskChannelController {
     @PostMapping("listChannelByTaskNames")
     public R listChannelByTaskNames(
             @ApiParam(name = "queryPersonalData", value = "请求参数", required = true)
-            @RequestBody QueryPersonalData queryPersonalData
+            @RequestBody QueryPersonalData queryPersonalData,HttpServletRequest request
     ){
         try {
             log.info("");
@@ -120,12 +125,13 @@ public class PersonalNoTaskChannelController {
                 List<Integer> channelIds = taskChannelService.listChannelIdsBySql(sql);
                 if(!VerifyUtils.collectionIsEmpty(channelIds)){
                     ids = DaoGetSql.getIds(channelIds);
-                    sql1 = "SELECT * from "+DBChannel+" where id in "+ids;
+                    sql1 = "SELECT * from "+DBChannel+" where id in "+ids+" and deleted = 0";
                     channelList = channelService.list(sql1);
                 }
             }
             return R.ok().data(channelList);
         }catch (Exception e){
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(queryPersonalData), "根据任务名称集合查询渠道集合异常", "", 1,e);
             return R.error().message("网页走丢了。。。请返回重试");
         }
     }

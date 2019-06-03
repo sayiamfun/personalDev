@@ -9,8 +9,6 @@ import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
 import lombok.Data;
 
-import java.io.Serializable;
-
 /**
  * <p>
  * 
@@ -52,6 +50,9 @@ public class PersonalNoCategoryAndGroup extends Model<PersonalNoCategoryAndGroup
      * 逻辑删除标识
      */
     private Integer deleted;
+
+    @TableField("category_id")
+    private Integer categoryId;
 
     @TableField(exist = false)
     private String db;

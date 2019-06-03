@@ -1,5 +1,6 @@
 package com.warm.system.service.impl;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoCategory;
 import com.warm.system.mapper.PersonalNoCategoryMapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -35,9 +36,10 @@ public class PersonalNoCategoryServiceImpl extends ServiceImpl<PersonalNoCategor
     }
 
     @Override
-    public Integer delete(String sql) {
-        return noCategoryMapper.delete(sql);
+    public Integer deleteBySql(Sql sql) {
+        return noCategoryMapper.deleteBySql(sql);
     }
+
 
     @Override
     public List<PersonalNoCategory> list(String sql) {

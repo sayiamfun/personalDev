@@ -26,4 +26,6 @@ public interface PersonalNoTaskChannelService extends IService<PersonalNoTaskCha
     List<PersonalNoTaskChannel> listBySql(Sql sql);
 
     boolean deleteBySql(Sql sql);
+
+    void updateBySql(Sql sql);
 }

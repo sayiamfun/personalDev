@@ -15,9 +15,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoLableMessageSendLableNo" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_no_lable_message_send_id,lable_id,lable_name,personal_no_id,wx_id)
+          (id,personal_no_lable_message_send_id,lable_id,lable_name,personal_no_id,wx_id,deleted)
         values
-          (#{entity.id},#{entity.personalNoLableMessageSendId},#{entity.lableId},#{entity.lableName},#{entity.personalNoId},#{entity.wxId})
+          (#{entity.id},#{entity.personalNoLableMessageSendId},#{entity.lableId},#{entity.lableName},#{entity.personalNoId},#{entity.wxId},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoLableMessageSendLableNo" useGeneratedKeys="true" keyProperty="entity.id">

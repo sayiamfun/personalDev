@@ -14,9 +14,9 @@
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoCategory" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_no_category,super_id,create_time,remarks)
+          (id,personal_no_category,super_id,create_time,remarks,deleted)
         values
-          (#{entity.id},#{entity.personalNoCategory},#{entity.superId},#{entity.createTime},#{entity.remarks})
+          (#{entity.id},#{entity.personalNoCategory},#{entity.superId},#{entity.createTime},#{entity.remarks},#{entity.deleted})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoCategory" useGeneratedKeys="true" keyProperty="entity.id">
@@ -33,6 +33,9 @@
             </if>
             <if test=" entity.remarks!=null">
                 remarks = #{entity.remarks},
+            </if>
+            <if test=" entity.deleted!=null">
+                deleted = #{entity.deleted},
             </if>
         </set>
         where id = #{entity.id}
