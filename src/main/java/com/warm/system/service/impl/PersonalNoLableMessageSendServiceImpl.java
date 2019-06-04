@@ -162,10 +162,10 @@ public class PersonalNoLableMessageSendServiceImpl extends ServiceImpl<PersonalN
     @Override
     public Page<PersonalNoLableMessageSend> pageQuery(Page<PersonalNoLableMessageSend> page, Object o) {
         log.info("分页查找标签消息列表开始");
-        String getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBLableMessage);
+        String getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBLableMessage+" where deleted = 0");
         Long count = lableMessageSendMapper.getCount(getSql);
         page.setTotal(count.intValue());
-        getSql = DaoGetSql.getSql("SELECT * FROM "+DBLableMessage+" order by id desc LIMIT ?,?",page.getOffset(),page.getLimit());
+        getSql = DaoGetSql.getSql("SELECT * FROM "+DBLableMessage+" where deleted = 0 order by id desc LIMIT ?,?",page.getOffset(),page.getLimit());
         List<PersonalNoLableMessageSend> personalNoLableMessageSends = lableMessageSendMapper.list(getSql);
         for (PersonalNoLableMessageSend personalNoLableMessageSend : personalNoLableMessageSends) {
             log.info("查询发送数量");

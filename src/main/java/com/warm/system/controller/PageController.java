@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 @Transactional
 @CrossOrigin //跨域
@@ -245,9 +246,9 @@ public class PageController extends SpringBootServletInitializer {
                 PersonalNoTask personalNoTask = (PersonalNoTask) personalByTaskId.get("task");
                 PersonalNoOperationStockWechatAccount wechatAccount = (PersonalNoOperationStockWechatAccount) personalByTaskId.get("wechat");
                 if (!VerifyUtils.isEmpty(personalNoTask)) {
-                    mv.addObject("recommendedReasons", personalNoTask.getRecommendedReasonsList().get(0).getContent());
+                    int index = new Random().nextInt(personalNoTask.getRecommendedReasonsList().size());
+                    mv.addObject("recommendedReasons", personalNoTask.getRecommendedReasonsList().get(index).getContent());
                     mv.addObject("taskTheme", personalNoTask.getTaskTheme());
-
                 }
                 if (!VerifyUtils.isEmpty(wechatAccount)) {
                     mv.addObject("headPortraitUrl", wechatAccount.getAvatar());

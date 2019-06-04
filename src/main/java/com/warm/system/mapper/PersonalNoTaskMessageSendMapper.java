@@ -1,8 +1,12 @@
 package com.warm.system.mapper;
 
+import com.warm.entity.Sql;
 import com.warm.system.entity.PersonalNoTaskMessageSend;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,5 +22,9 @@ public interface PersonalNoTaskMessageSendMapper extends BaseMapper<PersonalNoTa
 
     Integer updateOne(@Param("entity") PersonalNoTaskMessageSend entity);
 
+    @Select("${sql}")
+    List<PersonalNoTaskMessageSend> listBySql(Sql sql);
 
+    @Select("${sql}")
+    Long countBySql(Sql sql);
 }

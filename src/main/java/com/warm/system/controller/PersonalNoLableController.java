@@ -164,6 +164,8 @@ public class PersonalNoLableController {
             if(!VerifyUtils.isEmpty(one)){
                 if(VerifyUtils.isEmpty(noLable.getId())) {
                     return R.error().message("此标签已经存在了");
+                }else if(!(""+one.getId()).equals(""+noLable.getId())){
+                    return R.error().message("此标签已经存在了");
                 }else if(one.getLableCategory().equals(noLable.getLableCategory())){
                     return R.error().message("您未作任何修改。。。");
                 }
@@ -217,8 +219,11 @@ public class PersonalNoLableController {
             page = noLableService.pageQuery(page, lableName);
             log.info("分页查询标签成功，将集合传入下一个方法，开始统计数据");
             List<LableManager> lableManagerList = noLableService.getNumData(page.getRecords());
+            Page<LableManager> resultPage = new Page<>(VerifyUtils.setPageNum(pageNum), VerifyUtils.setSize(size));
+            resultPage.setTotal(page.getTotal());
+            resultPage.setRecords(lableManagerList);
             log.info("统计数据成功");
-            return R.ok().data(lableManagerList);
+            return R.ok().data(resultPage);
         } catch (Exception e) {
             G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(lableName)+" "+pageNum+" "+size, "标签管理异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");

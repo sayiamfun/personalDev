@@ -20,14 +20,15 @@ public class G
 	public static boolean ms_isDeubgVersion;		// = true;
 	public static String ms_baseUrl;		// = "";
 
-	public static int ms_OPERATION_PROJECT_INSTANCE_ID = 8;		//=4;
+	public static int ms_OPERATION_PROJECT_INSTANCE_ID = 8;
 	public static String ms_SERVER_PORT = "http://www.jiazhang111.xyz";
-	public static String ms_FILE_SERVER_URL;		//="http://www.youyoudk.cn:18888";
-	public static String ms_FILE_SERVER_LOCAL_DIR;		//="C:/Users/Administrator/Desktop/AI/apache-tomcat-8.5.37/webapps/ROOT";
+	public static final String ADDLOGADDRESS = "http://www.jiazhang111.xyz/personalNoLogInfo/addLog";
+	public static String ms_FILE_SERVER_URL;
+	public static String ms_FILE_SERVER_LOCAL_DIR;
 
 	
-	public static String ms_currProjectInstanceName;		// = null;
-	public static List<String> ms_phoneList;		// = Arrays.asList("17319402380", "17310011324", "18513668642", "17073549676");
+	public static String ms_currProjectInstanceName;
+	public static List<String> ms_phoneList;
 
 	// 微信公众号配置
 	public static String WX_APPID = "wx8e17aa77af6c4ae3";

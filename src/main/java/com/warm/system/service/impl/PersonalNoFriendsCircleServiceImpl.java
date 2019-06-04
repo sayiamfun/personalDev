@@ -95,14 +95,17 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
         if(!VerifyUtils.isEmpty(sendTime)){
             log.info("根据开始时间查询朋友圈");
             temp = DaoGetSql.getTempSql(temp, F);
-            temp.append(" create_time > '"+WebConst.getNowDate(sendTime)+"'");
+            temp.append(" auto_send > '"+WebConst.getNowDate(sendTime)+"'");
             F = true;
         }
         if(!VerifyUtils.isEmpty(endTime)){
             log.info("根据结束时间查询朋友圈");
             temp = DaoGetSql.getTempSql(temp, F);
-            temp.append(" create_time < '"+WebConst.getNowDate(sendTime)+"'");
+            temp.append(" auto_send < '"+WebConst.getNowDate(endTime)+"'");
+            F = true;
         }
+        temp = DaoGetSql.getTempSql(temp,F);
+        temp.append(" deleted = 0 ");
         String getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBFriendsCircle+temp.toString());
         Long count = noFriendsCircleMapper.getCount(getSql);
         temp.append(" order by id desc limit "+page.getOffset()+","+page.getLimit());

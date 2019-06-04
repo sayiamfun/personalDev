@@ -69,17 +69,7 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
     @Override
     public boolean addPersonalTask(PersonalNoTask task) {
         log.info("添加任务到数据库");
-        List<RecommendedReasons> recommendedReasonsList = task.getRecommendedReasonsList();
-        log.info("将推荐理由集合转成字符串，中间以 & 拼接");
-        if(!VerifyUtils.collectionIsEmpty(recommendedReasonsList)){
-            StringBuffer temp = new StringBuffer();
-            for (int i = 0; i < recommendedReasonsList.size(); i++) {
-                if(i>0){
-                    temp.append("&");
-                }
-                temp.append(recommendedReasonsList.get(i).getContent());
-            }
-        }
+        log.info("得到个人号数量，渠道数量，推荐理由");
         PersonalNoTask noTask = getTask(task);
         int insert = 0;
         noTask.setDeleted(0);
@@ -477,7 +467,7 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
             StringBuffer temp = new StringBuffer();
             for(int i = 0 ; i < recommendedReasonsList.size(); i++){
                 if(i > 0){
-                    temp.append("|");
+                    temp.append("&");
                 }
                 temp.append(recommendedReasonsList.get(i).getContent());
             }

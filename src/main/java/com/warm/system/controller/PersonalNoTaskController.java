@@ -312,6 +312,15 @@ public class PersonalNoTaskController {
         if(VerifyUtils.isEmpty(task.getRoadId())){
             return "任务通道不能为空";
         }
+        if(VerifyUtils.collectionIsEmpty(task.getNoList())){
+            return "请选择个人号";
+        }
+        if(VerifyUtils.collectionIsEmpty(task.getChannelNameList())){
+            return "请选择渠道";
+        }
+        if(VerifyUtils.collectionIsEmpty(task.getRecommendedReasonsList())){
+            return "请填写一条推荐理由";
+        }
         List<PersonalNoTaskReplyContent> noTaskReplyContentList = task.getNoTaskReplyContentList();
         for (PersonalNoTaskReplyContent personalNoTaskReplyContent : noTaskReplyContentList) {
             if(VerifyUtils.isEmpty(personalNoTaskReplyContent.getContent())){

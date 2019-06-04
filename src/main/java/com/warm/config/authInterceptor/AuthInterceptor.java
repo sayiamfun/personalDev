@@ -1,21 +1,18 @@
 package com.warm.config.authInterceptor;
 
 import com.warm.entity.DB;
+import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoLogInfo;
 import com.warm.system.entity.PersonalNoSuperuesr;
 import com.warm.utils.*;
-import com.warm.utils.ImageUpload.Base64Util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class AuthInterceptor extends HandlerInterceptorAdapter {
@@ -41,7 +38,7 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 //                    logInfo.setSuperUserId(Integer.parseInt(cookieValue));
 //                    logInfo.setSuperUserName(personalNoSuperuesr.getSuperName());
 //                    logInfo.setDb(DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_log_info));
-//                    String s1 = HttpClientUtil.sendPost(WebConst.ADDLOGADDRESS, JsonObjectUtils.objectToJson(logInfo));
+//                    String s1 = HttpClientUtil.sendPost(G.ADDLOGADDRESS, JsonObjectUtils.objectToJson(logInfo));
 //                    request.setAttribute(WebConst.SUPERUSERID,personalNoSuperuesr.getId());
 //                    return true;
 //                }

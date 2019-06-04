@@ -128,7 +128,7 @@ public class PersonalNoChannelController {
             if (!VerifyUtils.isEmpty(one)) {
                 if(VerifyUtils.isEmpty(personalnoChannel.getId())) {
                     return R.error().message("此渠道已经存在");
-                }else if(one.getId()!=personalnoChannel.getId()){
+                }else if(!(""+one.getId()).equals(personalnoChannel.getId())){
                     return R.error().message("此渠道已经存在");
                 }else if(!VerifyUtils.isEmpty(one.getRemarks()) && one.getRemarks().equals(personalnoChannel.getRemarks())){
                     return R.error().message("您未做任何修改");

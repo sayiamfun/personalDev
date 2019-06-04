@@ -31,7 +31,6 @@ public class WebConst {
     public static final String SESSSUFF = "InfoSuff";
     public static final String SUPERUSERID = "superUserId";
     public static final String WECHATSTATUS = "封禁";
-    public static final String ADDLOGADDRESS = "http://www.jiazhang111.xyz/personalNoLogInfo/addLog";
 
     private static int textNum = 0; //文字
     private static int photoNum = 0; //图片

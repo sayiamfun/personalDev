@@ -63,12 +63,14 @@ public class PersonalNoRoadController {
             if (!VerifyUtils.collectionIsEmpty(bindingResult.getAllErrors())) {
                 return R.error().message(bindingResult.getAllErrors().get(0).getDefaultMessage().toString());
             }
-            String getSql = DaoGetSql.getSql("SELECT * FROM " + DBRoad + " WHERE `road_name` = ? AND `deleted` = 0", road.getRoadName());
+            String getSql = DaoGetSql.getSql("SELECT * FROM " + DBRoad + " WHERE `road_name` = ? AND `deleted` = 0 limit 0,1", road.getRoadName());
             PersonalNoRoad one = roadService.getBySql(new Sql(getSql));
             if (!VerifyUtils.isEmpty(one)) {
                 if (VerifyUtils.isEmpty(road.getId())) {
                     return R.error().message("此通道已经存在");
-                } else if (!VerifyUtils.isEmpty(one.getRoadBackground()) && one.getRoadBackground().equals(road.getRoadBackground())) {
+                } else if (!(""+one.getId()).equals(""+road.getId())) {
+                    return R.error().message("此通道已经存在");
+                }else if (!VerifyUtils.isEmpty(one.getRoadBackground()) && one.getRoadBackground().equals(road.getRoadBackground())) {
                     return R.error().message("您未作任何更改");
                 }
             }

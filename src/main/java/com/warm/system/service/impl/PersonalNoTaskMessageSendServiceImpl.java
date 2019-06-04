@@ -174,15 +174,19 @@ public class PersonalNoTaskMessageSendServiceImpl extends ServiceImpl<PersonalNo
     @Override
     public Page<PersonalNoTaskMessageSend> pageQuery(Page<PersonalNoTaskMessageSend> page, Object o) {
         log.info("数据库分页查找任务消息开始");
-        EntityWrapper<PersonalNoTaskMessageSend> entityWrapper = new EntityWrapper<>();
-        entityWrapper.orderDesc(Arrays.asList(new String[]{"id"}));
-        List<PersonalNoTaskMessageSend> personalNoTaskMessageSends = baseMapper.selectPage(page, entityWrapper);
+        String getSql = DaoGetSql.getSql("SELECT * FROM "+DBTaskMessage+" WHERE `deleted` = 0 ORDER BY id DESC limit ?,?",page.getOffset(),page.getLimit());
+        Sql sql = new Sql(getSql);
+        List<PersonalNoTaskMessageSend> personalNoTaskMessageSends = taskMessageSendMapper.listBySql(sql);
+        getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBTaskMessage+" WHERE `deleted` = 0");
+        sql.setSql(getSql);
+        Long count = taskMessageSendMapper.countBySql(sql);
+        page.setTotal(count.intValue());
         page.setRecords(personalNoTaskMessageSends);
         if(!VerifyUtils.collectionIsEmpty(page.getRecords())){
             log.info("查询每条任务消息的消息内容开始");
             for (PersonalNoTaskMessageSend record : page.getRecords()) {
                 if(!"已完成".equals(record.getPersonaNolTaskMessageStatus())){
-                    Long count = taskGroupService.getCount("SELECT COUNT(*) FROM " + DBTaskGroupFinish + " where `status` = '已完成' and task_send_id = " + record.getId());
+                    count = taskGroupService.getCount("SELECT COUNT(*) FROM " + DBTaskGroupFinish + " where `status` = '已完成' and task_send_id = " + record.getId());
                     String[] split = record.getPersonaNolTaskMessageStatus().split("/");
                     if(count.intValue()>=Integer.parseInt(split[1])){
                         record.setPersonaNolTaskMessageStatus("已完成");
@@ -191,7 +195,7 @@ public class PersonalNoTaskMessageSendServiceImpl extends ServiceImpl<PersonalNo
                     }else {
                         record.setPersonaNolTaskMessageStatus("" + count.intValue() + "/" + split[1]);
                     }
-                    String getSql = DaoGetSql.getSql("SELECT * FROM " + DBTaskMessageContent + " where personal_no_task_message_send_id = ?", record.getId());
+                    getSql = DaoGetSql.getSql("SELECT * FROM " + DBTaskMessageContent + " where personal_no_task_message_send_id = ?", record.getId());
                     List<PersonalNoTaskMessageSendContent> taskMessageSendContentList = personalNoTaskMessageSendContentService.listBySql(new Sql(getSql));
                     PersonalNoGroupCategory personalNoGroupCategory = null;
                     for (PersonalNoTaskMessageSendContent personalNoTaskMessageSendContent : taskMessageSendContentList) {
@@ -206,7 +210,6 @@ public class PersonalNoTaskMessageSendServiceImpl extends ServiceImpl<PersonalNo
             log.info("查询每条任务消息的消息内容结束");
         }
         log.info("数据库分页查找任务消息结束");
-        page.setTotal(personalNoTaskMessageSends.size());
         return page;
     }
 

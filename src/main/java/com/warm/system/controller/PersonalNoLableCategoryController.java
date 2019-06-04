@@ -110,7 +110,7 @@ public class PersonalNoLableCategoryController {
             if(!VerifyUtils.isEmpty(one)){
                 if(VerifyUtils.isEmpty(lableCategory.getId())) {
                     return R.error().message("此标签类别已经存在");
-                }else if(one.getId()!=lableCategory.getId()){
+                }else if(!(""+one.getId()).equals(""+lableCategory.getId())){
                     return R.error().message("此标签类别已经存在");
                 }else if(!VerifyUtils.isEmpty(one.getRemarks()) && one.getRemarks().equals(lableCategory.getRemarks())){
                     return R.error().message("您未做任何修改");
