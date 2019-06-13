@@ -6,10 +6,7 @@ import com.warm.entity.DB;
 import com.warm.entity.R;
 import com.warm.entity.Sql;
 import com.warm.entity.robot.G;
-import com.warm.system.entity.PersonalNoOperationStockWechatAccount;
-import com.warm.system.entity.PersonalNoPeople;
-import com.warm.system.entity.PersonalNoTask;
-import com.warm.system.entity.PersonalNoTaskMessageSend;
+import com.warm.system.entity.*;
 import com.warm.system.service.db1.PersonalNoPeopleService;
 import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.system.service.db1.PersonalNoTaskMessageSendService;
@@ -102,6 +99,8 @@ public class PersonalNoTaskMessageSendController {
                     return R.error().message("选择的好友数为0");
                 }
                 log.info("开始向数据库插入任务消息");
+                PersonalNoSuperuesr superuesr = (PersonalNoSuperuesr) request.getAttribute(WebConst.SUPERUSER);
+                personalNoTaskMessageSend.setSuperId(superuesr.getId());
                 boolean b = personalNoTaskMessageSendService.insertPersonalNoTaskMessage(personalNoTaskMessageSend, noTask, peopleList);
                 if (!b) {
                     log.info("添加任务消息失败");

@@ -112,17 +112,22 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
         getSql = DaoGetSql.getSql("SELECT * FROM "+DBFriendsCircle+temp.toString());
         List<PersonalNoFriendsCircle> personalNoFriendsCircles = noFriendsCircleMapper.list(getSql);
         for (PersonalNoFriendsCircle personalNoFriendsCircle : personalNoFriendsCircles) {
+            int num = 0;
             getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBTaskGroupFinish+" where status = '已完成' and task_send_id = -1 and lable_send_id = ?",personalNoFriendsCircle.getId());
             Long count1 = taskGroupService.getCount(getSql);
+            num += count1;
+            getSql = DaoGetSql.getSql("SELECT count(*) FROM "+DBTaskGroup+" where status = '已完成' and task_send_id = -1 and lable_send_id = ?",personalNoFriendsCircle.getId());
+            count1 = taskGroupService.getCount(getSql);
+            num += count1;
             if(!"已完成".equals(personalNoFriendsCircle.getStatus())) {
                 String[] split = personalNoFriendsCircle.getStatus().split("/");
                 if (split.length > 1) {
-                    if (count1.intValue() >= Integer.parseInt(split[1])) {
+                    if (num >= Integer.parseInt(split[1])) {
                         personalNoFriendsCircle.setStatus("已完成");
                         personalNoFriendsCircle.setDb(DBFriendsCircle);
                         noFriendsCircleMapper.updateOne(personalNoFriendsCircle);
                     } else {
-                        personalNoFriendsCircle.setStatus("" + count1.intValue() + "/" + split[1]);
+                        personalNoFriendsCircle.setStatus("" + num + "/" + split[1]);
                     }
                 }
             }
@@ -184,12 +189,9 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
             taskGroup.setCreateTime(date);
             taskGroup.setTaskSendId(-1);
             taskGroup.setLableSendId(noFriendsCircle.getId());
+            taskGroup.setTotalStep(1);
             taskGroup.setDb(DBTaskGroup);
-            int save = taskGroupService.add(taskGroup);
-            if (save < 0) {
-                log.error("插入朋友圈任务组失败");
-                throw new RuntimeException("插入朋友圈任务组失败");
-            }
+            taskGroupService.add(taskGroup);
             PersonalNoPhoneTask task = new PersonalNoPhoneTask();
             task.setTaskGroupId(taskGroup.getId());
             task.setCreateTime(new Date());
@@ -204,11 +206,7 @@ public class PersonalNoFriendsCircleServiceImpl extends ServiceImpl<PersonalNoFr
             task.setStatus("未下发");
             task.setStep(1);
             task.setDb(DBTask);
-            int save1 = taskService.add(task);
-            if (save1 < 0) {
-                log.info("插入朋友圈任务失败");
-                throw new RuntimeException("插入朋友圈任务失败");
-            }
+            taskService.add(task);
         }
         return 1;
     }

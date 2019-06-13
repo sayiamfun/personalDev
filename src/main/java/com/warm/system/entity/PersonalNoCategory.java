@@ -40,8 +40,6 @@ public class PersonalNoCategory extends Model<PersonalNoCategory> {
     /**
      * 超级用户id
      */
-    @NotNull(message = "请退出重新登录")
-    @TableField("super_id")
     private Integer superId;
     /**
      * 创建时间

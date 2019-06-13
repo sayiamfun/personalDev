@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -121,5 +122,20 @@ public class PersonalNoRoadController {
             return R.error().message("网页走丢了，请返回重试。。。");
         }
     }
+
+    @ApiOperation(value = "查找通道名称列表")
+    @PostMapping(value = "listRoadName")
+    public R listRoadName(HttpServletRequest request){
+        try {
+            String getSql = DaoGetSql.getSql("SELECT `road_name` FROM "+DBRoad+" WHERE deleted = 0 order by id desc");
+            Sql sql = new Sql(getSql);
+            List<String> list = roadService.listStringBySql(sql);
+            return R.ok().data(list);
+        } catch (Exception e) {
+            G.requestException(DBRequestException, requestExceptionService, request, " " , "查找通道名称列表", "", 1, e);
+            return R.error().message("网页走丢了，请返回重试。。。");
+        }
+    }
+
 }
 

@@ -60,9 +60,12 @@ public class PersonalNoKeywordServiceImpl extends ServiceImpl<PersonalNoKeywordM
     public Page<PersonalNoKeyword> pageQuery(Page<PersonalNoKeyword> page, String keyWord) {
         List<PersonalNoKeyword> list = new ArrayList<>();
         StringBuffer temp = new StringBuffer();
+        boolean F = false;
         if(!"-1".equals(keyWord)){
             temp.append(" where keyword like '%"+keyWord+"%'");
         }
+        temp = DaoGetSql.getTempSql(temp,F);
+        temp.append(" deleted = 0 ");
         String getSql = DaoGetSql.getSql("select count(*) from "+DBKeyWord + temp.toString());
         Long count = keywordMapper.getCount(getSql);
         page.setTotal(count.intValue());
@@ -85,7 +88,7 @@ public class PersonalNoKeywordServiceImpl extends ServiceImpl<PersonalNoKeywordM
      */
     @Override
     public PersonalNoKeyword getInfoById(PersonalNoKeyword personalNoKeyword) {
-        String getSql = "select * from " + DBKeyWordContent + " where personal_no_keyword_id = " + personalNoKeyword.getId();
+        String getSql = "select * from " + DBKeyWordContent + " where personal_no_keyword_id = " + personalNoKeyword.getId()+" and deleted = 0";
         List<PersonalNoKeywordContent> personalNoKeywordContents = keywordContentService.list(getSql);
         for (PersonalNoKeywordContent personalNoKeywordContent : personalNoKeywordContents) {
             if("邀请入群".equals(personalNoKeywordContent.getContentType())){
@@ -129,9 +132,9 @@ public class PersonalNoKeywordServiceImpl extends ServiceImpl<PersonalNoKeywordM
      */
     @Override
     public void deleteById(Integer keyWordId) {
-        String getSql = DaoGetSql.getSql("delete from "+DBKeyWordContent+" where personal_no_keyword_id = ?",keyWordId);
+        String getSql = DaoGetSql.getSql("update "+DBKeyWordContent+" set deleted = 1 where personal_no_keyword_id = ?",keyWordId);
         keywordContentService.delete(getSql);
-        getSql = DaoGetSql.deleteById(DBKeyWord,keyWordId);
+        getSql = DaoGetSql.getSql("update "+DBKeyWord+" set deleted = 1 where id = ?",keyWordId);
         baseMapper.delete(getSql);
     }
 
@@ -147,7 +150,7 @@ public class PersonalNoKeywordServiceImpl extends ServiceImpl<PersonalNoKeywordM
             keywordMapper.updateOne(keyword);
         }
         log.info("删除原有的关键词内容");
-        String sql = "delete from " + DBKeyWordContent + " where personal_no_keyword_id = " + keyword.getId();
+        String sql = "update " + DBKeyWordContent + " set deleted = 1 where personal_no_keyword_id = " + keyword.getId();
         keywordContentService.delete(sql);
         log.info("添加新的的关键词内容");
         for (PersonalNoKeywordContent personalNoKeywordContent : keyword.getKeywordContentList()) {

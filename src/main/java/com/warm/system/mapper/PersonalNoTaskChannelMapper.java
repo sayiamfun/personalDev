@@ -40,4 +40,7 @@ public interface PersonalNoTaskChannelMapper extends BaseMapper<PersonalNoTaskCh
 
     @Update("${sql}")
     void updateBySql(Sql sql);
+
+    @Select("${sql}")
+    PersonalNoTaskChannel getBySql(Sql sql);
 }

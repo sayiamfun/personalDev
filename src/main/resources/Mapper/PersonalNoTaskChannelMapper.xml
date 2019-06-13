@@ -9,13 +9,14 @@
         <result column="channel_id" property="channelId" />
         <result column="channel_name" property="channelName" />
         <result column="deleted" property="deleted" />
+        <result column="road_or_task" property="roadOrTask" />
     </resultMap>
 
     <insert id="add" parameterType="com.warm.system.entity.PersonalNoTaskChannel" useGeneratedKeys="true" keyProperty="entity.id">
         insert into ${entity.db}
-          (id,personal_no_task_id,channel_id,channel_name,deleted)
+          (id,personal_no_task_id,channel_id,channel_name,deleted,road_or_task)
         values
-          (#{entity.id},#{entity.personalNoTaskId},#{entity.channelId},#{entity.channelName},#{entity.deleted})
+          (#{entity.id},#{entity.personalNoTaskId},#{entity.channelId},#{entity.channelName},#{entity.deleted},#{entity.roadOrTask})
     </insert>
 
     <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoTaskChannel" useGeneratedKeys="true" keyProperty="entity.id">
@@ -32,6 +33,9 @@
             </if>
             <if test="entity.deleted!=null">
                 deleted = #{entity.deleted},
+            </if>
+            <if test="entity.roadOrTask!=null">
+                road_or_task = #{entity.roadOrTask},
             </if>
         </set>
         where id = #{entity.id}

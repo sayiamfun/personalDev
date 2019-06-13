@@ -79,17 +79,21 @@ public class G
 	}
 
 	public static void requestException(String dbRequestException, PersonalNoRequestExceptionService requestExceptionService, HttpServletRequest request, String requestBody, String remarks, String responseBody, Integer code,Exception e) {
-		PersonalNoRequestException exception = new PersonalNoRequestException();
-		exception.setMethod(request.getMethod());
-		exception.setCreateTime(new Date());
-		exception.setUrl(request.getRequestURI());
-		exception.setStatusCode(code);
-		exception.setRequestBody(requestBody);
-		exception.setResponseBody(responseBody);
-		exception.setRemarks(remarks);
-		exception.setException(getErrorInfoFromException(e));
-		exception.setDb(dbRequestException);
-		requestExceptionService.add(exception);
+		try {
+			PersonalNoRequestException exception = new PersonalNoRequestException();
+			exception.setMethod(request.getMethod());
+			exception.setCreateTime(new Date());
+			exception.setUrl(request.getRequestURI());
+			exception.setStatusCode(code);
+			exception.setRequestBody(requestBody);
+			exception.setResponseBody(responseBody);
+			exception.setRemarks(remarks);
+			exception.setException(getErrorInfoFromException(e));
+			exception.setDb(dbRequestException);
+			requestExceptionService.add(exception);
+		}catch (Exception ex){
+			System.err.println("插入异常失败");
+		}
 	}
 
 	private static String getErrorInfoFromException(Exception e) {

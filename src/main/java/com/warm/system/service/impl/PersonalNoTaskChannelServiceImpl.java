@@ -98,4 +98,17 @@ public class PersonalNoTaskChannelServiceImpl extends ServiceImpl<PersonalNoTask
     public void updateBySql(Sql sql) {
         taskChannelMapper.updateBySql(sql);
     }
+
+    @Override
+    public PersonalNoTaskChannel getBySql(Sql sql) {
+        return taskChannelMapper.getBySql(sql);
+    }
+
+    @Override
+    public Integer add(PersonalNoTaskChannel personalNoTaskChannel) {
+        if(VerifyUtils.isEmpty(personalNoTaskChannel.getId())){
+            return taskChannelMapper.add(personalNoTaskChannel);
+        }
+        return taskChannelMapper.updateOne(personalNoTaskChannel);
+    }
 }

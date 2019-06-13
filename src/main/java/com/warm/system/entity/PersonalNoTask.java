@@ -84,7 +84,6 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     /**
      * 任务截止时间
      */
-    @NotNull(message = "任务结束时间不能为空")
     @TableField("task_end_time")
     private Date taskEndTime;
     /**
@@ -115,8 +114,6 @@ public class PersonalNoTask extends Model<PersonalNoTask> {
     /**
      * 超级用户id
      */
-    @NotNull(message = "登录已过期，请退出重新登录")
-    @TableField("super_id")
     private Integer superId;
     /**
      * 备注

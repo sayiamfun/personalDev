@@ -37,15 +37,12 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
     @Autowired
     private PersonalNoPeopleMapper taskPeopleMapper;
     @Autowired
-    private PersonalNoTaskLableService taskLableService;
-    @Autowired
     private PersonalNoPeopleService peopleService;
     @Autowired
     private PersonalNoOperationStockWechatAccountService wechatAccountService;
     @Autowired
     private PersonalNoLableService lableService;
 
-    private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_lable);
     private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_lable);
     private String DBNoPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
     private String DBWeChat = DB.DBAndTable(DB.OA,DB.operation_stock_wechat_account);
@@ -100,7 +97,8 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
             temp.append(" )");
             lableQuery = temp.toString();
         }
-        List<PersonalNoPeople> peopleList = new ArrayList<>();
+        List<PersonalNoPeople> resultPeopleList = new ArrayList<>();
+        List<String> list = new ArrayList<>();
         Sql sql = new Sql(getSql);
         for (String personalNoWxId : peopleNumReq.getNoWxIdList()) {
             getSql = DaoGetSql.getSql("SELECT * from "+DBWeChat+" where wx_id = ? and  operation_project_instance_id = ? limit 0,1",personalNoWxId, G.ms_OPERATION_PROJECT_INSTANCE_ID);
@@ -109,14 +107,16 @@ public class PersonalNoPeopleServiceImpl extends ServiceImpl<PersonalNoPeopleMap
             if(VerifyUtils.isEmpty(wechatAccount) || WebConst.WECHATSTATUS.equals(wechatAccount.getStatus())){
                 continue;
             }
-            if(VerifyUtils.isEmpty(peopleNumReq.getStartTime())){
-                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' "+lableQuery+" and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
-            }else {
-                getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id = '"+personalNoWxId+"' "+lableQuery+" and be_friend_time  BETWEEN '"+WebConst.getNowDate(peopleNumReq.getStartTime())+"' and '"+WebConst.getNowDate(peopleNumReq.getEndTime())+"'  and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
-            }
-            peopleList = peopleService.list(getSql);
+            list.add(wechatAccount.getWxId());
         }
-        return peopleList;
+        String wxIds = DaoGetSql.getIds(list);
+        if(VerifyUtils.isEmpty(peopleNumReq.getStartTime())){
+            getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id in "+wxIds+" "+lableQuery+" and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
+        }else {
+            getSql = "SELECT * FROM "+DBNoPeople+" where personal_no_wx_id in "+wxIds+" "+lableQuery+" and be_friend_time  BETWEEN '"+WebConst.getNowDate(peopleNumReq.getStartTime())+"' and '"+WebConst.getNowDate(peopleNumReq.getEndTime())+"'  and deleted = 0 and flag = 2 GROUP BY personal_friend_wx_id";
+        }
+        resultPeopleList = peopleService.list(getSql);
+        return resultPeopleList;
     }
 
     @Override

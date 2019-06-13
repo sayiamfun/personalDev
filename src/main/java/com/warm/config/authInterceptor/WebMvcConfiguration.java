@@ -38,7 +38,9 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .excludePathPatterns("/personal")
                 .excludePathPatterns("/personal/noTask/getByRoadId/**")
                 .excludePathPatterns("/personal/noTask/getPersonalByTaskId")
-                .excludePathPatterns("/personalNoSuperuesr/**");
+                .excludePathPatterns("/personalNoSuperuesr/**")
+//                放行swagger
+                .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**");
     }
 
     @Override

@@ -29,7 +29,6 @@ public class WebConst {
     public static final String TOCKEN = "PersonalNoCookieUserInfoSuff";
     public static final String SESSIONPRE = "PersonalNoSession";
     public static final String SESSSUFF = "InfoSuff";
-    public static final String SUPERUSERID = "superUserId";
     public static final String WECHATSTATUS = "封禁";
 
     private static int textNum = 0; //文字

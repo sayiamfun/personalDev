@@ -67,7 +67,7 @@ public class PersonalNoRoadServiceImpl extends ServiceImpl<PersonalNoRoadMapper,
         Sql sql = new Sql("SELECT count(*) FROM " + DBRoad + " where deleted = 0 " + temp.toString());
         Long count = roadMapper.countBySql(sql);
         page.setTotal(count.intValue());
-        temp.append(" order by id desc");
+        temp.append(" order by id desc limit "+page.getOffset()+","+page.getLimit());
         sql.setSql("SELECT * FROM "+DBRoad+" where deleted = 0 "+temp.toString());
         List<PersonalNoRoad> personalNoRoads = roadMapper.listBySql(sql);
         page.setRecords(personalNoRoads);
@@ -97,5 +97,15 @@ public class PersonalNoRoadServiceImpl extends ServiceImpl<PersonalNoRoadMapper,
             b = roadMapper.updateOne(road)>0;
         }
         return b;
+    }
+
+    @Override
+    public List<PersonalNoRoad> listByQueryPersonalData(Sql sql) {
+        return roadMapper.listByQueryPersonalData(sql);
+    }
+
+    @Override
+    public List<String> listStringBySql(Sql sql) {
+        return roadMapper.listStringBySql(sql);
     }
 }

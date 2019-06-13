@@ -36,12 +36,12 @@ public class TaskUtiles {
 
     //将回复消息转换为任务组
     public static void toTask(Map<String, Object> map, String personalWxId, String userWxId, Integer taskId, Integer time) {
-//        PersonalNoPhoneTaskGroupService taskGroupService = (PersonalNoPhoneTaskGroupService) map.get("taskGroupService");
-//        String getsql = "SELECT * FROM "+DBTaskGroup+" where tname = '"+personalWxId+"添加好友"+userWxId+"' and create_time > '"+WebConst.getNowDate(new Date(new Date().getTime()-600000))+"' and status = '未下发' order by id desc limit 0,1";
-//        PersonalNoPhoneTaskGroup taskGroup = taskGroupService.getOne(getsql);
-//        if(VerifyUtils.isEmpty(taskGroup)) {
+        PersonalNoPhoneTaskGroupService taskGroupService = (PersonalNoPhoneTaskGroupService) map.get("taskGroupService");
+        String getsql = "SELECT * FROM "+DBTaskGroup+" where tname = '"+personalWxId+"发送回复消息"+userWxId+"' and create_time > '"+WebConst.getNowDate(new Date(new Date().getTime()-600000))+"' and status = '未下发' order by id desc limit 0,1";
+        PersonalNoPhoneTaskGroup taskGroup = taskGroupService.getOne(getsql);
+        if(VerifyUtils.isEmpty(taskGroup)) {
             insertTaskGroup(personalWxId, userWxId, map, taskId, time);
-//        }
+        }
     }
 
     private static void insertTaskGroup(String personalWxId, String userWxId, Map<String, Object> map, Integer taskId, Integer time) {
@@ -59,6 +59,7 @@ public class TaskUtiles {
             taskGroup.setTname(personalWxId + "发送回复消息" + userWxId);
             taskGroup.setCurrentRobotId(personalWxId);
             taskGroup.setTotalStep(taskById.getNoTaskReplyContentList().size());
+            taskGroup.setTaskSendId(taskId);
             taskGroup.setDb(DBTaskGroup);
             int save = taskGroupService.add(taskGroup);
             if (save != 0) {

@@ -6,6 +6,8 @@ import com.warm.entity.requre.QueryRoad;
 import com.warm.system.entity.PersonalNoRoad;
 import com.baomidou.mybatisplus.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -21,4 +23,8 @@ public interface PersonalNoRoadService extends IService<PersonalNoRoad> {
     PersonalNoRoad getBySql(Sql sql);
 
     boolean add(PersonalNoRoad road);
+
+    List<PersonalNoRoad> listByQueryPersonalData(Sql sql);
+
+    List<String> listStringBySql(Sql sql);
 }

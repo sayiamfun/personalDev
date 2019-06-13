@@ -17,6 +17,8 @@ import java.util.List;
 public class QueryPersonalData implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @ApiModelProperty(value = "个人号通道")
+    private List<String> noRoadName;
     @ApiModelProperty(value = "个人号任务")
     private List<String> noTaskName;
     @ApiModelProperty(value = "个人号任务渠道")

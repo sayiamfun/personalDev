@@ -17,6 +17,7 @@ import com.warm.system.service.db3.PersonalNoGroupCategoryService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
+import com.warm.utils.WebConst;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -133,6 +134,8 @@ public class PersonalNoTaskController {
                     return R.error().message("此任务已经存在");
                 }
             }
+            PersonalNoSuperuesr superuesr = (PersonalNoSuperuesr) request.getAttribute(WebConst.SUPERUSER);
+            noTask.setSuperId(superuesr.getId());
             boolean b = noTaskService.addPersonalTask(noTask);
             if(!b){
                 log.info("添加任务失败");
@@ -306,20 +309,11 @@ public class PersonalNoTaskController {
         if(VerifyUtils.isEmpty(task.getNoLableList())){
             return "标签不能为空";
         }
-        if(VerifyUtils.isEmpty(task.getNoList())){
-            return "个人号不能为空";
-        }
-        if(VerifyUtils.isEmpty(task.getRoadId())){
-            return "任务通道不能为空";
-        }
         if(VerifyUtils.collectionIsEmpty(task.getNoList())){
             return "请选择个人号";
         }
         if(VerifyUtils.collectionIsEmpty(task.getChannelNameList())){
             return "请选择渠道";
-        }
-        if(VerifyUtils.collectionIsEmpty(task.getRecommendedReasonsList())){
-            return "请填写一条推荐理由";
         }
         List<PersonalNoTaskReplyContent> noTaskReplyContentList = task.getNoTaskReplyContentList();
         for (PersonalNoTaskReplyContent personalNoTaskReplyContent : noTaskReplyContentList) {

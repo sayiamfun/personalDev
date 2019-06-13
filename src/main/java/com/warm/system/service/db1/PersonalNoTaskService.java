@@ -63,4 +63,6 @@ public interface PersonalNoTaskService extends IService<PersonalNoTask> {
     Long countBySql(Sql sql);
 
     PersonalNoTask getBySql(Sql sql);
+
+    List<String> listStringBySql(Sql sql);
 }

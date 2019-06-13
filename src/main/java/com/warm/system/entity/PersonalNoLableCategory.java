@@ -39,8 +39,6 @@ public class PersonalNoLableCategory extends Model<PersonalNoLableCategory> {
     /**
      * 超级用户id
      */
-    @NotNull(message = "登录过期，请退出重新登录")
-    @TableField("super_id")
     private Integer superId;
     /**
      * 创建时间

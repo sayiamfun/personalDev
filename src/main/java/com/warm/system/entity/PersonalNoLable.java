@@ -48,8 +48,6 @@ public class PersonalNoLable extends Model<PersonalNoLable> {
     /**
      * 超级用户id
      */
-    @NotNull(message = "登录已过期，请退出重新登录")
-    @TableField("super_id")
     private Integer superId;
     /**
      * 创建时间

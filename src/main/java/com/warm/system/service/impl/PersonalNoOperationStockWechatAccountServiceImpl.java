@@ -78,6 +78,7 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
     private String DBValueTable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_value_table);
     private String DBShortUrl = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.short_url);
     private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_lable);
+    private String DBTaskGroup = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_phone_task_group);
 
     @Override
     public Integer add(PersonalNoOperationStockWechatAccount entity) {
@@ -155,27 +156,26 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
                         peopleService.add(people);
                     }
                 } else {
-                    getSql = DaoGetSql.getById(DBValueTable,8);
-                    sql.setSql(getSql);
-                    PersonalNoValueTable valueTable8 = valueTableService.getBySql(sql);
-                    if(!VerifyUtils.isEmpty(valueTable8.getValue())){
-                        List<String> split = Arrays.asList(valueTable8.getValue().split(","));
-                        if(split.contains(getNoEntity.getTaskId().toString())){
-                            people.setLable(lableNames);
-                            people = getPeople(map1, people);
-                            people.setDb(DBNoPeople);
-                            peopleService.add(people);
-                        }else {
-                            if(people.getFlag()!=2) {
+//                    getSql = DaoGetSql.getById(DBValueTable,8);
+//                    sql.setSql(getSql);
+//                    PersonalNoValueTable valueTable8 = valueTableService.getBySql(sql);
+//                    if(!VerifyUtils.isEmpty(valueTable8.getValue())){
+//                        List<String> split = Arrays.asList(valueTable8.getValue().split(","));
+//                        if(split.contains(getNoEntity.getTaskId().toString())){
+//                            people.setLable(lableNames);
+//                            people = getPeople(map1, people);
+//                            people.setDb(DBNoPeople);
+//                            peopleService.add(people);
+//                        }else {
+//                            if(people.getFlag()!=2) {
                                 people.setLable(lableNames);
                                 people = getPeople(map1, people);
                                 people.setDb(DBNoPeople);
                                 peopleService.add(people);
-                            }
+//                            }
                         }
-                    }
-//                    TaskUtiles.toTask(map1, people.getPersonalNoWxId(), people.getPersonalFriendWxId(), getNoEntity.getTaskId(), Integer.parseInt(valueTableService.selectById(1).getValue()) * 1000);
-                }
+//                    }
+//                }
             } else {
                 log.info("不是任务好友，");
                 getSql = DaoGetSql.getSql("SELECT * FROM " + DBUser + " where unionid = ? ORDER BY create_time desc limit 0,1", getNoEntity.getUnionId());
@@ -265,6 +265,7 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
         log.info("获取总数量");
         Sql sql = new Sql("SELECT count(*) FROM " + DBWeChat + " where operation_project_instance_id = " + G.ms_OPERATION_PROJECT_INSTANCE_ID + temp.toString());
         Long count = wechatAccountMapper.countBySql(sql);
+        page.setTotal(count.intValue());
         log.info("获取本页数据");
         temp.append(" order by id desc limit " + page.getOffset() + "," + page.getLimit());
         sql.setSql("SELECT * FROM " + DBWeChat + " where operation_project_instance_id = " + G.ms_OPERATION_PROJECT_INSTANCE_ID + temp.toString());
@@ -275,7 +276,9 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
             no.setNickName(no.getNickName()+"("+no.getStatus()+")");
             getSql = DaoGetSql.getSql("SELECT count(*) FROM " + DBFriends + " where personal_no_wx_id = ? and deleted = 0", no.getWxId());
             no.setFriendsNum(noFriendsService.getCount(getSql).intValue());
-            no.setWaitingNums(0);
+            getSql = DaoGetSql.getSql("SELECT count(*) FROM " + DBTaskGroup + " WHERE current_robot_id = ? AND `tname` LIKE '%添加好友%' AND status = '未下发'",no.getWxId());
+            count = taskGroupService.getCount(getSql);
+            no.setWaitingNums(count.intValue());
             getSql = DaoGetSql.getSql("SELECT * FROM " + DBCategoryAndGroup + " where personal_no_wx_id = ? limit 0,1", no.getWxId());
             sql.setSql(getSql);
             PersonalNoCategoryAndGroup categoryAndGroup = categoryAndGroupService.getBySql(sql);
@@ -285,7 +288,6 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
                 no.setGroup(categoryAndGroup.getGroup());
             }
         }
-        page.setTotal(count.intValue());
         page.setRecords(personalNoOperationStockWechatAccounts);
         return page;
     }
@@ -304,7 +306,7 @@ public class PersonalNoOperationStockWechatAccountServiceImpl extends ServiceImp
         }
         String getSql = DaoGetSql.getSql("SELECT * FROM " + DBFriends + " where user_wx_id = ? and personal_no_wx_id = ? and deleted = 0 limit 0,1", people.getPersonalFriendWxId(), people.getPersonalNoWxId());
         PersonalNoFriends friends = noFriendsService.getOne(getSql);
-        if (!VerifyUtils.isEmpty(friends)) {
+        if (!VerifyUtils.isEmpty(friends) && friends.getBeFriendTime().getTime()-new Date().getTime()<0) {
             log.info("获取下发消息的间隔时间");
             getSql = DaoGetSql.getById(DBValueTable, 1);
             Sql sql = new Sql(getSql);

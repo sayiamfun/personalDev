@@ -38,12 +38,8 @@ public class PersonalNoChannel extends Model<PersonalNoChannel> {
     /**
      * 超级用户id
      */
-    @NotNull(message = "请退出重新登录")
-    @TableField("super_id")
     private Integer superId;
 
-    @NotBlank(message = "请退出重新登录")
-    @TableField("super_name")
     private String superName;
     /**
      * 创建时间

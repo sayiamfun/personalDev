@@ -68,8 +68,6 @@ public class PersonalNoFriendsCircle extends Model<PersonalNoFriendsCircle> {
     /**
      * 超级用户id
      */
-    @NotNull(message = "登录已过期，请重新登录")
-    @TableField("super_id")
     private Integer superId;
     /**
      * 创建时间

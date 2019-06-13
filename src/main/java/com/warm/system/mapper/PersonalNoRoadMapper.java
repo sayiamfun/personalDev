@@ -30,4 +30,10 @@ public interface PersonalNoRoadMapper extends BaseMapper<PersonalNoRoad> {
 
     @Select("${sql}")
     Long countBySql(Sql sql);
+
+    @Select("${sql}")
+    List<PersonalNoRoad> listByQueryPersonalData(Sql sql);
+
+    @Select("${sql}")
+    List<String> listStringBySql(Sql sql);
 }

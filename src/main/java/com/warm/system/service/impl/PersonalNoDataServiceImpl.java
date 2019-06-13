@@ -22,7 +22,7 @@ import java.util.*;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author dgd123
@@ -45,18 +45,20 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
     private PersonalNoTaskChannelService taskChannelService;
     @Autowired
     private PersonalNoTaskReplyContentService taskReplyContentService;
+    @Autowired
+    private PersonalNoRoadService roadService;
 
-    private String ZCDBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task);
-    private String ZCDBPersonalPeople = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_people);
-    private String ZCDBDatail12 = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.detail_data_12i);
-    private String ZCDBTaskChannel = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_channel);
-    private String ZCDBTaskReplyContent = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_reply_content);
-    private String DBShortUrl = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.short_url);
-    private String DBPersonalData = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_data);
+    private String ZCDBTask = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task);
+    private String ZCDBPersonalPeople = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_people);
+    private String ZCDBDatail12 = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.detail_data_12i);
+    private String ZCDBTaskChannel = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_channel);
+    private String ZCDBTaskReplyContent = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_reply_content);
+    private String DBShortUrl = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.short_url);
+    private String DBRoad = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_road);
 
     @Override
     public Integer add(PersonalNoData entity) {
-        if(VerifyUtils.isEmpty(entity.getId()))
+        if (VerifyUtils.isEmpty(entity.getId()))
             return dataMapper.add(entity);
         return dataMapper.updateOne(entity);
     }
@@ -91,20 +93,20 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
         ResultPersonalData resultPersonalData = null;
         Map<String, ResultPersonalDataWithTime> resultPersonalDataWithTimeMap = new LinkedHashMap<>();
         Map<String, ResultPersonalDataWithTask> resultPersonalDataWithTaskMap = new HashMap<>();
-        if(!VerifyUtils.collectionIsEmpty(records)){
+        if (!VerifyUtils.collectionIsEmpty(records)) {
             log.info("查询到数据，开始处理");
             for (PersonalNoData record : records) {
                 ResultPersonalDataWithTime dataWithTime = new ResultPersonalDataWithTime();
                 ResultPersonalDataWithTask dataWithTask = new ResultPersonalDataWithTask();
                 log.info("处理时间数据");
-                if(resultPersonalDataWithTimeMap.containsKey(WebConst.getNowDateNotHour(record.getDate()))){
+                if (resultPersonalDataWithTimeMap.containsKey(WebConst.getNowDateNotHour(record.getDate()))) {
                     log.info("已经存在此时间，修改数量");
                     dataWithTime = resultPersonalDataWithTimeMap.get(WebConst.getNowDateNotHour(record.getDate()));
                     dataWithTime.setToPeopleNum(dataWithTime.getToPeopleNum() + record.getToPeopleNum());
                     dataWithTime.setAddFriendsNum(dataWithTime.getAddFriendsNum() + record.getAddFriendsNum());
                     dataWithTime.setJoinGroupNum(dataWithTime.getJoinGroupNum() + record.getJoinGroupNum());
                     dataWithTime.setTodayKeep(dataWithTime.getTodayKeep() + record.getTodayKeep());
-                }else {
+                } else {
                     log.info("不存在此时间，加入到map");
                     dataWithTime.setDate(WebConst.getNowDateNotHour(record.getDate()));
                     dataWithTime.setAddFriendsNum(record.getAddFriendsNum());
@@ -114,14 +116,14 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
                 }
                 dataWithTime.setTheRateOfAddFriends(WebConst.div(dataWithTime.getToPeopleNum(), dataWithTime.getAddFriendsNum(), 2));
                 log.info("处理任务数据");
-                if(resultPersonalDataWithTaskMap.containsKey(record.getTaskName())){
+                if (resultPersonalDataWithTaskMap.containsKey(record.getTaskName())) {
                     log.info("已经存在此任务，修改数量");
                     dataWithTask = resultPersonalDataWithTaskMap.get(record.getTaskName());
                     dataWithTask.setToPeopleNum(dataWithTask.getToPeopleNum() + record.getToPeopleNum());
                     dataWithTask.setAddFriendsNum(dataWithTask.getAddFriendsNum() + record.getAddFriendsNum());
                     dataWithTask.setJoinGroupNum(dataWithTask.getJoinGroupNum() + dataWithTask.getJoinGroupNum());
                     dataWithTask.setTodayKeep(dataWithTask.getTodayKeep() + record.getTodayKeep());
-                }else {
+                } else {
                     dataWithTask.setToPeopleNum(record.getToPeopleNum());
                     dataWithTask.setAddFriendsNum(record.getAddFriendsNum());
                     dataWithTask.setJoinGroupNum(record.getJoinGroupNum());
@@ -132,13 +134,13 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
                 resultPersonalDataWithTimeMap.put(WebConst.getNowDateNotHour(record.getDate()), dataWithTime);
                 resultPersonalDataWithTaskMap.put(record.getTaskName(), dataWithTask);
                 log.info("处理最外层数据");
-                if(resultPersonalData == null) {
+                if (resultPersonalData == null) {
                     resultPersonalData = new ResultPersonalData();
                     resultPersonalData.setToPeopleNum(record.getToPeopleNum());
                     resultPersonalData.setAddFriendsNum(record.getAddFriendsNum());
                     resultPersonalData.setJoinGroupNum(record.getJoinGroupNum());
                     resultPersonalData.setTodayKeep(record.getTodayKeep());
-                }else {
+                } else {
                     resultPersonalData.setToPeopleNum(resultPersonalData.getToPeopleNum() + record.getToPeopleNum());
                     resultPersonalData.setAddFriendsNum(resultPersonalData.getAddFriendsNum() + record.getAddFriendsNum());
                     resultPersonalData.setJoinGroupNum(resultPersonalData.getJoinGroupNum() + record.getJoinGroupNum());
@@ -157,16 +159,19 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
 
     /**
      * 根据条件分页查询个人号相关数据
+     *
      * @param queryPersonalData
      */
     @Override
     public List<PersonalNoData> listAll(QueryPersonalData queryPersonalData) {
-        return getPersonalNoData(queryPersonalData,1);
+        return getPersonalNoData(queryPersonalData, 1);
     }
+
     @Override
     public List<PersonalNoData> listAllAsc(QueryPersonalData queryPersonalData) {
-        return getPersonalNoData(queryPersonalData,0);
+        return getPersonalNoData(queryPersonalData, 0);
     }
+
     private List<PersonalNoData> getPersonalNoData(QueryPersonalData queryPersonalData, Integer flag) {
         log.info("开始处理数据查询条件");
 //        List<String> noTaskName = queryPersonalData.getNoTaskName();
@@ -203,13 +208,14 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
 
     /**
      * 查询数据列表
+     *
      * @param flag
      * @param list
      * @return
      */
     @Override
-    public Map<String,List<String>> getDateByDateList(String flag, List<PersonalNoData> list) {
-        Map<String,List<String>> map = new HashMap<>();
+    public Map<String, List<String>> getDateByDateList(String flag, List<PersonalNoData> list) {
+        Map<String, List<String>> map = new HashMap<>();
         Map<String, ResultPersonalDataWithTime> resultPersonalDataWithTimeMap = new LinkedHashMap<>();
 //        for (PersonalNoData record : list) {
 //            ResultPersonalDataWithTime dataWithTime = new ResultPersonalDataWithTime();
@@ -262,6 +268,12 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
         return map;
     }
 
+    /**
+     * 根据任务查询
+     *
+     * @param queryPersonalData
+     * @return
+     */
     @Override
     public ResultPersonalData getAllData(QueryPersonalData queryPersonalData) {
         ResultPersonalData resultPersonalData = new ResultPersonalData();
@@ -272,13 +284,13 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
         Integer delFriendsCount = 0;
         resultPersonalData.setJoinGroupNum(0);
         resultPersonalData.setTodayKeep(0);
-        StringBuffer temp = new StringBuffer("select * from "+ZCDBTask+" where deleted = 0");
-        if(!VerifyUtils.isEmpty(queryPersonalData)){
+        StringBuffer temp = new StringBuffer("select * from " + ZCDBTask + " where deleted = 0");
+        if (!VerifyUtils.isEmpty(queryPersonalData)) {
             boolean F = true;
-            if(!VerifyUtils.collectionIsEmpty(queryPersonalData.getNoTaskName())){
+            if (!VerifyUtils.collectionIsEmpty(queryPersonalData.getNoTaskName())) {
                 String names = DaoGetSql.getIds(queryPersonalData.getNoTaskName());
                 temp = DaoGetSql.getTempSql(temp, F);
-                temp.append(" task_name in "+names);
+                temp.append(" task_name in " + names);
             }
         }
         temp.append(" order by id desc");
@@ -292,75 +304,75 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
         while (iterator.hasNext()) {
             log.info("查询任务对应的渠道的短链");
             PersonalNoTask personalNoTask = iterator.next();
-            if(!VerifyUtils.collectionIsEmpty(queryPersonalData.getPersonalnoChannelName())){
+            if (!VerifyUtils.collectionIsEmpty(queryPersonalData.getPersonalnoChannelName())) {
                 List<Integer> personalnoChannelId = queryPersonalData.getPersonalnoChannelName();
                 for (Integer integer : personalnoChannelId) {
-                    getSql = DaoGetSql.getSql("SELECT id from "+ZCDBTaskChannel+" where personal_no_task_id = ? and channel_id = ? and deleted = 0",personalNoTask.getId(), integer);
+                    getSql = DaoGetSql.getSql("SELECT id from " + ZCDBTaskChannel + " where personal_no_task_id = ? and channel_id = ? and deleted = 0 AND (`road_or_task` IS NULL OR`road_or_task` = 0) ", personalNoTask.getId(), integer);
                     sql.setSql(getSql);
                     Integer bySql = taskChannelService.getIdBySql(sql);
-                    getSql = DaoGetSql.getSql("SELECT id from "+DBShortUrl+" where task_id = ? and channel_id = ? limit 0,1",personalNoTask.getId(),bySql);
+                    getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where task_id = ? and channel_id = ? limit 0,1", personalNoTask.getId(), bySql);
                     sql.setSql(getSql);
-                    shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql))?-1:shortUrlService.getBySql(sql).getId();
+                    shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
                     shortUrlSet.add(shortUrlid);
-                    if(!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)){
+                    if (!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)) {
                         shortUrlIdList.add(shortUrlid);
                     }
                 }
                 resultPersonalData = getGroupNum(personalNoTask, shortUrlIdList, queryPersonalData, resultPersonalData);
-            }else {
+            } else {
                 log.info("查询所有渠道对应的短链");
-                getSql = DaoGetSql.getSql("SELECT * FROM " + ZCDBTaskChannel + " where personal_no_task_id = ? and deleted = 0", personalNoTask.getId());
+                getSql = DaoGetSql.getSql("SELECT * FROM " + ZCDBTaskChannel + " where personal_no_task_id = ? and deleted = 0 AND (`road_or_task` IS NULL OR`road_or_task` = 0)", personalNoTask.getId());
                 sql.setSql(getSql);
                 List<PersonalNoTaskChannel> taskChannelList = taskChannelService.listBySql(sql);
-                getSql = DaoGetSql.getSql("SELECT id from "+DBShortUrl+" where task_id = ? and channel_id = ? limit 0,1",personalNoTask.getId(),0);
+                getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where task_id = ? and channel_id = ? limit 0,1", personalNoTask.getId(), 0);
                 sql.setSql(getSql);
-                shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql))?-1:shortUrlService.getBySql(sql).getId();
+                shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
                 shortUrlIdList = new ArrayList<>();
                 shortUrlSet.add(shortUrlid);
-                if(!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)){
+                if (!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)) {
                     shortUrlIdList.add(shortUrlid);
                 }
                 for (PersonalNoTaskChannel personalNoTaskChannel : taskChannelList) {
-                    getSql = DaoGetSql.getSql("SELECT id from "+DBShortUrl+" where task_id = ? and channel_id = ? limit 0,1",personalNoTask.getId(), personalNoTaskChannel.getId());
+                    getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where task_id = ? and channel_id = ? limit 0,1", personalNoTask.getId(), personalNoTaskChannel.getId());
                     sql.setSql(getSql);
-                    shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql))?-1:shortUrlService.getBySql(sql).getId();
+                    shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
                     shortUrlSet.add(shortUrlid);
-                    if(!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)){
+                    if (!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)) {
                         shortUrlIdList.add(shortUrlid);
                     }
                 }
                 resultPersonalData = getGroupNum(personalNoTask, shortUrlIdList, queryPersonalData, resultPersonalData);
             }
         }
-        for (Integer shortUrlId : shortUrlSet) {
-            if(VerifyUtils.isEmpty(shortUrlId)){
+        for (Integer shortUrlId : shortUrlIdList) {
+            if (VerifyUtils.isEmpty(shortUrlId)) {
                 continue;
             }
-            StringBuffer getTCountsql = new StringBuffer("SELECT count(*) from "+ZCDBDatail12+" where short_url_id = "+shortUrlId+" and is_new = 1 ");
-            if(!VerifyUtils.isEmpty(queryPersonalData.getStartTime())){
+            StringBuffer getTCountsql = new StringBuffer("SELECT count(*) from " + ZCDBDatail12 + " where short_url_id = " + shortUrlId + " and is_new = 1 ");
+            if (!VerifyUtils.isEmpty(queryPersonalData.getStartTime())) {
                 getTCountsql = DaoGetSql.getTempSql(getTCountsql, true);
-                getTCountsql.append(" create_time > '"+WebConst.getNowDate(queryPersonalData.getStartTime())+"'");
+                getTCountsql.append(" create_time > '" + WebConst.getNowDate(queryPersonalData.getStartTime()) + "'");
             }
-            if(!VerifyUtils.isEmpty(queryPersonalData.getEndTime())){
+            if (!VerifyUtils.isEmpty(queryPersonalData.getEndTime())) {
                 getTCountsql = DaoGetSql.getTempSql(getTCountsql, true);
-                getTCountsql.append(" create_time < '"+WebConst.getNowDate(queryPersonalData.getEndTime())+"'");
+                getTCountsql.append(" create_time < '" + WebConst.getNowDate(queryPersonalData.getEndTime()) + "'");
             }
             sql.setSql(getTCountsql.toString());
             Long count = detailData12iService.countBySql(sql);
             toPeopleCount += count.intValue();
-            StringBuffer getCountsql = new StringBuffer("SELECT count(*) from "+ZCDBPersonalPeople+" where channel_id = "+shortUrlId+" and deleted = 0 and personal_friend_wx_id is not null");
-            StringBuffer getdeleteCountsql = new StringBuffer("SELECT count(*) from "+ZCDBPersonalPeople+" where channel_id = "+shortUrlId+" and personal_friend_wx_id is null and deleted = 1");
-            if(!VerifyUtils.isEmpty(queryPersonalData.getStartTime())){
+            StringBuffer getCountsql = new StringBuffer("SELECT count(*) from " + ZCDBPersonalPeople + " where channel_id = " + shortUrlId + " and personal_friend_wx_id is not null");
+            StringBuffer getdeleteCountsql = new StringBuffer("SELECT count(*) from " + ZCDBPersonalPeople + " where channel_id = " + shortUrlId + " and personal_friend_wx_id is null and deleted = 1");
+            if (!VerifyUtils.isEmpty(queryPersonalData.getStartTime())) {
                 getCountsql = DaoGetSql.getTempSql(getCountsql, true);
-                getCountsql.append(" be_friend_time > '"+WebConst.getNowDate(queryPersonalData.getStartTime())+"'");
-                getdeleteCountsql = DaoGetSql.getTempSql(getdeleteCountsql,true);
-                getdeleteCountsql.append(" be_friend_time > '"+WebConst.getNowDate(queryPersonalData.getStartTime())+"'");
+                getCountsql.append(" be_friend_time > '" + WebConst.getNowDate(queryPersonalData.getStartTime()) + "'");
+                getdeleteCountsql = DaoGetSql.getTempSql(getdeleteCountsql, true);
+                getdeleteCountsql.append(" be_friend_time > '" + WebConst.getNowDate(queryPersonalData.getStartTime()) + "'");
             }
-            if(!VerifyUtils.isEmpty(queryPersonalData.getEndTime())){
+            if (!VerifyUtils.isEmpty(queryPersonalData.getEndTime())) {
                 getCountsql = DaoGetSql.getTempSql(getCountsql, true);
-                getCountsql.append(" be_friend_time < '"+WebConst.getNowDate(queryPersonalData.getEndTime())+"'");
-                getdeleteCountsql = DaoGetSql.getTempSql(getdeleteCountsql,true);
-                getdeleteCountsql.append(" be_friend_time < '"+WebConst.getNowDate(queryPersonalData.getEndTime())+"'");
+                getCountsql.append(" be_friend_time < '" + WebConst.getNowDate(queryPersonalData.getEndTime()) + "'");
+                getdeleteCountsql = DaoGetSql.getTempSql(getdeleteCountsql, true);
+                getdeleteCountsql.append(" be_friend_time < '" + WebConst.getNowDate(queryPersonalData.getEndTime()) + "'");
             }
             count = personalNoPeopleService.getCount(getCountsql.toString());
             Long deleteCount = personalNoPeopleService.getCount(getdeleteCountsql.toString());
@@ -372,41 +384,41 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
         resultPersonalData.setAddFriendsNum(addFriendsCount);
         resultPersonalData.setKeepFriendsNum(addFriendsCount - delFriendsCount);
         log.info("加好友率");
-        if(resultPersonalData.getToPeopleNum() != 0){
+        if (resultPersonalData.getToPeopleNum() != 0) {
             Double div = WebConst.div(addFriendsCount.doubleValue(), toPeopleCount.doubleValue(), 4);
-            resultPersonalData.setTheRateOfAddFriends(div*100);
+            resultPersonalData.setTheRateOfAddFriends(div * 100);
         }
         log.info("用户入群率");
-        if(resultPersonalData.getAddFriendsNum() != 0){
+        if (resultPersonalData.getAddFriendsNum() != 0) {
             Double div = WebConst.div(resultPersonalData.getJoinGroupNum().doubleValue(), addFriendsCount.doubleValue(), 4);
-            resultPersonalData.setTheRateOfJoinGroup(div*100);
+            resultPersonalData.setTheRateOfJoinGroup(div * 100);
         }
         log.info("当日留存率");
-        if(resultPersonalData.getToPeopleNum() != 0){
+        if (resultPersonalData.getToPeopleNum() != 0) {
             Double div = WebConst.div(resultPersonalData.getTodayKeep().doubleValue(), toPeopleCount.doubleValue(), 4);
-            resultPersonalData.setTheRateOfTodayKeep(div*100);
+            resultPersonalData.setTheRateOfTodayKeep(div * 100);
         }
         log.info("全局转化率");
-        if(resultPersonalData.getJoinGroupNum() != 0){
+        if (resultPersonalData.getJoinGroupNum() != 0) {
             Double div = WebConst.div(resultPersonalData.getTodayKeep().doubleValue(), resultPersonalData.getJoinGroupNum().doubleValue(), 4);
-            resultPersonalData.setGlobalConversionRate(div*100);
+            resultPersonalData.setGlobalConversionRate(div * 100);
         }
         return resultPersonalData;
     }
 
-    private ResultPersonalData getGroupNum(PersonalNoTask personalNoTask,List<Integer> shortUrlIdList,QueryPersonalData queryPersonalData, ResultPersonalData resultPersonalData){
+    private ResultPersonalData getGroupNum(PersonalNoTask personalNoTask, List<Integer> shortUrlIdList, QueryPersonalData queryPersonalData, ResultPersonalData resultPersonalData) {
         log.info("总入群数");
         Integer joinGroupCount = 0;
         log.info("今日群留存数");
         Integer todayKeep = 0;
-        String getsql = DaoGetSql.getSql("SELECT * from "+ZCDBTaskReplyContent+" where personal_no_task_id = ? and content_type = '邀请入群' limit 0,1",personalNoTask.getId());
+        String getsql = DaoGetSql.getSql("SELECT * from " + ZCDBTaskReplyContent + " where personal_no_task_id = ? and content_type = '邀请入群' limit 0,1", personalNoTask.getId());
         Sql sql = new Sql(getsql);
         PersonalNoTaskReplyContent personalNoTaskReplyContent = taskReplyContentService.getBySql(sql);
-        if(!VerifyUtils.isEmpty(personalNoTaskReplyContent) && !VerifyUtils.isEmpty(personalNoTaskReplyContent.getContent())) {
+        if (!VerifyUtils.isEmpty(personalNoTaskReplyContent) && !VerifyUtils.isEmpty(personalNoTaskReplyContent.getContent())) {
             List<Integer> groupCategoryIdList = new ArrayList<>();
             String[] split = personalNoTaskReplyContent.getContent().split("/");
-            if(split.length>1){
-                if(!groupCategoryIdList.contains(Integer.parseInt(split[1]))) {
+            if (split.length > 1) {
+                if (!groupCategoryIdList.contains(Integer.parseInt(split[1]))) {
                     groupCategoryIdList.add(Integer.parseInt(split[1]));
                 }
             }
@@ -421,21 +433,21 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
             if (!VerifyUtils.isEmpty(queryPersonalData.getEndTime())) {
                 personNoEnterGroupQueryRequestInfo.setEnd_time(queryPersonalData.getEndTime());
             }
-            List<PersonNoEnterGroupQueryRequestInfo>  personNoEnterGroupQueryRequestInfoList = new ArrayList<>();
+            List<PersonNoEnterGroupQueryRequestInfo> personNoEnterGroupQueryRequestInfoList = new ArrayList<>();
             personNoEnterGroupQueryRequestInfoList.add(personNoEnterGroupQueryRequestInfo);
             String s = HttpClientUtil.sendPost("http://youyoudk.cn/SpringBootService/queryGroupCategoryMember", JsonObjectUtils.objectToJson(personNoEnterGroupQueryRequestInfoList));
-            if(!VerifyUtils.isEmpty(s)) {
+            if (!VerifyUtils.isEmpty(s)) {
                 ResponseInfo responseInfo = JsonObjectUtils.jsonToPojo(s, ResponseInfo.class);
-                if(responseInfo.code == 0){
-                    List<Map<String,Integer>> personNoEnterGroupQueryResponseInfoList = (List<Map<String,Integer>>)responseInfo.data;
-                    if(!VerifyUtils.collectionIsEmpty(personNoEnterGroupQueryResponseInfoList) && !VerifyUtils.isEmpty(personNoEnterGroupQueryResponseInfoList.get(0))) {
+                if (responseInfo.code == 0) {
+                    List<Map<String, Integer>> personNoEnterGroupQueryResponseInfoList = (List<Map<String, Integer>>) responseInfo.data;
+                    if (!VerifyUtils.collectionIsEmpty(personNoEnterGroupQueryResponseInfoList) && !VerifyUtils.isEmpty(personNoEnterGroupQueryResponseInfoList.get(0))) {
                         System.err.println(personNoEnterGroupQueryResponseInfoList.get(0));
                         Map<String, Integer> stringStringMap = personNoEnterGroupQueryResponseInfoList.get(0);
                         Set<Map.Entry<String, Integer>> entries = stringStringMap.entrySet();
                         for (Map.Entry<String, Integer> entry : entries) {
-                            if("enter_group_group_member_count".equals(entry.getKey())){
+                            if ("enter_group_group_member_count".equals(entry.getKey())) {
                                 joinGroupCount += entry.getValue();
-                            }else if("enter_group_group_member_count_resverd".equals(entry.getKey())){
+                            } else if ("enter_group_group_member_count_resverd".equals(entry.getKey())) {
                                 todayKeep += entry.getValue();
                             }
                         }
@@ -443,9 +455,214 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
                 }
             }
         }
-        resultPersonalData.setJoinGroupNum(resultPersonalData.getJoinGroupNum()+joinGroupCount);
-        resultPersonalData.setTodayKeep(resultPersonalData.getTodayKeep()+todayKeep);
+        resultPersonalData.setJoinGroupNum(resultPersonalData.getJoinGroupNum() + joinGroupCount);
+        resultPersonalData.setTodayKeep(resultPersonalData.getTodayKeep() + todayKeep);
         return resultPersonalData;
     }
+
+    /**
+     * 根据通道查询
+     *
+     * @param queryPersonalData
+     * @return
+     */
+    @Override
+    public ResultPersonalData getRoadAllData(QueryPersonalData queryPersonalData) {
+        ResultPersonalData resultPersonalData = new ResultPersonalData();
+        log.info("总推送人");
+        Integer toPeopleCount = 0;
+        log.info("总添加好友数");
+        Integer addFriendsCount = 0;
+        Integer delFriendsCount = 0;
+        resultPersonalData.setJoinGroupNum(0);
+        resultPersonalData.setTodayKeep(0);
+        StringBuffer temp = new StringBuffer("select * from " + DBRoad + " where deleted = 0");
+        if (!VerifyUtils.isEmpty(queryPersonalData)) {
+            boolean F = true;
+            if (!VerifyUtils.collectionIsEmpty(queryPersonalData.getNoRoadName())) {
+                String names = DaoGetSql.getIds(queryPersonalData.getNoRoadName());
+                temp = DaoGetSql.getTempSql(temp, F);
+                temp.append(" road_name in " + names);
+            }
+        }
+        temp.append(" order by id desc");
+        Sql sql = new Sql(temp.toString());
+        List<PersonalNoRoad> noTaskList = roadService.listByQueryPersonalData(sql);
+        Set<Integer> shortUrlSet = new HashSet<>();
+        Iterator<PersonalNoRoad> iterator = noTaskList.iterator();
+        List<Integer> shortUrlIdList = new ArrayList<>();
+        Integer shortUrlid = null;
+        String getSql = null;
+        while (iterator.hasNext()) {
+            log.info("查询任务对应的渠道的短链");
+            PersonalNoRoad road = iterator.next();
+            if (!VerifyUtils.collectionIsEmpty(queryPersonalData.getPersonalnoChannelName())) {
+                List<Integer> personalnoChannelId = queryPersonalData.getPersonalnoChannelName();
+                for (Integer integer : personalnoChannelId) {
+                    getSql = DaoGetSql.getSql("SELECT id from " + ZCDBTaskChannel + " where personal_no_task_id = ? and channel_id = ? and deleted = 0 and road_or_task = '1'", road.getId(), integer);
+                    sql.setSql(getSql);
+                    Integer bySql = taskChannelService.getIdBySql(sql);
+                    getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where passage_id = ? and channel_id = ? limit 0,1", road.getId(), bySql);
+                    sql.setSql(getSql);
+                    shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
+                    shortUrlSet.add(shortUrlid);
+                    if (!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)) {
+                        shortUrlIdList.add(shortUrlid);
+                    }
+                }
+            } else {
+                log.info("查询所有渠道对应的短链");
+                getSql = DaoGetSql.getSql("SELECT * FROM " + ZCDBTaskChannel + " where personal_no_task_id = ? and deleted = 0 and road_or_task = 1", road.getId());
+                sql.setSql(getSql);
+                List<PersonalNoTaskChannel> taskChannelList = taskChannelService.listBySql(sql);
+                getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where passage_id = ? and channel_id = ? limit 0,1", road.getId(), 0);
+                sql.setSql(getSql);
+                shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
+                shortUrlIdList = new ArrayList<>();
+                shortUrlSet.add(shortUrlid);
+                if (!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)) {
+                    shortUrlIdList.add(shortUrlid);
+                }
+                for (PersonalNoTaskChannel personalNoTaskChannel : taskChannelList) {
+                    getSql = DaoGetSql.getSql("SELECT id from " + DBShortUrl + " where task_id = ? and channel_id = ? limit 0,1", road.getId(), personalNoTaskChannel.getId());
+                    sql.setSql(getSql);
+                    shortUrlid = VerifyUtils.isEmpty(shortUrlService.getBySql(sql)) ? -1 : shortUrlService.getBySql(sql).getId();
+                    shortUrlSet.add(shortUrlid);
+                    if (!shortUrlIdList.contains(shortUrlid) && !VerifyUtils.isEmpty(shortUrlid)) {
+                        shortUrlIdList.add(shortUrlid);
+                    }
+                }
+            }
+        }
+        if (shortUrlIdList.contains(276)) {
+            shortUrlIdList.add(273);
+            shortUrlIdList.add(274);
+            shortUrlIdList.add(275);
+        }
+        log.info("统计入群数据");
+        for (PersonalNoRoad road : noTaskList) {
+            resultPersonalData = getRoadGroupNum(road, shortUrlIdList, queryPersonalData, resultPersonalData);
+        }
+        for (Integer shortUrlId : shortUrlIdList) {
+            if (VerifyUtils.isEmpty(shortUrlId)) {
+                continue;
+            }
+            StringBuffer getTCountsql = new StringBuffer("SELECT count(*) from " + ZCDBDatail12 + " where short_url_id = " + shortUrlId + " and is_new = 1 ");
+            if (!VerifyUtils.isEmpty(queryPersonalData.getStartTime())) {
+                getTCountsql = DaoGetSql.getTempSql(getTCountsql, true);
+                getTCountsql.append(" create_time > '" + WebConst.getNowDate(queryPersonalData.getStartTime()) + "'");
+            }
+            if (!VerifyUtils.isEmpty(queryPersonalData.getEndTime())) {
+                getTCountsql = DaoGetSql.getTempSql(getTCountsql, true);
+                getTCountsql.append(" create_time < '" + WebConst.getNowDate(queryPersonalData.getEndTime()) + "'");
+            }
+            sql.setSql(getTCountsql.toString());
+            Long count = detailData12iService.countBySql(sql);
+            toPeopleCount += count.intValue();
+            StringBuffer getCountsql = new StringBuffer("SELECT count(*) from " + ZCDBPersonalPeople + " where channel_id = " + shortUrlId + " and deleted = 0 and personal_friend_wx_id is not null");
+            StringBuffer getdeleteCountsql = new StringBuffer("SELECT count(*) from " + ZCDBPersonalPeople + " where channel_id = " + shortUrlId + " and personal_friend_wx_id is null and deleted = 1");
+            if (!VerifyUtils.isEmpty(queryPersonalData.getStartTime())) {
+                getCountsql = DaoGetSql.getTempSql(getCountsql, true);
+                getCountsql.append(" be_friend_time > '" + WebConst.getNowDate(queryPersonalData.getStartTime()) + "'");
+                getdeleteCountsql = DaoGetSql.getTempSql(getdeleteCountsql, true);
+                getdeleteCountsql.append(" be_friend_time > '" + WebConst.getNowDate(queryPersonalData.getStartTime()) + "'");
+            }
+            if (!VerifyUtils.isEmpty(queryPersonalData.getEndTime())) {
+                getCountsql = DaoGetSql.getTempSql(getCountsql, true);
+                getCountsql.append(" be_friend_time < '" + WebConst.getNowDate(queryPersonalData.getEndTime()) + "'");
+                getdeleteCountsql = DaoGetSql.getTempSql(getdeleteCountsql, true);
+                getdeleteCountsql.append(" be_friend_time < '" + WebConst.getNowDate(queryPersonalData.getEndTime()) + "'");
+            }
+            count = personalNoPeopleService.getCount(getCountsql.toString());
+            Long deleteCount = personalNoPeopleService.getCount(getdeleteCountsql.toString());
+            addFriendsCount += count.intValue();
+            delFriendsCount += deleteCount.intValue();
+
+        }
+        resultPersonalData.setToPeopleNum(toPeopleCount);
+        resultPersonalData.setAddFriendsNum(addFriendsCount);
+        resultPersonalData.setKeepFriendsNum(addFriendsCount - delFriendsCount);
+        log.info("加好友率");
+        if (resultPersonalData.getToPeopleNum() != 0) {
+            Double div = WebConst.div(addFriendsCount.doubleValue(), toPeopleCount.doubleValue(), 4);
+            resultPersonalData.setTheRateOfAddFriends(div * 100);
+        }
+        log.info("用户入群率");
+        if (resultPersonalData.getAddFriendsNum() != 0) {
+            Double div = WebConst.div(resultPersonalData.getJoinGroupNum().doubleValue(), addFriendsCount.doubleValue(), 4);
+            resultPersonalData.setTheRateOfJoinGroup(div * 100);
+        }
+        log.info("当日留存率");
+        if (resultPersonalData.getToPeopleNum() != 0) {
+            Double div = WebConst.div(resultPersonalData.getTodayKeep().doubleValue(), toPeopleCount.doubleValue(), 4);
+            resultPersonalData.setTheRateOfTodayKeep(div * 100);
+        }
+        log.info("全局转化率");
+        if (resultPersonalData.getJoinGroupNum() != 0) {
+            Double div = WebConst.div(resultPersonalData.getTodayKeep().doubleValue(), resultPersonalData.getJoinGroupNum().doubleValue(), 4);
+            resultPersonalData.setGlobalConversionRate(div * 100);
+        }
+        return resultPersonalData;
+    }
+
+    private ResultPersonalData getRoadGroupNum(PersonalNoRoad personalNoRoad, List<Integer> shortUrlIdList, QueryPersonalData queryPersonalData, ResultPersonalData resultPersonalData) {
+        log.info("总入群数");
+        Integer joinGroupCount = 0;
+        log.info("今日群留存数");
+        Integer todayKeep = 0;
+        String getsql = DaoGetSql.getSql("SELECT * FROM " + ZCDBTask + " WHERE `road_id` = ? AND `deleted` = 0 ", personalNoRoad.getId());
+        Sql sql = new Sql(getsql);
+        List<PersonalNoTask> noTasks = noTaskService.listBySql(sql);
+        for (PersonalNoTask noTask : noTasks) {
+            getsql = DaoGetSql.getSql("SELECT * from " + ZCDBTaskReplyContent + " where personal_no_task_id = ? and content_type = '邀请入群' limit 0,1", noTask.getId());
+            sql.setSql(getsql);
+            PersonalNoTaskReplyContent personalNoTaskReplyContent = taskReplyContentService.getBySql(sql);
+            if (!VerifyUtils.isEmpty(personalNoTaskReplyContent) && !VerifyUtils.isEmpty(personalNoTaskReplyContent.getContent())) {
+                List<Integer> groupCategoryIdList = new ArrayList<>();
+                String[] split = personalNoTaskReplyContent.getContent().split("/");
+                if (split.length > 1) {
+                    if (!groupCategoryIdList.contains(Integer.parseInt(split[1]))) {
+                        groupCategoryIdList.add(Integer.parseInt(split[1]));
+                    }
+                }
+                log.info("查询对应的入群人数和群留存人数");
+                PersonNoEnterGroupQueryRequestInfo personNoEnterGroupQueryRequestInfo = new PersonNoEnterGroupQueryRequestInfo();
+                personNoEnterGroupQueryRequestInfo.setTask_id(noTask.getId());
+                personNoEnterGroupQueryRequestInfo.setChannel_id_list(shortUrlIdList);
+                personNoEnterGroupQueryRequestInfo.setGroup_category_id_list(groupCategoryIdList);
+                if (!VerifyUtils.isEmpty(queryPersonalData.getStartTime())) {
+                    personNoEnterGroupQueryRequestInfo.setStart_time(queryPersonalData.getStartTime());
+                }
+                if (!VerifyUtils.isEmpty(queryPersonalData.getEndTime())) {
+                    personNoEnterGroupQueryRequestInfo.setEnd_time(queryPersonalData.getEndTime());
+                }
+                List<PersonNoEnterGroupQueryRequestInfo> personNoEnterGroupQueryRequestInfoList = new ArrayList<>();
+                personNoEnterGroupQueryRequestInfoList.add(personNoEnterGroupQueryRequestInfo);
+                String s = HttpClientUtil.sendPost("http://youyoudk.cn/SpringBootService/queryGroupCategoryMember", JsonObjectUtils.objectToJson(personNoEnterGroupQueryRequestInfoList));
+                if (!VerifyUtils.isEmpty(s)) {
+                    ResponseInfo responseInfo = JsonObjectUtils.jsonToPojo(s, ResponseInfo.class);
+                    if (responseInfo.code == 0) {
+                        List<Map<String, Integer>> personNoEnterGroupQueryResponseInfoList = (List<Map<String, Integer>>) responseInfo.data;
+                        if (!VerifyUtils.collectionIsEmpty(personNoEnterGroupQueryResponseInfoList) && !VerifyUtils.isEmpty(personNoEnterGroupQueryResponseInfoList.get(0))) {
+                            System.err.println(personNoEnterGroupQueryResponseInfoList.get(0));
+                            Map<String, Integer> stringStringMap = personNoEnterGroupQueryResponseInfoList.get(0);
+                            Set<Map.Entry<String, Integer>> entries = stringStringMap.entrySet();
+                            for (Map.Entry<String, Integer> entry : entries) {
+                                if ("enter_group_group_member_count".equals(entry.getKey())) {
+                                    joinGroupCount += entry.getValue();
+                                } else if ("enter_group_group_member_count_resverd".equals(entry.getKey())) {
+                                    todayKeep += entry.getValue();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        resultPersonalData.setJoinGroupNum(resultPersonalData.getJoinGroupNum() + joinGroupCount);
+        resultPersonalData.setTodayKeep(resultPersonalData.getTodayKeep() + todayKeep);
+        return resultPersonalData;
+    }
+
 
 }

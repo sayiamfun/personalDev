@@ -41,4 +41,6 @@ public interface PersonalNoDataService extends IService<PersonalNoData> {
     Map<String,List<String>> getDateByDateList(String flag, List<PersonalNoData> list);
 
     ResultPersonalData getAllData(QueryPersonalData queryPersonalData);
+
+    ResultPersonalData getRoadAllData(QueryPersonalData queryPersonalData);
 }

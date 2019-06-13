@@ -46,7 +46,7 @@ public class PersonalNoDataController {
     private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
 
 
-    @ApiOperation(value = "查询总体数据")
+    @ApiOperation(value = "查询任务总体数据")
     @PostMapping("pagePersonalDate")
     public R pagePersonalDate(
             @ApiParam(name = "queryPersonalData", value = "查询参数", required = true)
@@ -54,6 +54,22 @@ public class PersonalNoDataController {
             ){
         try {
             ResultPersonalData resultPersonalData = dataService.getAllData(queryPersonalData);
+            return R.ok().data(resultPersonalData);
+        }catch (Exception e){
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(queryPersonalData), "查询总体数据异常", "", 1,e);
+            return R.error().message("网页走丢了，请刷新。。。");
+        }
+    }
+
+
+    @ApiOperation(value = "查询通道总体数据")
+    @PostMapping("pageRoadPersonalDate")
+    public R pageRoadPersonalDate(
+            @ApiParam(name = "queryPersonalData", value = "查询参数", required = true)
+            @RequestBody QueryPersonalData queryPersonalData, HttpServletRequest request
+    ){
+        try {
+            ResultPersonalData resultPersonalData = dataService.getRoadAllData(queryPersonalData);
             return R.ok().data(resultPersonalData);
         }catch (Exception e){
             G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(queryPersonalData), "查询总体数据异常", "", 1,e);

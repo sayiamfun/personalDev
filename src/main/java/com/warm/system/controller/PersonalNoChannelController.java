@@ -7,12 +7,14 @@ import com.warm.entity.R;
 import com.warm.entity.Sql;
 import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoChannel;
+import com.warm.system.entity.PersonalNoSuperuesr;
 import com.warm.system.service.db1.PersonalNoChannelService;
 import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.system.service.db1.PersonalNoTaskChannelService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
+import com.warm.utils.WebConst;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -128,7 +130,7 @@ public class PersonalNoChannelController {
             if (!VerifyUtils.isEmpty(one)) {
                 if(VerifyUtils.isEmpty(personalnoChannel.getId())) {
                     return R.error().message("此渠道已经存在");
-                }else if(!(""+one.getId()).equals(personalnoChannel.getId())){
+                }else if(!(""+one.getId()).equals(""+personalnoChannel.getId())){
                     return R.error().message("此渠道已经存在");
                 }else if(!VerifyUtils.isEmpty(one.getRemarks()) && one.getRemarks().equals(personalnoChannel.getRemarks())){
                     return R.error().message("您未做任何修改");
@@ -140,6 +142,9 @@ public class PersonalNoChannelController {
                 Sql sql = new Sql(getSql);
                 taskChannelService.updateBySql(sql);
             }
+            PersonalNoSuperuesr superuesr = (PersonalNoSuperuesr) request.getAttribute(WebConst.SUPERUSER);
+            personalnoChannel.setSuperId(superuesr.getId());
+            personalnoChannel.setSuperName(superuesr.getSuperName());
             personalnoChannel.setDb(DBChannel);
             personalnoChannel.setDeleted(0);
             Integer add = personalnoChannelService.add(personalnoChannel);

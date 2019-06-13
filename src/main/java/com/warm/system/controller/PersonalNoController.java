@@ -56,22 +56,22 @@ public class PersonalNoController {
     @Autowired
     private PersonalNoCategoryAndGroupService categoryAndGroupService;
     @Autowired
-    private PersonalNoTaskLableService taskLableService;
-    @Autowired
-    private PersonalNoTaskPersonalService taskPersonalService;
-    @Autowired
     private PersonalNoRequestExceptionService requestExceptionService;
     @Autowired
     private PersonalNoCategoryService noCategoryService;
+    @Autowired
+    private PersonalNoLableService lableService;
+    @Autowired
+    private PersonalNoPeopleService peopleService;
 
     private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBWeChat = DB.DBAndTable(DB.OA, DB.operation_stock_wechat_account);
     private String DBFriends = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_friends);
     private String DBCategoryAndGroup = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category_and_group);
     private String DBUser = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_user);
-    private String DBTaskLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_lable);
-    private String DBTaskPersonal = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_task_personal);
     private String DBNoCategory = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_category);
+    private String DBLable = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_lable);
+    private String DBPeople = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_people);
 
 
     @ApiOperation(value = "查询所有个人号列表")
@@ -410,20 +410,28 @@ public class PersonalNoController {
             if(VerifyUtils.collectionIsEmpty(queryPersonal.getLableList())){
                 return R.error().message("标签列表为空");
             }
-            log.info("拼接标签id");
             String lableIds = DaoGetSql.getIds(queryPersonal.getLableList());
-            String getSql = "SELECT DISTINCT personal_no_task_id FROM "+DBTaskLable+" where lable_id in "+lableIds+" and deleted = 0";
-            Sql sql = new Sql(getSql);
-            List<String> taskIdList = taskLableService.listStringBySql(sql);
-            log.info("根据任务id查询所有的可用个人号微信id");
-            String taskIds = DaoGetSql.getIds(taskIdList);
-            getSql = "SELECT DISTINCT personal_no_wx_id FROM "+DBTaskPersonal+" where personal_no_task_id in "+taskIds+" and deleted = 0";
-            sql.setSql(getSql);
-            List<String> wxIdList = taskPersonalService.listStringBySql(sql);
+            String getSql = "SELECT DISTINCT `lable_name` FROM "+DBLable+" WHERE id IN "+lableIds+" and deleted = 0";
+            List<String> lableNameList = lableService.listString(getSql);
+            String lableQuery = "";
+            if(!VerifyUtils.collectionIsEmpty(lableNameList)){
+                StringBuffer temp = new StringBuffer();
+                for (int i =0;i<lableNameList.size() ; i++) {
+                    if(i==0){
+                        temp.append(" WHERE ( `lable` LIKE '%|"+lableNameList.get(i)+"|%'");
+                    }else {
+                        temp.append(" or `lable` LIKE '%|"+lableNameList.get(i)+"|%'");
+                    }
+                }
+                temp.append(" )");
+                lableQuery = temp.toString();
+            }
+            getSql= "SELECT `personal_no_wx_id` FROM "+DBPeople+lableQuery+" AND deleted = 0 AND flag = 2 GROUP BY `personal_no_wx_id`";
+            List<String> personalWxIdList = peopleService.listString(getSql);
+            String wxIds = DaoGetSql.getIds(personalWxIdList);
             log.info("根据个人号微信id查询所有的个人号");
-            String wxIds = DaoGetSql.getIds(wxIdList);
-            getSql = "SELECT * FROM "+DBWeChat+" where wx_id in "+wxIds;
-            sql.setSql(getSql);
+            getSql = "SELECT * FROM "+DBWeChat+" where wx_id in "+wxIds+" and operation_project_instance_id = "+G.ms_OPERATION_PROJECT_INSTANCE_ID;
+            Sql sql = new Sql(getSql);
             List<PersonalNoOperationStockWechatAccount> list = wechatAccountService.listBySql(sql);
             for (PersonalNoOperationStockWechatAccount wechatAccount : list) {
                 wechatAccount.setNickName(wechatAccount.getNickName()+"("+wechatAccount.getStatus()+")");

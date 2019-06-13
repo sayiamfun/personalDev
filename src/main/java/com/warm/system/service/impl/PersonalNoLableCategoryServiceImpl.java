@@ -1,6 +1,5 @@
 package com.warm.system.service.impl;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.warm.entity.DB;
 import com.warm.entity.result.LableManager;
@@ -12,13 +11,11 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.warm.system.service.db1.PersonalNoLableService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.VerifyUtils;
-import net.bytebuddy.asm.Advice;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

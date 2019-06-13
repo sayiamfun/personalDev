@@ -6,12 +6,14 @@ import com.warm.entity.R;
 import com.warm.entity.Sql;
 import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoCategory;
+import com.warm.system.entity.PersonalNoSuperuesr;
 import com.warm.system.service.db1.PersonalNoCategoryAndGroupService;
 import com.warm.system.service.db1.PersonalNoCategoryService;
 import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
+import com.warm.utils.WebConst;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -93,6 +95,8 @@ public class PersonalNoCategoryController {
                 Sql sql = new Sql(getSql);
                 categoryAndGroupService.updateBySql(sql);
             }
+            PersonalNoSuperuesr superuesr = (PersonalNoSuperuesr) request.getAttribute(WebConst.SUPERUSER);
+            noCategory.setSuperId(superuesr.getId());
             noCategory.setDeleted(0);
             noCategory.setDb(DBNoCategory);
             noCategoryService.add(noCategory);

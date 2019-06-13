@@ -9,10 +9,7 @@ import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoChannel;
 import com.warm.system.entity.PersonalNoTask;
 import com.warm.system.entity.PersonalNoTaskChannel;
-import com.warm.system.service.db1.PersonalNoChannelService;
-import com.warm.system.service.db1.PersonalNoRequestExceptionService;
-import com.warm.system.service.db1.PersonalNoTaskChannelService;
-import com.warm.system.service.db1.PersonalNoTaskService;
+import com.warm.system.service.db1.*;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
@@ -25,10 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.net.DatagramPacket;
+import java.util.*;
 
 /**
  * <p>
@@ -53,11 +48,14 @@ public class PersonalNoTaskChannelController {
     private PersonalNoChannelService channelService;
     @Autowired
     private PersonalNoRequestExceptionService requestExceptionService;
+    @Autowired
+    private PersonalNoRoadService roadService;
 
     private String DBRequestException = DB.DBAndTable(DB.PERSONAL_ZC_01, DB.personal_no_request_exception);
     private String DBTaskChannel = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task_channel);
     private String DBTask = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_task);
     private String DBChannel = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_channel);
+    private String DBRoad = DB.DBAndTable(DB.PERSONAL_ZC_01,DB.personal_no_road);
 
     @ApiOperation(value = "根据任务查询渠道")
     @GetMapping("listByTaskId/{taskId}/")
@@ -85,6 +83,7 @@ public class PersonalNoTaskChannelController {
             log.info("根据任务id查询渠道开始");
             Set<String> channelIdList = new HashSet<>();
             List<PersonalNoTaskChannel> personalNoTaskChannelList = new ArrayList<>();
+            List<PersonalNoTaskChannel> resultPersonalNoTaskChannelList = new ArrayList<>();
             String getSql = DaoGetSql.getSql("SELECT * FROM " + DBTask + " where road_id = ? and deleted = 0", roadId);
             Sql sql = new Sql(getSql);
             List<PersonalNoTask> personalNoTasks = noTaskService.listBySql(sql);
@@ -93,14 +92,30 @@ public class PersonalNoTaskChannelController {
                 sql.setSql(getSql);
                 List<PersonalNoTaskChannel> listByTaskId = taskChannelService.listBySql(sql);
                 for (PersonalNoTaskChannel personalNoTaskChannel : listByTaskId) {
-                    if(!channelIdList.contains(personalNoTaskChannel.getChannelId())) {
+                    if(!channelIdList.contains(""+personalNoTaskChannel.getChannelId())) {
+                        personalNoTaskChannel.setPersonalNoTaskId(roadId.intValue());
+                        channelIdList.add(""+personalNoTaskChannel.getChannelId());
                         personalNoTaskChannel.setUrl(null);
                         personalNoTaskChannelList.add(personalNoTaskChannel);
                     }
                 }
             }
+            for (PersonalNoTaskChannel personalNoTaskChannel : personalNoTaskChannelList) {
+                getSql = DaoGetSql.getSql("SELECT * FROM "+DBTaskChannel+" where personal_no_task_id = ? and channel_id = ? and deleted = 0 and road_or_task = '1' limit 0,1",personalNoTaskChannel.getPersonalNoTaskId(),personalNoTaskChannel.getChannelId());
+                sql.setSql(getSql);
+                PersonalNoTaskChannel one =  taskChannelService.getBySql(sql);
+                if(VerifyUtils.isEmpty(one)){
+                    personalNoTaskChannel.setId(null);
+                    personalNoTaskChannel.setRoadOrTask("1");
+                    personalNoTaskChannel.setDb(DBTaskChannel);
+                    taskChannelService.add(personalNoTaskChannel);
+                    resultPersonalNoTaskChannelList.add(personalNoTaskChannel);
+                }else {
+                    resultPersonalNoTaskChannelList.add(one);
+                }
+            }
             log.info("根据任务id查询渠道渠道成功");
-            return R.ok().data(personalNoTaskChannelList);
+            return R.ok().data(resultPersonalNoTaskChannelList);
         }catch (Exception e){
             G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(roadId), "根据通道查询渠道异常", "", 1,e);
             return R.error().message("网页走丢了，请返回重试。。。");
@@ -135,5 +150,49 @@ public class PersonalNoTaskChannelController {
             return R.error().message("网页走丢了。。。请返回重试");
         }
     }
+
+    @ApiOperation("根据通道名称查询渠道集合")
+    @PostMapping("listChannelByRoadName")
+    public R listChannelByRoadName(
+            @ApiParam(name = "queryPersonalData", value = "请求参数", required = true)
+            @RequestBody QueryPersonalData queryPersonalData,HttpServletRequest request
+    ){
+        try {
+            log.info("");
+            List<PersonalNoChannel> channelList = new ArrayList<>();
+            if(!VerifyUtils.collectionIsEmpty(queryPersonalData.getNoRoadName())){
+                String names = DaoGetSql.getIds(queryPersonalData.getNoRoadName());
+                String getSql = "SELECT `id` FROM "+DBRoad+" WHERE `road_name` IN "+names;
+                Sql sql = new Sql(getSql);
+                List<String> idList = roadService.listStringBySql(sql);
+                String roadIds = DaoGetSql.getIds(idList);
+                getSql = "SELECT id FROM "+DBTask+" WHERE  `road_id` IN "+roadIds+" AND deleted = 0";
+                sql.setSql(getSql);
+                List<String> taskIdList = noTaskService.listStringBySql(sql);
+                String taskIds = DaoGetSql.getIds(taskIdList);
+                String sql1 = "select DISTINCT channel_id from "+DBTask+" as task\n" +
+                        "left join "+DBTaskChannel+" as taskChannel on task.id = taskChannel.personal_no_task_id\n" +
+                        "where task.id in "+taskIds;
+                sql.setSql(sql1);
+                List<Integer> channelIds = taskChannelService.listChannelIdsBySql(sql);
+                if(!VerifyUtils.collectionIsEmpty(channelIds)){
+                    String ids = DaoGetSql.getIds(channelIds);
+                    sql1 = "SELECT * from "+DBChannel+" where id in "+ids+" and deleted = 0";
+                    channelList = channelService.list(sql1);
+                }
+            }
+            PersonalNoChannel taskChannel = new PersonalNoChannel();
+            taskChannel.setId(0);
+            taskChannel.setChannelName("默认渠道");
+            channelList.add(0,taskChannel);
+            return R.ok().data(channelList);
+        }catch (Exception e){
+            G.requestException(DBRequestException, requestExceptionService, request, JsonObjectUtils.objectToJson(queryPersonalData), "根据通道名称查询渠道集合", "", 1,e);
+            return R.error().message("网页走丢了。。。请返回重试");
+        }
+    }
+
+
+
 }
 

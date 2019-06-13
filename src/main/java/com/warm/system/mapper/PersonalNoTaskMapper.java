@@ -44,4 +44,7 @@ public interface PersonalNoTaskMapper extends BaseMapper<PersonalNoTask> {
 
     @Delete("${sql}")
     int deleteBySql(Sql sql);
+
+    @Select("${sql}")
+    List<String> listStringBySql(Sql sql);
 }

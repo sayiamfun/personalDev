@@ -434,6 +434,11 @@ public class PersonalNoTaskServiceImpl extends ServiceImpl<PersonalNoTaskMapper,
         return noTaskMapper.getbySql(sql);
     }
 
+    @Override
+    public List<String> listStringBySql(Sql sql) {
+        return noTaskMapper.listStringBySql(sql);
+    }
+
 
     //将任务渠道列表转换为渠道名称列表      返回数据使用
     private List<String > getChannelNameList(List<PersonalNoTaskChannel> noTaskChannelList){

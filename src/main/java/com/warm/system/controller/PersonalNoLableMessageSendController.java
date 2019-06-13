@@ -8,12 +8,14 @@ import com.warm.entity.requre.PeopleNumReq;
 import com.warm.entity.robot.G;
 import com.warm.system.entity.PersonalNoLableMessageSend;
 import com.warm.system.entity.PersonalNoPeople;
+import com.warm.system.entity.PersonalNoSuperuesr;
 import com.warm.system.service.db1.PersonalNoLableMessageSendService;
 import com.warm.system.service.db1.PersonalNoPeopleService;
 import com.warm.system.service.db1.PersonalNoRequestExceptionService;
 import com.warm.utils.DaoGetSql;
 import com.warm.utils.JsonObjectUtils;
 import com.warm.utils.VerifyUtils;
+import com.warm.utils.WebConst;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -68,6 +70,8 @@ public class PersonalNoLableMessageSendController {
                     log.info("要添加的标签消息个人号列表为空");
                     return R.error().message("要添加的标签消息个人号列表为空");
                 }
+                PersonalNoSuperuesr superuesr = (PersonalNoSuperuesr) request.getAttribute(WebConst.SUPERUSER);
+                personalNoLableMessageSend.setSuperId(superuesr.getId());
                 boolean b = personalNoLableMessageSendService.insertLableMessage(personalNoLableMessageSend);
                 if(!b){
                     log.info("添加标签消息失败");

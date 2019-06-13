@@ -59,7 +59,7 @@ spring:
         initialSize: 5
         minIdle: 5
         maxActive: 20
-#      #数据库 1
+      #数据库 1
 #      db1:
 #        url: jdbc:mysql://rm-wz9jff194901y4x5jpo.mysql.rds.aliyuncs.com:3306/personal_test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
 #        username: root
