@@ -1,5 +1,6 @@
 package com.warm.entity.query;
 
+import com.warm.system.entity.PersonalNoChannel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -22,7 +23,7 @@ public class QueryPersonalData implements Serializable {
     @ApiModelProperty(value = "个人号任务")
     private List<String> noTaskName;
     @ApiModelProperty(value = "个人号任务渠道")
-    private List<Integer> personalnoChannelName;
+    private List<PersonalNoChannel> personalnoChannelName;
     @ApiModelProperty(value = "开始时间")
     private Date startTime;
     @ApiModelProperty(value = "结束时间")

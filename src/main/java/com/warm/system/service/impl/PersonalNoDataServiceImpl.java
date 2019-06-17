@@ -301,11 +301,17 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
         List<Integer> shortUrlIdList = new ArrayList<>();
         Integer shortUrlid = null;
         String getSql = null;
+        List<PersonalNoChannel> personalnoChannelList = queryPersonalData.getPersonalnoChannelName();
+        List<Integer> personalnoChannelId = new ArrayList<>();
+        for (PersonalNoChannel personalNoChannel : personalnoChannelList) {
+            if(!personalnoChannelId.contains(personalNoChannel.getId())){
+                personalnoChannelId.add(personalNoChannel.getId());
+            }
+        }
         while (iterator.hasNext()) {
             log.info("查询任务对应的渠道的短链");
             PersonalNoTask personalNoTask = iterator.next();
             if (!VerifyUtils.collectionIsEmpty(queryPersonalData.getPersonalnoChannelName())) {
-                List<Integer> personalnoChannelId = queryPersonalData.getPersonalnoChannelName();
                 for (Integer integer : personalnoChannelId) {
                     getSql = DaoGetSql.getSql("SELECT id from " + ZCDBTaskChannel + " where personal_no_task_id = ? and channel_id = ? and deleted = 0 AND (`road_or_task` IS NULL OR`road_or_task` = 0) ", personalNoTask.getId(), integer);
                     sql.setSql(getSql);
@@ -435,7 +441,7 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
             }
             List<PersonNoEnterGroupQueryRequestInfo> personNoEnterGroupQueryRequestInfoList = new ArrayList<>();
             personNoEnterGroupQueryRequestInfoList.add(personNoEnterGroupQueryRequestInfo);
-            String s = HttpClientUtil.sendPost("http://youyoudk.cn/SpringBootService/queryGroupCategoryMember", JsonObjectUtils.objectToJson(personNoEnterGroupQueryRequestInfoList));
+            String s = HttpClientUtil.sendPost("http://www.youyoudk.cn/SpringBootService/queryGroupCategoryMember", JsonObjectUtils.objectToJson(personNoEnterGroupQueryRequestInfoList));
             if (!VerifyUtils.isEmpty(s)) {
                 ResponseInfo responseInfo = JsonObjectUtils.jsonToPojo(s, ResponseInfo.class);
                 if (responseInfo.code == 0) {
@@ -493,11 +499,17 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
         List<Integer> shortUrlIdList = new ArrayList<>();
         Integer shortUrlid = null;
         String getSql = null;
+        List<PersonalNoChannel> personalnoChannelList = queryPersonalData.getPersonalnoChannelName();
+        List<Integer> personalnoChannelId = new ArrayList<>();
+        for (PersonalNoChannel personalNoChannel : personalnoChannelList) {
+            if(!personalnoChannelId.contains(personalNoChannel.getId())){
+                personalnoChannelId.add(personalNoChannel.getId());
+            }
+        }
         while (iterator.hasNext()) {
             log.info("查询任务对应的渠道的短链");
             PersonalNoRoad road = iterator.next();
             if (!VerifyUtils.collectionIsEmpty(queryPersonalData.getPersonalnoChannelName())) {
-                List<Integer> personalnoChannelId = queryPersonalData.getPersonalnoChannelName();
                 for (Integer integer : personalnoChannelId) {
                     getSql = DaoGetSql.getSql("SELECT id from " + ZCDBTaskChannel + " where personal_no_task_id = ? and channel_id = ? and deleted = 0 and road_or_task = '1'", road.getId(), integer);
                     sql.setSql(getSql);
@@ -559,7 +571,7 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
             sql.setSql(getTCountsql.toString());
             Long count = detailData12iService.countBySql(sql);
             toPeopleCount += count.intValue();
-            StringBuffer getCountsql = new StringBuffer("SELECT count(*) from " + ZCDBPersonalPeople + " where channel_id = " + shortUrlId + " and deleted = 0 and personal_friend_wx_id is not null");
+            StringBuffer getCountsql = new StringBuffer("SELECT count(*) from " + ZCDBPersonalPeople + " where channel_id = " + shortUrlId + " and personal_friend_wx_id is not null");
             StringBuffer getdeleteCountsql = new StringBuffer("SELECT count(*) from " + ZCDBPersonalPeople + " where channel_id = " + shortUrlId + " and personal_friend_wx_id is null and deleted = 1");
             if (!VerifyUtils.isEmpty(queryPersonalData.getStartTime())) {
                 getCountsql = DaoGetSql.getTempSql(getCountsql, true);
@@ -638,7 +650,7 @@ public class PersonalNoDataServiceImpl extends ServiceImpl<PersonalNoDataMapper,
                 }
                 List<PersonNoEnterGroupQueryRequestInfo> personNoEnterGroupQueryRequestInfoList = new ArrayList<>();
                 personNoEnterGroupQueryRequestInfoList.add(personNoEnterGroupQueryRequestInfo);
-                String s = HttpClientUtil.sendPost("http://youyoudk.cn/SpringBootService/queryGroupCategoryMember", JsonObjectUtils.objectToJson(personNoEnterGroupQueryRequestInfoList));
+                String s = HttpClientUtil.sendPost("http://www.youyoudk.cn/SpringBootService/queryGroupCategoryMember", JsonObjectUtils.objectToJson(personNoEnterGroupQueryRequestInfoList));
                 if (!VerifyUtils.isEmpty(s)) {
                     ResponseInfo responseInfo = JsonObjectUtils.jsonToPojo(s, ResponseInfo.class);
                     if (responseInfo.code == 0) {

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoTaskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoTask">
+        <id column="id" property="id" />
+        <result column="task_name" property="taskName" />
+        <result column="task_theme" property="taskTheme" />
+        <result column="popularize_category" property="popularizeCategory" />
+        <result column="subject_name" property="subjectName" />
+        <result column="recommended_reasons" property="recommendedReasons" />
+        <result column="fast_group" property="fastGroup" />
+        <result column="sales_group_separate_flag" property="salesGroupSeparateFlag" />
+        <result column="create_sales_task" property="createSalesTask" />
+        <result column="task_url" property="taskUrl" />
+        <result column="task_end_time" property="taskEndTime" />
+        <result column="group_auto_close" property="groupAutoClose" />
+        <result column="pull_people_user_id" property="pullPeopleUserId" />
+        <result column="auto_remind" property="autoRemind" />
+        <result column="activity_type" property="activityType" />
+        <result column="task_end_url" property="taskEndUrl" />
+        <result column="super_id" property="superId" />
+        <result column="remarks" property="remarks" />
+        <result column="create_time" property="createTime" />
+        <result column="deleted" property="deleted" />
+        <result column="task_start_time" property="taskStartTime" />
+        <result column="add_friend_index" property="addFriendIndex" />
+        <result column="road_id" property="roadId" />
+        <result column="message" property="message" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoTask" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,task_name,task_theme,popularize_category
+          ,subject_name,recommended_reasons,fast_group,sales_group_separate_flag
+          ,create_sales_task,task_url,task_end_time,group_auto_close
+          ,pull_people_user_id,auto_remind,activity_type,task_end_url
+          ,super_id,remarks,create_time,deleted
+          ,task_start_time,add_friend_index,road_id,message)
+        values
+          (#{entity.id},#{entity.taskName},#{entity.taskTheme},#{entity.popularizeCategory}
+          ,#{entity.subjectName},#{entity.recommendedReasons},#{entity.fastGroup},#{entity.salesGroupSeparateFlag}
+          ,#{entity.createSalesTask},#{entity.taskUrl},#{entity.taskEndTime},#{entity.groupAutoClose}
+          ,#{entity.pullPeopleUserId},#{entity.autoRemind},#{entity.activityType},#{entity.taskEndUrl}
+          ,#{entity.superId},#{entity.remarks},#{entity.createTime},#{entity.deleted}
+          ,#{entity.taskStartTime},#{entity.addFriendIndex},#{entity.roadId},#{entity.message})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoTask" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.taskName!=null">
+                task_name = #{entity.taskName},
+            </if>
+            <if test="entity.taskTheme!=null">
+                task_theme = #{entity.taskTheme},
+            </if>
+            <if test="entity.popularizeCategory!=null">
+                popularize_category = #{entity.popularizeCategory},
+            </if>
+            <if test="entity.subjectName!=null">
+                subject_name = #{entity.subjectName},
+            </if>
+            <if test="entity.recommendedReasons!=null">
+                recommended_reasons = #{entity.recommendedReasons},
+            </if>
+            <if test="entity.fastGroup!=null">
+                fast_group = #{entity.fastGroup},
+            </if>
+            <if test="entity.salesGroupSeparateFlag!=null">
+                sales_group_separate_flag = #{entity.salesGroupSeparateFlag},
+            </if>
+            <if test="entity.createSalesTask!=null">
+                create_sales_task = #{entity.createSalesTask},
+            </if>
+            <if test="entity.taskUrl!=null">
+                task_url = #{entity.taskUrl},
+            </if>
+            <if test="entity.taskEndTime!=null">
+                task_end_time = #{entity.taskEndTime},
+            </if>
+            <if test="entity.groupAutoClose!=null">
+                group_auto_close = #{entity.groupAutoClose},
+            </if>
+            <if test="entity.pullPeopleUserId!=null">
+                pull_people_user_id = #{entity.pullPeopleUserId},
+            </if>
+            <if test="entity.autoRemind!=null">
+                auto_remind = #{entity.autoRemind},
+            </if>
+            <if test="entity.activityType!=null">
+                activity_type = #{entity.activityType},
+            </if>
+            <if test="entity.taskEndUrl!=null">
+                task_end_url = #{entity.taskEndUrl},
+            </if>
+            <if test="entity.superId!=null">
+                super_id = #{entity.superId},
+            </if>
+            <if test="entity.remarks!=null">
+                remarks = #{entity.remarks},
+            </if>
+            <if test="entity.createTime!=null">
+                create_time = #{entity.createTime},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+            <if test="entity.taskStartTime!=null">
+                task_start_time = #{entity.taskStartTime},
+            </if>
+            <if test="entity.addFriendIndex!=null">
+                add_friend_index = #{entity.addFriendIndex},
+            </if>
+            <if test="entity.roadId!=null">
+                road_id = #{entity.roadId},
+            </if>
+            <if test="entity.message!=null">
+                message = #{entity.message},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+</mapper>

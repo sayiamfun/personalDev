@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>微信平台授权</title>
+</head>
+<style>
+    .container {
+        width: 100%;
+        padding: 60px 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        font-size: 0.3rem;
+        text-align: center;
+    }
+    .container img {
+        width: 1rem;
+        height: 1rem;
+        margin: 0 auto;
+    }
+    .container em {
+        font-style: normal;
+        padding-top: 0.2rem;
+    }
+</style>
+<body>
+    <div class="container">
+        <img src="./image/success.png" alt="">
+        <em>扫码成功</em>
+        <em>请回到电脑网页端继续操作</em>
+    </div>
+</body>
+<script>
+    fnResize()
+    window.onresize = function () {
+        fnResize()
+    }
+
+    function fnResize() {
+        var deviceWidth = document.documentElement.clientWidth || window.innerWidth
+        if (deviceWidth >= 750) {
+            deviceWidth = 750
+        }
+        if (deviceWidth <= 320) {
+            deviceWidth = 320
+        }
+        document.documentElement.style.fontSize = (deviceWidth / 7.5) + 'px'
+    }
+</script>
+</html>

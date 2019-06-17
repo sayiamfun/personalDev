@@ -5,174 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b4d1e9ff-9745-4a80-ab72-94aacdfc189e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/css/app.328349570dff905a42075ff90168001b.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/css/app.328349570dff905a42075ff90168001b.css.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/css/app.3a9d29eb5aab6a6523f8bacf618ea091.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/css/app.3a9d29eb5aab6a6523f8bacf618ea091.css.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/0.15f1db836c2dfed14257.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/0.15f1db836c2dfed14257.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/1.eb7e2bf05d2dd3b169a0.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/1.eb7e2bf05d2dd3b169a0.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/10.cbf8a1a203b5fc45085d.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/11.b48d1c23fc7061fd977d.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/11.b48d1c23fc7061fd977d.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/12.e041ffb44ff60c4f827b.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/12.e041ffb44ff60c4f827b.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/13.03193cb862b26f23300f.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/14.955f784d235fb66aba7b.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/16.7a4e0b2a2f2e441e1a53.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/17.95dede0dc8cb0159056e.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/18.babbc6cdc9bf30a416b4.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/18.babbc6cdc9bf30a416b4.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/19.75a89dfc794f67d895b7.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/2.d2846e2b358ce824d86b.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/2.d2846e2b358ce824d86b.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/20.d68205f39226f69b4fdd.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/20.d68205f39226f69b4fdd.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/21.4c8429978b9a2337d3c7.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/21.4c8429978b9a2337d3c7.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/22.884bc0804142bc8261a1.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/22.884bc0804142bc8261a1.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/23.13bd166185d6e9d88820.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/23.13bd166185d6e9d88820.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/24.d562c315c10c7195abcb.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/25.94485fb54cc37900d12f.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/25.94485fb54cc37900d12f.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/26.96fe08b0c19f60be7fc7.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/26.96fe08b0c19f60be7fc7.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/27.a38a71a307b325caa0eb.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/28.bee72cb589aff65124b2.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/29.b630218ee62d1fb3e264.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/3.9a9b052ce6fbfed73f30.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/3.9a9b052ce6fbfed73f30.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/30.4ae301acb28f7c7f08de.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/31.f502039515543ee79e0e.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/32.60fd2a4ac6c3165c016a.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/32.60fd2a4ac6c3165c016a.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/33.a4373762a404112158c9.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/5.fd35db75075053b2c89d.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/5.fd35db75075053b2c89d.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/6.ff91f6afc82a8e22b79d.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/7.a8a4387788b6ac98bf11.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/8.cc723d9a2b668b9b2d54.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/8.cc723d9a2b668b9b2d54.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/9.ff4d59f2024e5d3a96c6.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/app.4d8f9654651432a9009a.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/app.4d8f9654651432a9009a.js.gz" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/app.5f0fd10ad9950d6c563a.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/app.5f0fd10ad9950d6c563a.js.map" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/manifest.cfc0e970321f9c18f1bd.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/vendor.77750e5c2e86d914da82.js.gz" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/AuthInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/AuthInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/WebMvcConfiguration.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/WebMvcConfiguration.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/Swagger2Config.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/Swagger2Config.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/entity/query/QueryPersonalData.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/entity/query/QueryPersonalData.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/entity/robot/G.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/entity/robot/G.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoCategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoCategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoChannelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoChannelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoDataController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoDataController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableCategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableCategoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableMessageSendController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableMessageSendController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoRoadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoRoadController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskChannelController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskChannelController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskMessageSendController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskMessageSendController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoCategory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoChannel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoChannel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoFriendsCircle.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoFriendsCircle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoLable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoLable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoLableCategory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoLableCategory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoRoadMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoRoadMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoTaskChannelMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoTaskChannelMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoTaskMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoTaskMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoDataService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoDataService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoRoadService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoRoadService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoTaskChannelService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoTaskChannelService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoTaskService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoTaskService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategoryController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoDataServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoDataServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoFriendsCircleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoFriendsCircleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoKeywordServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoKeywordServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoLableCategoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoLableCategoryServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoLableMessageSendServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoLableMessageSendServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoOperationStockWechatAccountServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoOperationStockWechatAccountServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoPeopleServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoPeopleServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoRoadServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoRoadServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskChannelServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskChannelServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskMessageSendServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskMessageSendServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/utils/TaskUtiles.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/utils/TaskUtiles.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/utils/WebConst.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/utils/WebConst.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/Mapper/PersonalNoTaskChannelMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/Mapper/PersonalNoTaskChannelMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-dev.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-dev.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/css/app.2701a8cf68e3c3008b24c55b3a7253c1.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/css/app.2701a8cf68e3c3008b24c55b3a7253c1.css.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/css/app.68e03f19ac251a00e0322c583f31a56f.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/css/app.68e03f19ac251a00e0322c583f31a56f.css.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/img/invitation.8a1cbe1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/0.319ca3f6b5b6db3fb116.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/0.319ca3f6b5b6db3fb116.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/1.4b9f24e8d7eca3c0b00e.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/1.4b9f24e8d7eca3c0b00e.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/10.f95515943bbc0f7d79e2.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/11.46bad34ebc45db533858.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/12.ee446af3384e06f12a10.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/12.ee446af3384e06f12a10.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/13.717a3d1c5bbb4b960f22.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/13.717a3d1c5bbb4b960f22.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/14.2cf831e5bb26f47606ab.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/15.a748f2e21bb6ef8de1f8.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/15.a748f2e21bb6ef8de1f8.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/16.2414e5ec560fa9a0da62.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/16.2414e5ec560fa9a0da62.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/17.adc08472fe8f65c47875.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/15.87e1bef6599f9aa28fb9.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/18.0f02ab9262e33a9c63bd.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/19.302f6c9d866c9309439e.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/19.302f6c9d866c9309439e.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/2.7e40da7c5d117d3ae8a1.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/2.7e40da7c5d117d3ae8a1.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/20.ac0fa09fe21b5dd3f0ca.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/21.8b0eaeffe87254db06ac.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/22.8c6bc55f73568939b747.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/22.8c6bc55f73568939b747.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/23.fb60926e2f497c7911b8.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/24.5958e22192bca57b33d6.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/25.12c83d806057d6945d8a.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/25.12c83d806057d6945d8a.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/26.5ece6bf1762484960982.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/27.d42ff34bb267cf436a20.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/28.b856c111156fe4967a70.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/34.fd36c693d564596c88cb.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/29.f1a452406aa3d4a7c9e0.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/3.9733dab07a19ad9cc8f4.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/4.b9cb2185433efee22b0e.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/30.474381724528d8ccef3a.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/31.c7a899ed01f543127a61.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/32.ac690076a4b57e6bbb6c.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/32.ac690076a4b57e6bbb6c.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/33.5f4de1cd8880d53fc484.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/4.fd90c6bb3a5e5f04eae4.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/4.fd90c6bb3a5e5f04eae4.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/5.ce81439e84ccf6501708.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/6.4ac85ea9117a6eaa2d45.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/6.4ac85ea9117a6eaa2d45.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/7.a1ed92202153ad81d37c.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/7.a1ed92202153ad81d37c.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/8.a3b99b4e23888c948a88.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/9.16c9eae8ba5064ceffec.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/9.16c9eae8ba5064ceffec.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/app.3006897996a0510f9d3f.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/app.3006897996a0510f9d3f.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/app.f1020100e895918a56e3.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/app.f1020100e895918a56e3.js.map" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/manifest.2ae2e69a05c33dfc65f8.js.map" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/manifest.f14e599484d8a3303e59.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/vendor.43058fc825175c307b2a.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/static/js/vendor.77750e5c2e86d914da82.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/static/js/vendor.43058fc825175c307b2a.js.gz" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/static/task.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/static/task.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/personal.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/personal.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/warm/system/upload/UploadController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/warm/system/upload/UploadController.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -190,23 +29,74 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableController.java">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoDataController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="349">
-              <caret line="212" column="56" selection-start-line="212" selection-start-column="56" selection-end-line="212" selection-end-column="56" />
+            <state relative-caret-position="228">
+              <caret line="55" column="94" lean-forward="true" selection-start-line="55" selection-start-column="94" selection-end-line="55" selection-end-column="94" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/AuthInterceptor.java">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategorySetController.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="493">
-              <caret line="41" column="81" selection-start-line="41" selection-start-column="81" selection-end-line="41" selection-end-column="81" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+            <state relative-caret-position="494">
+              <caret line="58" column="23" lean-forward="true" selection-start-line="58" selection-start-column="23" selection-end-line="58" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategoryController.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="381">
+              <caret line="117" column="37" lean-forward="true" selection-start-line="117" selection-start-column="37" selection-end-line="117" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/robot/ResponseInfo.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="38">
+              <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/query/QueryPersonalData.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="25" column="34" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoDataServiceImpl.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1621">
+              <caret line="468" column="7" lean-forward="true" selection-start-line="468" selection-start-column="7" selection-end-line="468" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/MyMetaObjectHandler.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="323">
+              <caret line="20" column="56" lean-forward="true" selection-start-line="20" selection-start-column="56" selection-end-line="20" selection-end-column="56" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/MybatisPlusConfig.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="395">
+              <caret line="113" column="127" selection-start-line="113" selection-start-column="8" selection-end-line="113" selection-end-column="127" />
             </state>
           </provider>
         </entry>
@@ -214,8 +104,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/resources/application-dev.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="5" selection-start-column="5" selection-end-column="5" />
+            <state relative-caret-position="642">
+              <caret line="45" column="72" selection-start-line="45" selection-start-column="72" selection-end-line="45" selection-end-column="72" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/DB.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="152">
+              <caret line="10" column="59" selection-start-line="10" selection-start-column="59" selection-end-line="10" selection-end-column="59" />
             </state>
           </provider>
         </entry>
@@ -270,13 +169,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoMessage.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskMessageSendContentServiceImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategoryController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoTaskMessageSendMapper.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PageController.java" />
         <option value="$PROJECT_DIR$/src/main/resources/templates/personal.html" />
-        <option value="$PROJECT_DIR$/src/main/java/com/warm/entity/query/QueryPersonalData.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoDataController.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoDataService.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/mapper/PersonalNoTaskChannelMapper.java" />
@@ -297,9 +192,6 @@
         <option value="$PROJECT_DIR$/src/main/java/com/warm/utils/TaskUtiles.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoPeopleServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoController.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoDataServiceImpl.java" />
-        <option value="$PROJECT_DIR$/src/main/java/com/warm/entity/DB.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/application-dev.yml" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoFriendsCircleServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoLableMessageSendServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoTaskMessageSendServiceImpl.java" />
@@ -321,6 +213,13 @@
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoLableCategoryServiceImpl.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoTask.java" />
         <option value="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/Swagger2Config.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/warm/system/upload/UploadController.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/warm/entity/query/QueryPersonalData.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoDataServiceImpl.java" />
+        <option value="$PROJECT_DIR$/src/main/resources/application-dev.yml" />
+        <option value="$PROJECT_DIR$/src/main/java/com/warm/entity/DB.java" />
+        <option value="$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategoryController.java" />
       </list>
     </option>
   </component>
@@ -349,10 +248,10 @@
     </treeState>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="735" />
-    <option name="y" value="708" />
-    <option name="width" value="1380" />
-    <option name="height" value="726" />
+    <option name="x" value="490" />
+    <option name="y" value="472" />
+    <option name="width" value="920" />
+    <option name="height" value="484" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -360,6 +259,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -407,27 +308,54 @@
               <item name="PersonalDev" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="PersonalDev" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PersonalDev" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="PersonalDev" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PersonalDev" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
               <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="warm" type="462c0819:PsiDirectoryNode" />
+              <item name="entity" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PersonalDev" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PersonalDev" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="warm" type="462c0819:PsiDirectoryNode" />
+              <item name="entity" type="462c0819:PsiDirectoryNode" />
+              <item name="robot" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PersonalDev" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PersonalDev" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="warm" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PersonalDev" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PersonalDev" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="com" type="462c0819:PsiDirectoryNode" />
+              <item name="warm" type="462c0819:PsiDirectoryNode" />
+              <item name="system" type="462c0819:PsiDirectoryNode" />
+              <item name="controller" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="PersonalDev" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PersonalDev" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -442,7 +370,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../QB/PersonalQB" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../personalDevRobot" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="project.structure.last.edited" value="Project" />
@@ -573,12 +501,15 @@
       <workItem from="1560130758118" duration="16867000" />
       <workItem from="1560223640278" duration="2129000" />
       <workItem from="1560233126011" duration="6135000" />
-      <workItem from="1560392216802" duration="1780000" />
+      <workItem from="1560392216802" duration="1877000" />
+      <workItem from="1560406752880" duration="674000" />
+      <workItem from="1560429265192" duration="1549000" />
+      <workItem from="1560483798110" duration="15117000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="769099000" />
+    <option name="totallyTimeSpent" value="786536000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -590,10 +521,11 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="2575" height="1415" extended-state="6" />
+    <frame x="-8" y="-8" width="1216" height="876" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.7845304" visible="true" weight="0.1433121" />
-      <window_info id="Structure" order="1" sideWeight="0.21546961" side_tool="true" visible="true" weight="0.1433121" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.7788945" visible="true" weight="0.33391005" />
+      <window_info id="Structure" order="1" sideWeight="0.22110553" side_tool="true" visible="true" weight="0.33391005" />
       <window_info id="Designer" order="2" />
       <window_info id="Image Layers" order="3" />
       <window_info id="Capture Tool" order="4" />
@@ -603,8 +535,8 @@
       <window_info anchor="bottom" id="Duplicates" order="0" weight="0.2732484" />
       <window_info anchor="bottom" id="Message" order="1" />
       <window_info anchor="bottom" id="Find" order="2" weight="0.3299363" />
-      <window_info active="true" anchor="bottom" id="Run" order="3" visible="true" weight="0.29462197" />
-      <window_info anchor="bottom" id="Debug" order="4" sideWeight="0.49900925" weight="0.24318005" />
+      <window_info anchor="bottom" id="Run" order="3" weight="0.29462197" />
+      <window_info anchor="bottom" id="Debug" order="4" sideWeight="0.49900925" visible="true" weight="0.46361187" />
       <window_info anchor="bottom" id="Cvs" order="5" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="6" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="7" weight="0.3299363" />
@@ -619,83 +551,38 @@
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Maven" order="3" sideWeight="0.51491714" visible="true" weight="0.13455413" />
+      <window_info anchor="right" id="Maven" order="3" sideWeight="0.5923616" visible="true" weight="0.29238755" />
       <window_info anchor="right" id="Palette" order="4" />
       <window_info anchor="right" id="Capture Analysis" order="5" />
       <window_info anchor="right" id="Database" order="6" />
       <window_info anchor="right" id="Palette&#9;" order="7" />
       <window_info anchor="right" id="Theme Preview" order="8" />
       <window_info anchor="right" id="Bean Validation" order="9" />
-      <window_info anchor="right" id="aiXcoder" order="10" sideWeight="0.48508286" side_tool="true" visible="true" weight="0.13455413" />
+      <window_info anchor="right" id="aiXcoder" order="10" sideWeight="0.40763834" side_tool="true" visible="true" weight="0.13455413" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/warm/utils/OSSClientUtil.java</url>
+          <line>34</line>
+          <properties />
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/warm/utils/OSSClientUtil.java</url>
+          <line>36</line>
+          <properties />
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/WebMvcConfiguration.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="41" column="27" selection-start-line="41" selection-start-column="27" selection-end-line="41" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/entity/PersonalNoKeywordContent.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="23" column="13" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoKeywordController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1314">
-          <caret line="98" column="37" selection-start-line="98" selection-start-column="37" selection-end-line="98" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/resources/templates/personal.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="18">
-          <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="79" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoKeywordServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="125" column="33" lean-forward="true" selection-start-line="125" selection-start-column="33" selection-end-line="125" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/service/db1/PersonalNoPhoneTaskGroupService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="18" column="12" selection-start-line="18" selection-start-column="12" selection-end-line="18" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoPhoneTaskGroupServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="31" column="19" selection-start-line="31" selection-start-column="19" selection-end-line="31" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoTaskChannelController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1561">
-          <caret line="186" column="43" lean-forward="true" selection-start-line="183" selection-start-column="12" selection-end-line="186" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/robot/responseInfo/SunTask.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="22" column="27" selection-start-line="22" selection-start-column="27" selection-end-line="22" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/robot/common/WeChatMsgType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -714,13 +601,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
           <caret line="25" column="2" lean-forward="true" selection-start-line="25" selection-start-column="2" selection-end-line="25" selection-end-column="2" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/query/QueryPersonalData.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="144">
-          <caret line="16" column="13" selection-start-line="16" selection-start-column="13" selection-end-line="16" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -780,13 +660,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/DB.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="792">
-          <caret line="72" column="99" selection-start-line="72" selection-start-column="64" selection-end-line="72" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoFriendsCircleServiceImpl.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
@@ -805,20 +678,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="222">
           <caret line="189" column="102" lean-forward="true" selection-start-line="189" selection-start-column="102" selection-end-line="189" selection-end-column="102" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoDataController.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="55" column="70" selection-start-line="55" selection-start-column="70" selection-end-line="55" selection-end-column="70" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoDataServiceImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="271" column="13" lean-forward="true" selection-start-line="271" selection-start-column="13" selection-end-line="271" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -964,14 +823,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoLableController.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="212" column="56" selection-start-line="212" selection-start-column="56" selection-end-line="212" selection-end-column="56" />
+        <state relative-caret-position="4161">
+          <caret line="247" column="55" selection-start-line="247" selection-start-column="55" selection-end-line="247" selection-end-column="55" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/AuthInterceptor.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
+        <state relative-caret-position="551">
           <caret line="41" column="81" selection-start-line="41" selection-start-column="81" selection-end-line="41" selection-end-column="81" />
           <folding>
             <element signature="imports" expanded="true" />
@@ -979,10 +838,101 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/authInterceptor/WebMvcConfiguration.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-19">
+          <caret line="19" column="13" selection-start-line="19" selection-start-column="13" selection-end-line="19" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/Swagger2Config.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="27" column="84" lean-forward="true" selection-start-line="27" selection-start-column="84" selection-end-line="27" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/utils/OSSClientUtil.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="300">
+          <caret line="30" column="25" selection-start-line="30" selection-start-column="25" selection-end-line="30" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/upload/UploadController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="29" column="6" lean-forward="true" selection-start-line="29" selection-start-column="6" selection-end-line="29" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/MybatisPlusConfig.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="113" column="127" selection-start-line="113" selection-start-column="8" selection-end-line="113" selection-end-column="127" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/resources/application-dev.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="5" selection-start-column="5" selection-end-column="5" />
+        <state relative-caret-position="642">
+          <caret line="45" column="72" selection-start-line="45" selection-start-column="72" selection-end-line="45" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/DB.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="152">
+          <caret line="10" column="59" selection-start-line="10" selection-start-column="59" selection-end-line="10" selection-end-column="59" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/config/mybatis/MyMetaObjectHandler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="20" column="56" lean-forward="true" selection-start-line="20" selection-start-column="56" selection-end-line="20" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/robot/ResponseInfo.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="38">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategorySetController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="494">
+          <caret line="58" column="23" lean-forward="true" selection-start-line="58" selection-start-column="23" selection-end-line="58" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/entity/query/QueryPersonalData.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="25" column="34" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoDataController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="55" column="94" lean-forward="true" selection-start-line="55" selection-start-column="94" selection-end-line="55" selection-end-column="94" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/controller/PersonalNoGroupCategoryController.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="117" column="37" lean-forward="true" selection-start-line="117" selection-start-column="37" selection-end-line="117" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/com/warm/system/service/impl/PersonalNoDataServiceImpl.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1621">
+          <caret line="468" column="7" lean-forward="true" selection-start-line="468" selection-start-column="7" selection-end-line="468" selection-end-column="7" />
         </state>
       </provider>
     </entry>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoCategoryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoCategory">
+        <id column="id" property="id" />
+        <result column="personal_no_category" property="personalNoCategory" />
+        <result column="super_id" property="superId" />
+        <result column="create_time" property="createTime" />
+        <result column="remarks" property="remarks" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoCategory" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,personal_no_category,super_id,create_time,remarks,deleted)
+        values
+          (#{entity.id},#{entity.personalNoCategory},#{entity.superId},#{entity.createTime},#{entity.remarks},#{entity.deleted})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoCategory" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personalNoCategory!=null">
+                personal_no_category = #{entity.personalNoCategory},
+            </if>
+            <if test="entity.superId!=null">
+                super_id = #{entity.superId},
+            </if>
+            <if test=" entity.createTime!=null">
+                create_time = #{entity.createTime},
+            </if>
+            <if test=" entity.remarks!=null">
+                remarks = #{entity.remarks},
+            </if>
+            <if test=" entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultType="com.warm.system.entity.PersonalNoCategory" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+         ${sql}
+    </select>
+
+     <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+         ${sql}
+     </select>
+
+     <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+         ${sql}
+     </select>
+
+
+</mapper>

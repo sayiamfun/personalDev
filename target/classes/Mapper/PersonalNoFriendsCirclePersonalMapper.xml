@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoFriendsCirclePersonalMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoFriendsCirclePersonal">
+        <id column="id" property="id" />
+        <result column="friends_circle_id" property="friendsCircleId" />
+        <result column="personal_no_id" property="personalNoId" />
+        <result column="personal_no_wx_id" property="personalNoWxId" />
+        <result column="personal_no_name" property="personalNoName" />
+        <result column="deleted" property="deleted" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoFriendsCirclePersonal" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,friends_circle_id,personal_no_id,personal_no_wx_id,personal_no_name,deleted)
+        values
+          (#{entity.id},#{entity.friendsCircleId},#{entity.personalNoId},#{entity.personalNoWxId},#{entity.personalNoName},#{entity.deleted})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoFriendsCirclePersonal" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.friendsCircleId!=null">
+                friends_circle_id = #{entity.friendsCircleId},
+            </if>
+            <if test="entity.personalNoId!=null">
+                personal_no_id = #{entity.age},
+            </if>
+            <if test="entity.personalNoWxId!=null">
+                personal_no_wx_id = #{entity.personalNoWxId},
+            </if>
+            <if test="entity.personalNoName!=null">
+                personal_no_name = #{entity.personalNoName},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.String">
+        ${sql}
+    </delete>
+
+    <select id="list" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="listString" resultType="java.lang.String" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+    <select id="getCount" resultType="java.lang.Long" parameterType="java.lang.String">
+        ${sql}
+    </select>
+
+</mapper>

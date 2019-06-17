@@ -24,7 +24,8 @@ public class Swagger2Config {
                 .groupName("personalApi")//组名
                 .apiInfo(adminApiInfo())// 调用apiInfo方法,创建一个ApiInfo实例,里面是展示在文档页面信息内容
                 .select()//开启选择
-                .apis(RequestHandlerSelectors.basePackage("com.warm.system.controller"))
+//                .apis(RequestHandlerSelectors.basePackage("com.warm.system.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.warm.system.upload"))
                 .paths(PathSelectors.any())
 //                .paths(Predicates.and(PathSelectors.regex("/upload.*")))
 //                .paths(Predicates.not(PathSelectors.regex("/error.*")))//排除error下的多所有接口方法

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoSmallFaceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoSmallFace">
+        <id column="Id" property="Id" />
+        <result column="face" property="face" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoSmallFace" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,face)
+        values
+          (#{entity.id},#{entity.face})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoSmallFace" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.face!=null">
+                face = #{entity.face},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+</mapper>

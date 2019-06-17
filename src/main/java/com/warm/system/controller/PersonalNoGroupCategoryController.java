@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -70,15 +71,18 @@ public class PersonalNoGroupCategoryController {
         try {
             log.info("根据群类别集合id查询所有的群类别");
             String database = DBGroupCategory;
+            List<PersonalNoGroupCategory> list = new ArrayList<>();
             switch (flag){
                 case 0:
+                    String sql = DaoGetSql.getSql("select * from " + database + " where `group_category_set_id` = ? order by id desc", setId);
+                    list = groupCategoryService.list(sql);
                     break;
                 case 1:
-                    database = QUNLIEBIAN;
+                    String s = HttpClientUtil.sendGet("http://www.youyoudk.cn/getGroupCategory?set_id="+setId);
+
                     break;
             }
-            String sql = DaoGetSql.getSql("select * from " + database + " where `group_category_set_id` = ? order by id desc", setId);
-            List<PersonalNoGroupCategory> list = groupCategoryService.list(sql);
+
             log.info("根据群类别集合id查询所有的群类别结束");
             return R.ok().data(list);
         }catch (Exception e){

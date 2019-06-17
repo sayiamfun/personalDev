@@ -1,0 +1,120 @@
+server:
+  port: 80
+
+spring:
+#  模板配置
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML5
+    encoding: utf-8
+    content-type: text/html
+    cache: false
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+  application:
+    name: personal
+  aop:
+    proxy-target-class: true
+    auto: true
+  datasource:
+    druid:
+      # 数据库 1
+      db1:
+        url: jdbc:mysql://localhost:3306/personal_zc_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+      # 数据库 2
+      db2:
+        url: jdbc:mysql://localhost:3306/oa?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+      # 数据库 3
+      db3:
+        url: jdbc:mysql://localhost:3306/personal_zc_wx_group?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+      # 数据库 4
+      db4:
+        url: jdbc:mysql://localhost:3306/qunliebian_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&useSSL=false
+        username: root
+        password: jiazhangjia217
+        driver-class-name: com.mysql.jdbc.Driver
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+      #数据库 1
+#      db1:
+#        url: jdbc:mysql://rm-wz9jff194901y4x5jpo.mysql.rds.aliyuncs.com:3306/personal_test?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+#        username: root
+#        password: Jiazhangjia217
+#        driver-class-name: com.mysql.jdbc.Driver
+#        initialSize: 5
+#        minIdle: 5
+#        maxActive: 20
+#      # 数据库 2
+#      db2:
+#        url: jdbc:mysql://rm-wz9jff194901y4x5jpo.mysql.rds.aliyuncs.com:3306/oa?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+#        username: root
+#        password: Jiazhangjia217
+#        driver-class-name: com.mysql.jdbc.Driver
+#        initialSize: 5
+#        minIdle: 5
+#        maxActive: 20
+#      # 数据库 3
+#      db3:
+#        url: jdbc:mysql://rm-wz9jff194901y4x5jpo.mysql.rds.aliyuncs.com:3306/personal_test_wx_group?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+#        username: root
+#        password: Jiazhangjia217
+#        driver-class-name: com.mysql.jdbc.Driver
+#        initialSize: 5
+#        minIdle: 5
+#        maxActive: 20
+#      # 数据库 4
+#      db4:
+#        url: jdbc:mysql://rm-wz9jff194901y4x5jpo.mysql.rds.aliyuncs.com:3306/qunliebian_01?useUnicode=true&characterEncoding=utf8&autoReconnect=true&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true
+#        username: root
+#        password: Jiazhangjia217
+#        driver-class-name: com.mysql.jdbc.Driver
+#        initialSize: 5
+#        minIdle: 5
+#        maxActive: 20
+      connection-init-sqls: set names utf8mb4
+  #返回json的全局时间格式
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+#全局日志级别
+logging:
+  level:
+    root: error
+
+mybatis-plus:
+#  mybatis日志打印
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+
+
+
+
+
+

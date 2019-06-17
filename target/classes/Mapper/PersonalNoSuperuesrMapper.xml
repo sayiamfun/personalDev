@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoSuperuesrMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoSuperuesr">
+        <id column="id" property="id" />
+        <result column="super_name" property="superName" />
+        <result column="password" property="password" />
+        <result column="head_portrait" property="headPortrait" />
+        <result column="code" property="code" />
+        <result column="deleted" property="deleted" />
+        <result column="wx_id" property="wxId" />
+        <result column="openid" property="openid" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoSuperuesr" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,super_name,password,head_portrait,code,deleted,wx_id,openid)
+        values
+          (#{entity.id},#{entity.superName},#{entity.password},#{entity.headPortrait},#{entity.code},#{entity.deleted},#{entity.wxId},#{entity.openid})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoSuperuesr" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.superName!=null">
+                super_name = #{entity.superName},
+            </if>
+            <if test="entity.password!=null">
+                password = #{entity.password},
+            </if>
+            <if test="entity.headPortrait!=null">
+                head_portrait = #{entity.headPortrait},
+            </if>
+            <if test="entity.code!=null">
+                code = #{entity.code},
+            </if>
+            <if test="entity.deleted!=null">
+                deleted = #{entity.deleted},
+            </if>
+            <if test="entity.wxId!=null">
+                wx_id = #{entity.wxId},
+            </if>
+            <if test="entity.openid!=null">
+                openid = #{entity.openid},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+</mapper>

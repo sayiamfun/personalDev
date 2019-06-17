@@ -22,10 +22,10 @@ public class UploadController {
 
     public static Log log = LogFactory.getLog(UploadController.class);
 
-    @ApiOperation(value = "上传语音")
+    @ApiOperation(value = "上传文件")
     @PostMapping(value = "messageUpload")
     public R test(
-            @ApiParam(name = "file", value = "上传的语音消息", required = true)
+            @ApiParam(name = "file", value = "上传的文件", required = true)
             @RequestBody MultipartFile file
     ){
         try {
@@ -37,10 +37,10 @@ public class UploadController {
                 s = OSSClientUtil.UpdatePicToOSS(file);
             } catch (IOException e) {
                 e.printStackTrace();
-                log.info("上传语音消息发生IO错误");
+                log.info("上传文件发生IO错误");
             } catch (MyException e) {
                 e.printStackTrace();
-                log.info("上传语音消息发生MyException错误");
+                log.info("上传文件发生MyException错误");
             }
             log.info("上传成功");
             return R.ok().data(s);

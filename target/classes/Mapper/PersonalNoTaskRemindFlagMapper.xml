@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.warm.system.mapper.PersonalNoTaskRemindFlagMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.warm.system.entity.PersonalNoTaskRemindFlag">
+        <id column="id" property="id" />
+        <result column="personal_no_wx_id" property="personalNoWxId" />
+        <result column="user_wx_id" property="userWxId" />
+        <result column="personal_no_task_id" property="personalNoTaskId" />
+    </resultMap>
+
+    <insert id="add" parameterType="com.warm.system.entity.PersonalNoTaskRemindFlag" useGeneratedKeys="true" keyProperty="entity.id">
+        insert into ${entity.db}
+          (id,personal_no_wx_id,user_wx_id,personal_no_task_id)
+        values
+          (#{entity.id},#{entity.personalNoWxId},#{entity.userWxId},#{entity.personalNoTaskId})
+    </insert>
+
+    <update id="updateOne" parameterType="com.warm.system.entity.PersonalNoTaskRemindFlag" useGeneratedKeys="true" keyProperty="entity.id">
+        UPDATE ${entity.db}
+        <set>
+            <if test="entity.personalNoWxId!=null">
+                personal_no_wx_id = #{entity.personalNoWxId},
+            </if>
+            <if test="entity.userWxId!=null">
+                user_wx_id = #{entity.userWxId},
+            </if>
+            <if test="entity.personalNoTaskId!=null">
+                personal_no_task_id = #{entity.personalNoTaskId},
+            </if>
+        </set>
+        where id = #{entity.id}
+    </update>
+
+</mapper>
